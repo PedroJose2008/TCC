@@ -10,37 +10,37 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="Cliente")
-public class ClienteEntity implements Serializable {
+@Table(name = "Usuario")
+public class UsuarioEntity implements Serializable {
 
+	
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
-
-	private String razaoSocial;
+	
+	private String nome;
 	private String telefone;
 	private String email;
-	private String cpf_cnpj;
-	private String cep;
-	private String numero;
-	private String complemento;
+	private String cpf;
+	private String cargo;
+	private String senha;
 	private LocalDate datacadastro;
+	
 	public int getId() {
 		return id;
 	}
 	public void setId(int id) {
 		this.id = id;
 	}
-	public String getRazaoSocial() {
-		return razaoSocial;
+	public String getNome() {
+		return nome;
 	}
-	public void setRazaoSocial(String razaoSocial) {
-		this.razaoSocial = razaoSocial;
+	public void setNome(String nome) {
+		this.nome = nome;
 	}
 	public String getTelefone() {
 		return telefone;
@@ -54,33 +54,23 @@ public class ClienteEntity implements Serializable {
 	public void setEmail(String email) {
 		this.email = email;
 	}
-	public String getCpf_cnpj() {
-		return cpf_cnpj;
+	public String getCpf() {
+		return cpf;
 	}
-	public void setCpf_cnpj(String cpf_cnpj) {
-		this.cpf_cnpj = cpf_cnpj;
+	public void setCpf(String cpf) {
+		this.cpf = cpf;
 	}
-	public String getCep() {
-		return cep;
+	public String getCargo() {
+		return cargo;
 	}
-	public void setCep(String cep) {
-		this.cep = cep;
+	public void setCargo(String cargo) {
+		this.cargo = cargo;
 	}
-	public String getNumero() {
-		return numero;
+	public String getSenha() {
+		return senha;
 	}
-	public void setNumero(String numero) {
-		this.numero = numero;
-	}
-	public String getComplemento() {
-		return complemento;
-	}
-	public void setComplemento(String complemento) {
-		this.complemento = complemento;
-	}
-	
-	public static long getSerialversionuid() {
-		return serialVersionUID;
+	public void setSenha(String senha) {
+		this.senha = senha;
 	}
 	public LocalDate getDatacadastro() {
 		return datacadastro;
@@ -88,6 +78,11 @@ public class ClienteEntity implements Serializable {
 	public void setDatacadastro(LocalDate datacadastro) {
 		this.datacadastro = datacadastro;
 	}
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+	
+	
 	
 	
 	
