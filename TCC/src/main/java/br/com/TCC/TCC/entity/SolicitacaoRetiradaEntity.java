@@ -24,12 +24,18 @@ public class SolicitacaoRetiradaEntity implements Serializable{
 @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 	
-	//@ManyToOne
-	//@JoinColumn(name="idManutencao")
-	//private ManutencaoEntity manutencao;
+	@ManyToOne
+	@JoinColumn(name="idManutencao")
+	private ManutencaoEntity manutencao;
 	
 
 
+	public ManutencaoEntity getManutencao() {
+		return manutencao;
+	}
+	public void setManutencao(ManutencaoEntity manutencao) {
+		this.manutencao = manutencao;
+	}
 	@ManyToOne
 	@JoinColumn(name = "idTipoPagamento")
 	private TipoPagamentoEntity tipoPagamento;

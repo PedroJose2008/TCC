@@ -28,7 +28,7 @@ public class UsuarioEntity implements Serializable {
 	private String cpf;
 	private String cargo;
 	private String senha;
-	private LocalDate datacadastro;
+	private LocalDate dataCadastro;
 	
 	public int getId() {
 		return id;
@@ -72,14 +72,15 @@ public class UsuarioEntity implements Serializable {
 	public void setSenha(String senha) {
 		this.senha = senha;
 	}
-	public LocalDate getDatacadastro() {
-		return datacadastro;
-	}
-	public void setDatacadastro(LocalDate datacadastro) {
-		this.datacadastro = datacadastro;
-	}
+
 	public static long getSerialversionuid() {
 		return serialVersionUID;
+	}
+	public LocalDate getDataCadastro() {
+		return dataCadastro;
+	}
+	public void setDataCadastro(LocalDate dataCadastro) {
+		this.dataCadastro = dataCadastro;
 	}
 	
 	

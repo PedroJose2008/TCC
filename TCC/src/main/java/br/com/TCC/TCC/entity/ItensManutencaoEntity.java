@@ -25,9 +25,9 @@ public class ItensManutencaoEntity implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 	
-	//@ManyToOne
-	//@JoinColumn(name = "idPeca")
-	//private PecaEntity peca;
+	@ManyToOne
+	@JoinColumn(name = "idPeca")
+	private PecaEntity peca;
 	
 	public static long getSerialversionuid() {
 		return serialVersionUID;
@@ -44,6 +44,12 @@ public class ItensManutencaoEntity implements Serializable {
 	
 	
 
+	public PecaEntity getPeca() {
+		return peca;
+	}
+	public void setPeca(PecaEntity peca) {
+		this.peca = peca;
+	}
 	public LocalDate getDataCadastro() {
 		return dataCadastro;
 	}

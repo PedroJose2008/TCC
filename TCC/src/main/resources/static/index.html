@@ -1,0 +1,1118 @@
+
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Acoa Peças – TrackStock Web v9</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* Paleta clara inspirada na imagem */
+    --bg:           #eef2f8;
+    --surface:      #ffffff;
+    --surface2:     #f0f4fb;
+    --border:       #d6dff0;
+    --accent:       #3b6ff5;
+    --accent2:      #5b8af8;
+    --accent-light: #dce8ff;
+    --panel-blue:   #6fa0e8;
+    --panel-dark:   #4a7fd4;
+    --success:      #22c55e;
+    --warning:      #f59e0b;
+    --danger:       #ef4444;
+    --text:         #1a2340;
+    --text2:        #4a6080;
+    --text3:        #8fa0b8;
+    --text-white:   #ffffff;
+    --sidebar-w:    240px;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html, body { height:100%; font-family:'DM Sans', sans-serif; background:var(--bg); color:var(--text); overflow:hidden; }
+
+  /* ── LAYOUT ── */
+  #app { display:none; height:100vh; }
+
+  /* ── SIDEBAR ── */
+  #sidebar {
+    width:var(--sidebar-w); background:var(--surface); border-right:1px solid var(--border);
+    display:flex; flex-direction:column; flex-shrink:0; overflow:hidden;
+    box-shadow: 2px 0 12px rgba(59,111,245,.06);
+  }
+  .logo-area {
+    padding:24px 20px 20px; border-bottom:1px solid var(--border);
+    display:flex; align-items:center; gap:10px;
+  }
+  .logo-icon {
+    width:38px; height:38px; background:linear-gradient(135deg,var(--accent),var(--accent2)); border-radius:10px;
+    display:flex; align-items:center; justify-content:center; font-size:20px;
+    box-shadow: 0 4px 12px rgba(59,111,245,.3);
+  }
+  .logo-text { font-family:'Syne',sans-serif; font-weight:800; font-size:15px; letter-spacing:.5px; color:var(--text); }
+  .logo-sub { font-size:10px; color:var(--text3); letter-spacing:1.5px; text-transform:uppercase; }
+
+  nav { padding:16px 12px; flex:1; overflow-y:auto; }
+  .nav-section { margin-bottom:24px; }
+  .nav-label { font-size:10px; letter-spacing:1.8px; text-transform:uppercase; color:var(--text3); padding:0 8px; margin-bottom:8px; }
+  .nav-item {
+    display:flex; align-items:center; gap:10px; padding:9px 12px; border-radius:10px;
+    cursor:pointer; font-size:13.5px; color:var(--text2); transition:all .15s; margin-bottom:2px;
+  }
+  .nav-item:hover { background:var(--accent-light); color:var(--accent); }
+  .nav-item.active { background:var(--accent-light); color:var(--accent); font-weight:600; }
+  .nav-item .icon { font-size:16px; width:20px; text-align:center; }
+
+  /* ── MAIN ── */
+  #main { flex:1; display:flex; flex-direction:column; overflow:hidden; background:var(--bg); }
+
+  /* ── TOPBARS ── */
+  .topbar-base {
+    height:64px; background:var(--surface); border-bottom:1px solid var(--border);
+    display:flex; align-items:center; padding:0 28px; gap:16px; flex-shrink:0;
+    box-shadow: 0 2px 8px rgba(59,111,245,.05);
+  }
+  .page-title { font-family:'Syne',sans-serif; font-size:18px; font-weight:700; flex:1; color:var(--text); }
+  .topbar-actions { display:flex; align-items:center; gap:16px; }
+  
+  .user-profile-top {
+    display:flex; align-items:center; gap:10px; padding-left:16px; border-left:1px solid var(--border);
+    cursor:pointer;
+  }
+  .user-name { font-size:13px; font-weight:600; color:var(--text); }
+  .user-role { font-size:11px; color:var(--text3); }
+  .avatar {
+    width:34px; height:34px; border-radius:50%; background:linear-gradient(135deg,var(--accent),var(--accent2));
+    display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; color:#fff;
+    box-shadow: 0 3px 8px rgba(59,111,245,.3);
+  }
+
+  .btn {
+    padding:8px 16px; border-radius:10px; border:none; cursor:pointer;
+    font-family:'DM Sans',sans-serif; font-size:13px; font-weight:500; transition:all .15s;
+    display:inline-flex; align-items:center; gap:6px;
+  }
+  .btn-primary { background:linear-gradient(135deg,var(--accent),var(--accent2)); color:#fff; box-shadow:0 4px 12px rgba(59,111,245,.3); }
+  .btn-primary:hover { box-shadow:0 6px 16px rgba(59,111,245,.4); transform:translateY(-1px); }
+  .btn-ghost { background:var(--surface2); color:var(--text2); border:1px solid var(--border); }
+  .btn-ghost:hover { background:var(--accent-light); color:var(--accent); border-color:var(--accent); }
+  .btn-danger { background:rgba(239,68,68,.08); color:var(--danger); border:1px solid rgba(239,68,68,.2); }
+  .btn-success { background:var(--success); color:#fff; box-shadow:0 4px 10px rgba(34,197,94,.25); }
+
+  /* ── CONTENT ── */
+  #content { flex:1; overflow-y:auto; padding:28px; }
+
+  /* ── SCREENS ── */
+  .screen { display:none; animation: fadeIn .2s ease; }
+  .screen.active { display:block; }
+  @keyframes fadeIn { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:none} }
+
+  /* ── CARDS ── */
+  .card {
+    background:var(--surface); border:1px solid var(--border); border-radius:14px;
+    padding:20px; margin-bottom:20px;
+    box-shadow: 0 2px 10px rgba(59,111,245,.06);
+  }
+  .card-title {
+    font-family:'Syne',sans-serif; font-weight:700; font-size:14px; margin-bottom:16px;
+    display:flex; justify-content:space-between; align-items:center; color:var(--text);
+  }
+
+  /* ── TABLE ── */
+  .table-wrap { overflow-x:auto; }
+  table { width:100%; border-collapse:collapse; font-size:13.5px; }
+  thead th {
+    text-align:left; padding:10px 14px; font-size:11px; letter-spacing:1px;
+    text-transform:uppercase; color:var(--text3); border-bottom:1px solid var(--border);
+    font-weight:600; font-family:'Syne',sans-serif; background:var(--surface2);
+  }
+  thead th:first-child { border-radius:8px 0 0 0; }
+  thead th:last-child { border-radius:0 8px 0 0; }
+  tbody tr { border-bottom:1px solid var(--border); transition:background .1s; }
+  tbody tr:hover { background:var(--surface2); }
+  tbody td { padding:12px 14px; color:var(--text2); }
+
+  /* ── BADGE ── */
+  .badge { display:inline-flex; align-items:center; gap:5px; padding:3px 10px; border-radius:20px; font-size:11px; font-weight:600; }
+  .badge-green { background:rgba(34,197,94,.12); color:#16a34a; }
+  .badge-yellow { background:rgba(245,158,11,.12); color:#d97706; }
+  .badge-red { background:rgba(239,68,68,.12); color:#dc2626; }
+  .badge-blue { background:rgba(59,111,245,.12); color:var(--accent); }
+
+  /* ── FORM ── */
+  .form-grid { display:grid; gap:16px; }
+  .form-group { display:flex; flex-direction:column; gap:6px; }
+  .form-group label { font-size:12px; font-weight:600; color:var(--text2); text-transform:uppercase; letter-spacing:.5px; }
+  .form-group input, .form-group select, .form-group textarea {
+    background:var(--surface2); border:1.5px solid var(--border); border-radius:10px;
+    color:var(--text); font-size:13.5px; padding:10px 14px; outline:none;
+    transition: border-color .15s, box-shadow .15s;
+    font-family:'DM Sans',sans-serif;
+  }
+  .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+    border-color:var(--accent); box-shadow:0 0 0 3px rgba(59,111,245,.12);
+  }
+
+  /* ══════════════════════════════════════════
+     LOGIN — estética da imagem de referência
+  ══════════════════════════════════════════ */
+  #login-overlay {
+    position:fixed; inset:0; z-index:100;
+    display:flex; align-items:center; justify-content:center;
+    background:var(--bg);
+    overflow:hidden;
+  }
+
+  /* Engrenagens decorativas de fundo */
+  #login-overlay::before,
+  #login-overlay::after {
+    content:''; position:absolute; border-radius:50%;
+    background:rgba(59,111,245,.07);
+  }
+  #login-overlay::before { width:340px; height:340px; top:-80px; right:-60px; }
+  #login-overlay::after  { width:220px; height:220px; bottom:-60px; right:80px; }
+
+  .login-container {
+    display:flex; width:900px; max-width:96vw; min-height:540px;
+    border-radius:28px; overflow:hidden;
+    box-shadow: 0 24px 60px rgba(59,111,245,.18);
+    position:relative; z-index:1;
+  }
+
+  /* Painel esquerdo azul */
+  .login-left {
+    flex:0 0 420px;
+    background:linear-gradient(145deg, #6fa0e8 0%, #4a7fd4 60%, #3b6ff5 100%);
+    padding:48px 44px;
+    display:flex; flex-direction:column; justify-content:center;
+    position:relative; overflow:hidden;
+  }
+
+  /* Círculo grande decorativo no painel azul */
+  .login-left::before {
+    content:''; position:absolute;
+    width:480px; height:480px; border-radius:50%;
+    background:rgba(255,255,255,.1);
+    top:50%; left:50%; transform:translate(-50%,-50%);
+  }
+
+  /* Engrenagem decorativa inferior-esquerda */
+  .login-left::after {
+    content:'⚙'; position:absolute;
+    font-size:160px; bottom:-30px; left:-30px;
+    color:rgba(255,255,255,.12); line-height:1;
+    pointer-events:none;
+  }
+
+  .login-left-inner { position:relative; z-index:1; }
+
+  .login-welcome {
+    font-family:'Syne',sans-serif; font-size:26px; font-weight:800;
+    color:#fff; margin-bottom:8px; text-align:center;
+  }
+  .login-subtitle {
+    font-size:13px; color:rgba(255,255,255,.8); margin-bottom:36px; text-align:center;
+  }
+
+  /* Seletor de perfil */
+  .role-selector { display:grid; grid-template-columns:repeat(2,1fr); gap:8px; margin-bottom:24px; }
+  .role-btn {
+    padding:9px 8px; border-radius:10px;
+    background:rgba(255,255,255,.15); border:1.5px solid rgba(255,255,255,.25);
+    color:rgba(255,255,255,.85); font-size:11px; cursor:pointer;
+    transition:all .15s; text-align:center; font-family:'DM Sans',sans-serif; font-weight:500;
+  }
+  .role-btn:hover { background:rgba(255,255,255,.25); }
+  .role-btn.active {
+    background:rgba(255,255,255,.95); color:var(--accent);
+    border-color:transparent; font-weight:700;
+    box-shadow:0 4px 12px rgba(0,0,0,.15);
+  }
+
+  /* Campos do formulário de login */
+  .login-field {
+    background:rgba(255,255,255,.92); border:none; border-radius:50px;
+    color:var(--text); font-size:13.5px; padding:12px 20px; outline:none;
+    width:100%; margin-bottom:12px; font-family:'DM Sans',sans-serif;
+    box-shadow:0 2px 8px rgba(0,0,0,.08);
+    transition:box-shadow .15s;
+  }
+  .login-field:focus { box-shadow:0 4px 16px rgba(0,0,0,.15); }
+  .login-field::placeholder { color:#8fa0b8; }
+
+  .login-field-wrap { position:relative; }
+  .login-field-label {
+    font-size:12px; font-weight:600; color:rgba(255,255,255,.7);
+    margin-bottom:4px; padding-left:4px; display:block;
+  }
+
+  .btn-login {
+    width:100%; padding:13px; border-radius:50px; border:none; cursor:pointer;
+    background:linear-gradient(135deg,#3b6ff5,#5b8af8);
+    color:#fff; font-size:14px; font-weight:700; font-family:'DM Sans',sans-serif;
+    box-shadow:0 6px 20px rgba(59,111,245,.45);
+    transition:all .15s; margin-top:4px;
+  }
+  .btn-login:hover { transform:translateY(-2px); box-shadow:0 8px 24px rgba(59,111,245,.55); }
+
+  .login-divider {
+    display:flex; align-items:center; gap:12px;
+    color:rgba(255,255,255,.5); font-size:12px; margin:16px 0 8px;
+  }
+  .login-divider::before, .login-divider::after {
+    content:''; flex:1; height:1px; background:rgba(255,255,255,.25);
+  }
+
+  .login-links { text-align:center; }
+  .login-link {
+    color:rgba(255,255,255,.9); font-size:13px; cursor:pointer;
+    text-decoration:none; display:block; margin-bottom:6px;
+    transition:color .15s;
+  }
+  .login-link:hover { color:#fff; text-decoration:underline; }
+
+  /* Painel direito claro */
+  .login-right {
+    flex:1; background:var(--surface);
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    padding:48px 44px; position:relative; overflow:hidden;
+  }
+
+  /* Engrenagens decorativas no painel direito */
+  .login-right::before {
+    content:'⚙'; position:absolute;
+    font-size:220px; top:-40px; right:-40px;
+    color:rgba(59,111,245,.06); line-height:1; pointer-events:none;
+  }
+  .login-right::after {
+    content:'⚙'; position:absolute;
+    font-size:160px; bottom:-30px; right:60px;
+    color:rgba(59,111,245,.05); line-height:1; pointer-events:none;
+  }
+
+  .login-brand { position:relative; z-index:1; text-align:center; }
+
+  .login-brand-logo {
+    display:flex; align-items:center; justify-content:center; gap:16px; margin-bottom:16px;
+  }
+  .login-brand-icon {
+    font-size:64px; line-height:1;
+  }
+  .login-brand-name {
+    font-family:'Syne',sans-serif; font-size:42px; font-weight:800;
+    color:var(--text); line-height:1.1;
+  }
+  .login-brand-line {
+    width:80px; height:3px; background:linear-gradient(90deg,var(--accent),var(--accent2));
+    border-radius:2px; margin:12px auto 16px;
+  }
+  .login-brand-tagline {
+    font-size:14px; color:var(--text2); line-height:1.6; max-width:260px;
+  }
+
+  /* ── MODAL ── */
+  .modal-overlay { position:fixed; inset:0; background:rgba(30,50,100,.35); backdrop-filter:blur(6px); z-index:150; display:none; align-items:center; justify-content:center; }
+  .modal { background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:28px; width:560px; max-height:90vh; overflow-y:auto; box-shadow:0 20px 50px rgba(59,111,245,.15); }
+
+  /* ── PORTAIS ── */
+  #fornecedor-overlay, #cliente-overlay {
+    position:fixed; inset:0; background:var(--bg); z-index:100; display:none; flex-direction:column;
+  }
+
+  /* ── NOTIFICAÇÕES ── */
+  .notif-item { padding:12px; border-bottom:1px solid var(--border); display:flex; gap:12px; align-items:start; }
+  .notif-icon { width:36px; height:36px; border-radius:10px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+  .notif-content { flex:1; }
+  .notif-title { font-size:13px; font-weight:600; margin-bottom:2px; color:var(--text); }
+  .notif-time { font-size:11px; color:var(--text3); }
+
+  /* Scrollbar suave */
+  ::-webkit-scrollbar { width:6px; }
+  ::-webkit-scrollbar-track { background:transparent; }
+  ::-webkit-scrollbar-thumb { background:var(--border); border-radius:3px; }
+  ::-webkit-scrollbar-thumb:hover { background:var(--text3); }
+
+</style>
+</head>
+<body>
+
+<!-- ═══════════════ LOGIN ═══════════════ -->
+<div id="login-overlay">
+  <div class="login-container">
+
+    <!-- Painel esquerdo: formulário -->
+    <div class="login-left">
+      <div class="login-left-inner">
+        <div class="login-welcome">Bem vindo de volta!</div>
+        <div class="login-subtitle">Faça login para acessar sua conta.</div>
+
+        <div>
+          <label class="login-field-label">Usuário:</label>
+          <input type="text" class="login-field" value="123.456.789-00" placeholder="Digite seu usuário">
+          <label class="login-field-label">Senha:</label>
+          <input type="password" class="login-field" value="12345678" placeholder="Digite sua senha">
+          <button class="btn-login" onclick="logar()">Entrar</button>
+        </div>
+
+        <div class="login-divider">ou</div>
+
+        <div class="login-links">
+          <a class="login-link" onclick="openModal('modal-cadastro-usuario')">Cadastrar</a>
+          <a class="login-link" onclick="openModal('modal-recuperar-senha')">Esqueceu a senha</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Painel direito: marca -->
+    <div class="login-right">
+      <div class="login-brand">
+        <div class="login-brand-logo">
+          <span class="login-brand-icon">⚙️</span>
+          <div class="login-brand-name">Acoa<br>Peças</div>
+        </div>
+        <div class="login-brand-line"></div>
+        <div class="login-brand-tagline">Soluções em peças para<br>manter tudo em movimento.</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════ PORTAL FORNECEDOR ═══════════════ -->
+<div id="fornecedor-overlay">
+  <div class="topbar-base">
+    <div class="page-title">Portal do Fornecedor</div>
+    <button class="btn btn-ghost" onclick="voltarLogin()">Sair</button>
+  </div>
+  <div style="padding:28px;flex:1;overflow-y:auto;">
+    <div class="card">
+      <div class="card-title">📥 Pedidos de Reposição Recebidos</div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>ID</th><th>Peça</th><th>Qtd</th><th>Valor Unit. (R$)</th><th>Ação</th></tr></thead>
+          <tbody>
+            <tr>
+              <td>#REP-0024</td><td>Bomba D'Água</td><td>10</td>
+              <td><input type="number" id="valor-rep-24" placeholder="0,00" style="width:100px;padding:5px;background:var(--surface2);border:1.5px solid var(--border);color:var(--text);border-radius:8px;"></td>
+              <td><button class="btn btn-success" onclick="fornecedorEnviar(24)">Enviar com Valor</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ PORTAL CLIENTE ═══════════════ -->
+<div id="cliente-overlay">
+  <div class="topbar-base">
+    <div class="page-title">Portal do Cliente</div>
+    <button class="btn btn-ghost" onclick="voltarLogin()">Sair</button>
+  </div>
+  <div style="padding:28px;flex:1;overflow-y:auto;display:flex;gap:20px;">
+    <div style="flex:1;">
+      <div class="card">
+        <div class="card-title">🛠️ Solicitar Nova Manutenção</div>
+        <div class="form-grid">
+          <div class="form-group"><label>Sua Peça (Nome/Modelo)</label><input type="text" id="cli-peca" placeholder="Ex: Motor de Partida - Civic 2015"></div>
+          <div class="form-group"><label>Descrição do Problema</label><textarea id="cli-desc" rows="3" placeholder="Descreva o que está acontecendo..."></textarea></div>
+          <button class="btn btn-primary" onclick="clienteSolicitar()">Enviar Solicitação</button>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">📋 Minhas Ordens de Retirada (Para Pagar)</div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>OS</th><th>Peças</th><th>Valor (R$)</th><th>Status</th><th>Ação</th></tr></thead>
+            <tbody id="lista-retirada-cliente"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div style="width:350px;">
+      <div class="card">
+        <div class="card-title">📍 Rastreio de OS</div>
+        <div class="form-group"><input type="text" id="rastreio-input" placeholder="Digite o código OS..."><button class="btn btn-primary" style="margin-top:10px;" onclick="rastrearOS()">Buscar</button></div>
+        <div id="rastreio-res" style="margin-top:20px;display:none;">
+          <div class="badge badge-blue">Em Manutenção</div>
+          <div style="margin-top:10px;font-size:12px;color:var(--text2);">Previsão: 12/05/2025</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ APP ═══════════════ -->
+<div id="app">
+  <div id="sidebar">
+    <div class="logo-area">
+      <div class="logo-icon">⚙️</div>
+      <div><div class="logo-text">Acoa Peças</div><div class="logo-sub">TrackStock</div></div>
+    </div>
+    <nav>
+      <div class="nav-section">
+        <div class="nav-label">Principal</div>
+        <div class="nav-item active" onclick="goTo('dashboard',this)"><span class="icon">📊</span> Dashboard</div>
+        <div class="nav-item" onclick="goTo('notificacoes',this)"><span class="icon">🔔</span> Notificações <span id="notif-count" class="badge badge-red" style="margin-left:auto;padding:2px 6px;">2</span></div>
+      </div>
+      <div class="nav-section">
+        <div class="nav-label">Estoque</div>
+        <div class="nav-item" onclick="goTo('pecas',this)"><span class="icon">🔩</span> Peças</div>
+        <div class="nav-item" onclick="goTo('kits',this)"><span class="icon">📦</span> Kits</div>
+        <div class="nav-item" onclick="goTo('servico',this)"><span class="icon">📝</span> Ordem de Serviço</div>
+        <div class="nav-item" onclick="goTo('manutencao',this)"><span class="icon">🛠️</span> Manutenções</div>
+        <div class="nav-item" onclick="goTo('retirada',this)"><span class="icon">📤</span> Ordem de Retirada</div>
+      </div>
+      <div class="nav-section">
+        <div class="nav-label">Compras</div>
+        <div class="nav-item" onclick="goTo('reposicao',this)"><span class="icon">🛒</span> Reposição</div>
+        <div class="nav-item" onclick="goTo('fornecedores',this)"><span class="icon">🏭</span> Fornecedores</div>
+        <div class="nav-item" onclick="goTo('clientes',this)"><span class="icon">👥</span> Clientes</div>
+      </div>
+    </nav>
+  </div>
+
+  <div id="main">
+    <div class="topbar-base" id="main-topbar">
+      <div class="page-title" id="main-page-title">Dashboard</div>
+      <div class="topbar-actions">
+        <div class="user-profile-top" onclick="voltarLogin()">
+          <div style="text-align:right;"><div class="user-name" id="user-name-top">Almoxarife</div><div class="user-role">Online</div></div>
+          <div class="avatar" id="user-avatar-top">AL</div>
+        </div>
+      </div>
+    </div>
+    <div id="content">
+      
+      <!-- DASHBOARD -->
+      <div class="screen active" id="screen-dashboard">
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px;">
+          <div class="card" style="margin:0;">
+            <div style="font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">Total Peças</div>
+            <div style="font-size:28px;font-weight:800;color:var(--text);">1.284</div>
+          </div>
+          <div class="card" style="margin:0;">
+            <div style="font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">Em Estoque</div>
+            <div style="font-size:28px;font-weight:800;color:var(--success);">987</div>
+          </div>
+          <div class="card" style="margin:0;">
+            <div style="font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">Manutenção</div>
+            <div style="font-size:28px;font-weight:800;color:var(--warning);">214</div>
+          </div>
+          <div class="card" style="margin:0;">
+            <div style="font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">Crítico</div>
+            <div style="font-size:28px;font-weight:800;color:var(--danger);">83</div>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1.5fr 1fr;gap:20px;">
+          <div class="card">
+            <div class="card-title">Movimentação Mensal</div>
+            <div style="height:150px;display:flex;align-items:end;gap:20px;padding-top:20px;">
+              <div style="flex:1;background:linear-gradient(180deg,var(--accent2),var(--accent));height:80%;border-radius:6px 6px 0 0;position:relative;"><span style="position:absolute;top:-20px;left:50%;transform:translateX(-50%);font-size:10px;color:var(--text3);">Jan</span></div>
+              <div style="flex:1;background:linear-gradient(180deg,var(--accent2),var(--accent));height:60%;border-radius:6px 6px 0 0;position:relative;"><span style="position:absolute;top:-20px;left:50%;transform:translateX(-50%);font-size:10px;color:var(--text3);">Fev</span></div>
+              <div style="flex:1;background:linear-gradient(180deg,var(--accent2),var(--accent));height:95%;border-radius:6px 6px 0 0;position:relative;"><span style="position:absolute;top:-20px;left:50%;transform:translateX(-50%);font-size:10px;color:var(--text3);">Mar</span></div>
+              <div style="flex:1;background:linear-gradient(180deg,var(--accent2),var(--accent));height:70%;border-radius:6px 6px 0 0;position:relative;"><span style="position:absolute;top:-20px;left:50%;transform:translateX(-50%);font-size:10px;color:var(--text3);">Abr</span></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title">Status Geral</div>
+            <div style="display:flex;align-items:center;justify-content:center;padding:30px 0;position:relative;">
+              <svg width="240" height="240" style="transform:rotate(-90deg);">
+                <!-- Estoque (verde) - 987 de 1284 = 76.87% -->
+                <circle cx="120" cy="120" r="90" fill="none" stroke="var(--success)" stroke-width="20" stroke-dasharray="434.68 565.49" stroke-dashoffset="0" stroke-linecap="round"/>
+                <!-- Manutenção (laranja) - 214 de 1284 = 16.67% -->
+                <circle cx="120" cy="120" r="90" fill="none" stroke="var(--warning)" stroke-width="20" stroke-dasharray="94.25 565.49" stroke-dashoffset="-434.68" stroke-linecap="round"/>
+                <!-- Crítico (vermelho) - 83 de 1284 = 6.46% -->
+                <circle cx="120" cy="120" r="90" fill="none" stroke="var(--danger)" stroke-width="20" stroke-dasharray="36.55 565.49" stroke-dashoffset="-528.93" stroke-linecap="round"/>
+                <!-- Centro branco -->
+                <circle cx="120" cy="120" r="60" fill="var(--surface)"/>
+              </svg>
+              <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);display:flex;align-items:center;justify-content:center;">
+                <div style="font-size:28px;font-weight:800;color:var(--text);font-family:'Syne',sans-serif;line-height:1;">76,9%</div>
+              </div>
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:20px;text-align:center;">
+              <div style="padding:12px;background:rgba(34,197,94,.08);border-radius:10px;">
+                <div style="width:18px;height:18px;background:var(--success);border-radius:4px;margin:0 auto 8px;"></div>
+                <div style="font-size:12px;color:var(--text2);margin-bottom:4px;">Estoque</div>
+                <div style="font-weight:700;color:var(--text);font-size:16px;">987</div>
+              </div>
+              <div style="padding:12px;background:rgba(245,158,11,.08);border-radius:10px;">
+                <div style="width:18px;height:18px;background:var(--warning);border-radius:4px;margin:0 auto 8px;"></div>
+                <div style="font-size:12px;color:var(--text2);margin-bottom:4px;">Manutenção</div>
+                <div style="font-weight:700;color:var(--text);font-size:16px;">214</div>
+              </div>
+              <div style="padding:12px;background:rgba(239,68,68,.08);border-radius:10px;">
+                <div style="width:18px;height:18px;background:var(--danger);border-radius:4px;margin:0 auto 8px;"></div>
+                <div style="font-size:12px;color:var(--text2);margin-bottom:4px;">Crítico</div>
+                <div style="font-weight:700;color:var(--text);font-size:16px;">83</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- NOTIFICAÇÕES -->
+      <div class="screen" id="screen-notificacoes">
+        <div class="card">
+          <div class="card-title">🔔 Notificações Recentes</div>
+          <div id="notif-list">
+            <div class="notif-item"><div class="notif-icon" style="background:rgba(59,111,245,.1);color:var(--accent);">🛒</div><div class="notif-content"><div class="notif-title">Novo Pedido de Reposição</div><div style="font-size:12px;color:var(--text2);">O fornecedor enviou o valor para o pedido #REP-0024.</div><div class="notif-time">Há 5 minutos</div></div></div>
+            <div class="notif-item"><div class="notif-icon" style="background:rgba(34,197,94,.1);color:var(--success);">💰</div><div class="notif-content"><div class="notif-title">Pagamento Confirmado</div><div style="font-size:12px;color:var(--text2);">O cliente João da Silva pagou a OS-0110.</div><div class="notif-time">Há 2 horas</div></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PEÇAS -->
+      <div class="screen" id="screen-pecas">
+        <div class="card">
+          <div class="card-title">🔩 Gerenciar Peças <button class="btn btn-primary" onclick="openModal('modal-peca')">+ Nova Peça</button></div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Código</th><th>Nome</th><th>Prateleira</th><th>Estoque</th><th>Ações</th></tr></thead>
+              <tbody>
+                <tr><td>#PC-0001</td><td>Filtro de Óleo</td><td><span class="badge badge-blue">A-12</span></td><td>45</td><td><button class="btn btn-ghost" onclick="editarPeca(this)">Editar</button><button class="btn btn-danger" style="margin-left:4px;" onclick="deletarPeca(this)">Excluir</button></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- KITS -->
+      <div class="screen" id="screen-kits">
+        <div class="card">
+          <div class="card-title">📶 Gerenciamento de Kits <button class="btn btn-success" onclick="openModal('modal-acionar-kit')">⚡ Acionar Kit</button></div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Código</th><th>Nome</th><th>Prateleira</th><th>Status</th><th>Ações</th></tr></thead>
+              <tbody>
+                <tr><td>#KT-001</td><td>Kit Revisão</td><td><span class="badge badge-blue">K-01</span></td><td><span class="badge badge-green">Disponível</span></td><td><button class="btn btn-ghost" onclick="editarKit(this)">Editar</button><button class="btn btn-danger" style="margin-left:4px;" onclick="deletarKit(this)">Excluir</button></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ORDEM DE SERVIÇO -->
+      <div class="screen" id="screen-servico">
+        <div class="card">
+          <div class="card-title">📝 Abertura de Ordem de Serviço</div>
+          <div class="form-grid">
+            <div class="form-group"><label>Tipo de OS</label><select id="os-tipo"><option value="externa">Cliente Externo</option><option value="interna">Manutenção Interna</option></select></div>
+            <div class="form-group"><label>Nome do Cliente / Setor</label><input type="text" id="os-nome" placeholder="Digite o nome..."></div>
+            <div class="form-group"><label>Peças para Manutenção (Uma ou mais)</label><textarea id="os-pecas" rows="3" placeholder="Ex: 1x Bomba D'Água, 2x Filtros..."></textarea></div>
+            <div class="form-group"><label>Mecânico Responsável</label><select><option>Carlos Mendes</option><option>Roberto Silva</option></select></div>
+            <button class="btn btn-primary" onclick="abrirOS()">Abrir Ordem de Serviço</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- MANUTENÇÃO -->
+      <div class="screen" id="screen-manutencao">
+        <div class="card">
+          <div class="card-title">🛠️ Manutenções em Andamento</div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>OS</th><th>Cliente/Setor</th><th>Peças</th><th>Status</th><th>Ação</th></tr></thead>
+              <tbody id="lista-manutencao">
+                <tr><td>OS-0112</td><td>João da Silva</td><td>Bomba D'Água VW</td><td><span class="badge badge-blue">Em Manutenção</span></td><td><button class="btn btn-success" onclick="gerarRetirada('OS-0112', 'João da Silva', 'Bomba D\'Água VW', 'externa')">Gerar Retirada</button></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ORDEM DE RETIRADA -->
+      <div class="screen" id="screen-retirada">
+        <div class="card">
+          <div class="card-title">📤 Ordens de Retirada Pendentes</div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>OS</th><th>Destino</th><th>Valor (R$)</th><th>Status</th><th>Ação</th></tr></thead>
+              <tbody id="lista-retirada-geral"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- REPOSIÇÃO -->
+      <div class="screen" id="screen-reposicao">
+        <div class="card">
+          <div class="card-title">🛒 Pedidos de Reposição <button class="btn btn-primary" onclick="openModal('modal-criar-reposicao')">+ Nova Reposição</button></div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>ID</th><th>Forn
+ecedor</th><th>Valor (R$)</th><th>Status</th><th>Ação</th></tr></thead>
+              <tbody id="lista-reposicao">
+                <tr><td>#REP-0024</td><td>Auto Peças Oliveira</td><td id="val-rep-24-sys">---</td><td><span class="badge badge-yellow" id="status-rep-24">Pendente</span></td><td><button class="btn btn-success" id="btn-pagar-rep-24" style="display:none;" onclick="pagarReposicao(24)">Pagar Pedido</button></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- FORNECEDORES -->
+      <div class="screen" id="screen-fornecedores">
+        <div class="card"><div class="card-title">🏭 Fornecedores</div><div class="table-wrap"><table><thead><tr><th>Nome</th><th>CNPJ</th><th>Ações</th></tr></thead><tbody><tr><td>Auto Peças Oliveira</td><td>12.345.678/0001-90</td><td><button class="btn btn-danger">Excluir</button></td></tr></tbody></table></div></div>
+      </div>
+
+      <!-- CLIENTES -->
+      <div class="screen" id="screen-clientes">
+        <div class="card"><div class="card-title">👥 Clientes</div><div class="table-wrap"><table><thead><tr><th>Nome</th><th>CPF/CNPJ</th><th>Ações</th></tr></thead><tbody><tr><td>João da Silva</td><td>123.456.789-00</td><td><button class="btn btn-danger">Excluir</button></td></tr></tbody></table></div></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- MODAL SUCESSO -->
+<div class="modal-overlay" id="modal-sucesso">
+  <div class="modal" style="text-align:center;">
+    <div style="font-size:48px;margin-bottom:20px;" id="suc-icon">✅</div>
+    <div style="font-family:'Syne',sans-serif;font-size:20px;font-weight:800;margin-bottom:10px;color:var(--text);" id="suc-title">Sucesso!</div>
+    <div style="font-size:14px;color:var(--text2);margin-bottom:24px;" id="suc-desc">Operação realizada.</div>
+    <button class="btn btn-primary" onclick="closeModal('modal-sucesso')" style="width:100%;justify-content:center;">Fechar</button>
+  </div>
+</div>
+
+<!-- MODAL CADASTRO USUÁRIO -->
+<div class="modal-overlay" id="modal-cadastro-usuario">
+  <div class="modal">
+    <div style="font-family:'Syne',sans-serif;font-size:18px;font-weight:800;margin-bottom:20px;color:var(--text);">Criar Conta</div>
+    <div class="form-grid">
+      <div class="form-group"><label>Tipo de Conta</label>
+        <div style="display:flex;gap:8px;margin-top:8px;">
+          <button class="btn btn-ghost" id="tipo-usuario" onclick="selecionarTipoConta('usuario', this)" style="flex:1;background:#e3f2fd;color:#1976d2;font-weight:600;">👤 Usuário</button>
+          <button class="btn btn-ghost" id="tipo-fornecedor" onclick="selecionarTipoConta('fornecedor', this)" style="flex:1;">🏭 Fornecedor</button>
+          <button class="btn btn-ghost" id="tipo-cliente" onclick="selecionarTipoConta('cliente', this)" style="flex:1;">🚗 Cliente</button>
+        </div>
+      </div>
+      <div id="campos-usuario" style="display:contents;">
+        <div class="form-group"><label>Nome Completo</label><input type="text" id="cad-nome" placeholder="Seu nome"></div>
+        <div class="form-group"><label>CPF</label><input type="text" id="cad-cpf" placeholder="000.000.000-00"></div>
+        <div class="form-group"><label>Matrícula</label><input type="text" id="cad-matricula" placeholder="Ex: MAT-001"></div>
+        <div class="form-group"><label>Cargo</label><select id="cad-cargo"><option>Almoxarife</option><option>Mecânico</option><option>Gerente</option></select></div>
+      </div>
+      <div id="campos-fornecedor" style="display:none;">
+        <div class="form-group"><label>Razão Social</label><input type="text" id="cad-razao" placeholder="Nome da empresa"></div>
+        <div class="form-group"><label>CNPJ</label><input type="text" id="cad-cnpj" placeholder="00.000.000/0000-00"></div>
+        <div class="form-group"><label>Categoria de Peças</label><input type="text" id="cad-categoria" placeholder="Ex: Filtros, Bombas"></div>
+        <div class="form-group"><label>Telefone</label><input type="text" id="cad-telefone" placeholder="(00) 0000-0000"></div>
+      </div>
+      <div id="campos-cliente" style="display:none;">
+        <div class="form-group"><label>Nome Completo</label><input type="text" id="cad-nome-cliente" placeholder="Seu nome"></div>
+        <div class="form-group"><label>CPF</label><input type="text" id="cad-cpf-cliente" placeholder="000.000.000-00"></div>
+        <div class="form-group"><label>Endereço</label><input type="text" id="cad-endereco" placeholder="Rua, número, bairro"></div>
+        <div class="form-group"><label>Telefone</label><input type="text" id="cad-telefone-cliente" placeholder="(00) 0000-0000"></div>
+      </div>
+      <div class="form-group"><label>Senha</label><input type="password" id="cad-senha" placeholder="Crie uma senha"></div>
+      <div style="display:flex;gap:12px;">
+        <button class="btn btn-primary" style="flex:1;justify-content:center;" onclick="cadastrarNovaConta()">Cadastrar</button>
+        <button class="btn btn-ghost" onclick="closeModal('modal-cadastro-usuario')">Cancelar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL RECUPERAR SENHA -->
+<div class="modal-overlay" id="modal-recuperar-senha">
+  <div class="modal">
+    <div style="font-family:'Syne',sans-serif;font-size:18px;font-weight:800;margin-bottom:20px;color:var(--text);">Recuperar Senha</div>
+    <div class="form-grid">
+      <div class="form-group"><label>CPF ou E-mail</label><input type="text" id="recuperar-input" placeholder="Digite seu CPF ou e-mail"></div>
+      <div style="display:flex;gap:12px;">
+        <button class="btn btn-primary" style="flex:1;justify-content:center;" onclick="enviarRecuperacao()">Enviar Link</button>
+        <button class="btn btn-ghost" onclick="closeModal('modal-recuperar-senha')">Cancelar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL CRIAR ORDEM DE REPOSIÇÃO -->
+<div class="modal-overlay" id="modal-criar-reposicao">
+  <div class="modal">
+    <div style="font-family:'Syne',sans-serif;font-size:18px;font-weight:800;margin-bottom:20px;color:var(--text);">Criar Ordem de Reposição</div>
+    <div class="form-grid">
+      <div class="form-group"><label>Fornecedor</label><select id="rep-fornecedor"><option>Auto Peças Oliveira</option><option>Peças Premium</option><option>Distribuidora ABC</option></select></div>
+      <div class="form-group"><label>Peça Solicitada</label><input type="text" id="rep-peca" placeholder="Ex: Bomba D'Água"></div>
+      <div class="form-group"><label>Quantidade</label><input type="number" id="rep-qtd" placeholder="0" min="1"></div>
+      <div class="form-group"><label>Descrição (Opcional)</label><textarea id="rep-desc" rows="2" placeholder="Detalhes adicionais..."></textarea></div>
+      <div style="display:flex;gap:12px;">
+        <button class="btn btn-primary" style="flex:1;justify-content:center;" onclick="criarReposicao()">Criar Reposição</button>
+        <button class="btn btn-ghost" onclick="closeModal('modal-criar-reposicao')">Cancelar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL NOVA PEÇA -->
+<div class="modal-overlay" id="modal-peca">
+  <div class="modal">
+    <div style="font-family:'Syne',sans-serif;font-size:18px;font-weight:800;margin-bottom:20px;color:var(--text);">Nova Peça</div>
+    <div class="form-grid">
+      <div class="form-group"><label>Código da Peça</label><input type="text" id="peca-codigo" placeholder="Ex: PC-0002"></div>
+      <div class="form-group"><label>Nome da Peça</label><input type="text" id="peca-nome" placeholder="Ex: Filtro de Ar"></div>
+      <div class="form-group"><label>Prateleira</label><input type="text" id="peca-prateleira" placeholder="Ex: A-15"></div>
+      <div class="form-group"><label>Quantidade em Estoque</label><input type="number" id="peca-estoque" placeholder="0" min="0"></div>
+      <div style="display:flex;gap:12px;">
+        <button class="btn btn-primary" style="flex:1;justify-content:center;" onclick="adicionarPeca()">Adicionar Peça</button>
+        <button class="btn btn-ghost" onclick="closeModal('modal-peca')">Cancelar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL ACIONAR KIT -->
+<div class="modal-overlay" id="modal-acionar-kit">
+  <div class="modal">
+    <div style="font-family:'Syne',sans-serif;font-size:18px;font-weight:800;margin-bottom:20px;color:var(--text);">Acionar Kit</div>
+    <div class="form-grid">
+      <div class="form-group"><label>Selecione o Kit</label>
+        <select id="kit-selecionar">
+          <option value="">-- Escolha um kit --</option>
+          <option value="#KT-001">Kit Revisão (#KT-001)</option>
+          <option value="#KT-002">Kit Manutenção (#KT-002)</option>
+          <option value="#KT-003">Kit Limpeza (#KT-003)</option>
+        </select>
+      </div>
+      <div class="form-group"><label>Quantidade</label><input type="number" id="kit-quantidade" placeholder="1" min="1" value="1"></div>
+      <div class="form-group"><label>Observação (Opcional)</label><textarea id="kit-obs" rows="2" placeholder="Detalhes da ativação..."></textarea></div>
+      <div style="display:flex;gap:12px;">
+        <button class="btn btn-primary" style="flex:1;justify-content:center;" onclick="acionarKit()">Acionar</button>
+        <button class="btn btn-ghost" onclick="closeModal('modal-acionar-kit')">Cancelar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL EDITAR PEÇA -->
+<div class="modal-overlay" id="modal-editar-peca">
+  <div class="modal">
+    <div style="font-family:'Syne',sans-serif;font-size:18px;font-weight:800;margin-bottom:20px;color:var(--text);">Editar Peça</div>
+    <div class="form-grid">
+      <div class="form-group"><label>Código da Peça</label><input type="text" id="editar-peca-codigo" placeholder="Ex: PC-0002" readonly></div>
+      <div class="form-group"><label>Nome da Peça</label><input type="text" id="editar-peca-nome" placeholder="Ex: Filtro de Ar"></div>
+      <div class="form-group"><label>Prateleira</label><input type="text" id="editar-peca-prateleira" placeholder="Ex: A-15"></div>
+      <div class="form-group"><label>Quantidade em Estoque</label><input type="number" id="editar-peca-estoque" placeholder="0" min="0"></div>
+      <div style="display:flex;gap:12px;">
+        <button class="btn btn-primary" style="flex:1;justify-content:center;" onclick="salvarEdicaoPeca()">Salvar Alterações</button>
+        <button class="btn btn-ghost" onclick="closeModal('modal-editar-peca')">Cancelar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL EDITAR KIT -->
+<div class="modal-overlay" id="modal-editar-kit">
+  <div class="modal">
+    <div style="font-family:'Syne',sans-serif;font-size:18px;font-weight:800;margin-bottom:20px;color:var(--text);">Editar Kit</div>
+    <div class="form-grid">
+      <div class="form-group"><label>Código do Kit</label><input type="text" id="editar-kit-codigo" placeholder="Ex: KT-002" readonly></div>
+      <div class="form-group"><label>Nome do Kit</label><input type="text" id="editar-kit-nome" placeholder="Ex: Kit Revisão"></div>
+      <div class="form-group"><label>Prateleira</label><input type="text" id="editar-kit-prateleira" placeholder="Ex: K-02"></div>
+      <div class="form-group"><label>Status</label><select id="editar-kit-status"><option>Disponível</option><option>Indisponível</option><option>Em Manutenção</option></select></div>
+      <div style="display:flex;gap:12px;">
+        <button class="btn btn-primary" style="flex:1;justify-content:center;" onclick="salvarEdicaoKit()">Salvar Alterações</button>
+        <button class="btn btn-ghost" onclick="closeModal('modal-editar-kit')">Cancelar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+let selectedRole = 'almoxarife';
+
+function selectRole(el, role) {
+  document.querySelectorAll('.role-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  selectedRole = role;
+}
+
+function doLogin() {
+  document.getElementById('login-overlay').style.display = 'none';
+  if(selectedRole === 'fornecedor') document.getElementById('fornecedor-overlay').style.display = 'flex';
+  else if(selectedRole === 'cliente') document.getElementById('cliente-overlay').style.display = 'flex';
+  else {
+    document.getElementById('app').style.display = 'flex';
+    document.getElementById('user-name-top').textContent = selectedRole.charAt(0).toUpperCase() + selectedRole.slice(1);
+    document.getElementById('user-avatar-top').textContent = selectedRole.substring(0,2).toUpperCase();
+  }
+}
+
+function voltarLogin() {
+  document.getElementById('fornecedor-overlay').style.display = 'none';
+  document.getElementById('cliente-overlay').style.display = 'none';
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('login-overlay').style.display = 'flex';
+}
+
+function openModal(id) { document.getElementById(id).style.display = 'flex'; }
+function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+
+function showSucesso(icon, title, desc) {
+  document.getElementById('suc-icon').textContent = icon;
+  document.getElementById('suc-title').textContent = title;
+  document.getElementById('suc-desc').textContent = desc;
+  openModal('modal-sucesso');
+}
+
+function goTo(screen, navEl) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-' + screen).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  if(navEl) navEl.classList.add('active');
+  const titles = {
+    dashboard:'Dashboard', notificacoes:'Notificações', pecas:'Peças', kits:'Kits',
+    servico:'Ordem de Serviço', manutencao:'Manutenções', retirada:'Ordem de Retirada',
+    reposicao:'Reposição', fornecedores:'Fornecedores', clientes:'Clientes'
+  };
+  document.getElementById('main-page-title').textContent = titles[screen] || screen;
+}
+
+function fornecedorEnviar(id) {
+  const valor = document.getElementById('valor-rep-' + id).value;
+  if(!valor) return alert('Informe o valor!');
+  document.getElementById('val-rep-24-sys').textContent = 'R$ ' + valor;
+  document.getElementById('status-rep-24').className = 'badge badge-blue';
+  document.getElementById('status-rep-24').textContent = 'Aguardando Pagto';
+  document.getElementById('btn-pagar-rep-24').style.display = 'inline-flex';
+  showSucesso('🚚', 'Pedido Enviado!', 'O valor foi enviado para o sistema.');
+}
+
+function pagarReposicao(id) {
+  document.getElementById('status-rep-24').className = 'badge badge-green';
+  document.getElementById('status-rep-24').textContent = 'Pago / Recebido';
+  document.getElementById('btn-pagar-rep-24').style.display = 'none';
+  showSucesso('💰', 'Pagamento Realizado!', 'Estoque atualizado.');
+}
+
+function clienteSolicitar() {
+  const peca = document.getElementById('cli-peca').value;
+  if(!peca) return alert('Informe a peça!');
+  showSucesso('📩', 'Solicitação Enviada!', 'Nossa equipe abrirá a OS em breve.');
+}
+
+function abrirOS() {
+  const nome = document.getElementById('os-nome').value;
+  const pecas = document.getElementById('os-pecas').value;
+  if(!nome || !pecas) return alert('Preencha os campos!');
+  const id = 'OS-' + Math.floor(Math.random() * 9000 + 1000);
+  const row = `<tr><td>${id}</td><td>${nome}</td><td>${pecas}</td><td><span class="badge badge-blue">Em Manutenção</span></td><td><button class="btn btn-success" onclick="gerarRetirada('${id}', '${nome}', '${pecas}', '${document.getElementById('os-tipo').value}')">Gerar Retirada</button></td></tr>`;
+  document.getElementById('lista-manutencao').innerHTML += row;
+  showSucesso('📝', 'OS Aberta!', 'Trabalho iniciado.');
+}
+
+function gerarRetirada(os, nome, pecas, tipo) {
+  const valor = tipo === 'externa' ? '450,00' : '0,00';
+  const status = tipo === 'externa' ? 'Aguardando Pagto' : 'Pronto p/ Estoque';
+  const badge = tipo === 'externa' ? 'badge-yellow' : 'badge-green';
+  const row = `<tr><td>${os}</td><td>${nome}</td><td>R$ ${valor}</td><td><span class="badge ${badge}">${status}</span></td><td><button class="btn btn-ghost" onclick="this.parentElement.parentElement.remove()">Concluir</button></td></tr>`;
+  document.getElementById('lista-retirada-geral').innerHTML += row;
+  if(tipo === 'externa') {
+    const cliRow = `<tr><td>${os}</td><td>${pecas}</td><td>R$ ${valor}</td><td><span class="badge badge-yellow">Pendente</span></td><td><button class="btn btn-success" onclick="this.parentElement.parentElement.remove();showSucesso('💰','Pago!','Liberado.')">Pagar</button></td></tr>`;
+    document.getElementById('lista-retirada-cliente').innerHTML += cliRow;
+  }
+  showSucesso('📤', 'Retirada Gerada!', 'Encaminhado para etapa final.');
+}
+
+function rastrearOS() { document.getElementById('rastreio-res').style.display = 'block'; }
+
+function enviarRecuperacao() {
+  const input = document.getElementById('recuperar-input').value;
+  if(!input) return alert('Informe seu CPF ou e-mail!');
+  showSucesso('📧', 'Link Enviado!', 'Verifique seu e-mail para redefinir a senha.');
+  closeModal('modal-recuperar-senha');
+  document.getElementById('recuperar-input').value = '';
+}
+
+function criarReposicao() {
+  const fornecedor = document.getElementById('rep-fornecedor').value;
+  const peca = document.getElementById('rep-peca').value;
+  const qtd = document.getElementById('rep-qtd').value;
+  
+  if(!peca || !qtd) return alert('Preencha os campos obrigatórios!');
+  
+  const id = '#REP-' + Math.floor(Math.random() * 9000 + 1000);
+  const row = `<tr><td>${id}</td><td>${fornecedor}</td><td id="val-${id}">---</td><td><span class="badge badge-yellow" id="status-${id}">Pendente</span></td><td><button class="btn btn-success" id="btn-${id}" style="display:none;" onclick="pagarReposicao('${id}')">Pagar Pedido</button></td></tr>`;
+  document.getElementById('lista-reposicao').innerHTML += row;
+  
+  showSucesso('🛒', 'Reposição Criada!', `Pedido de ${qtd}x ${peca} enviado para ${fornecedor}.`);
+  closeModal('modal-criar-reposicao');
+  
+  // Limpar formulário
+  document.getElementById('rep-peca').value = '';
+  document.getElementById('rep-qtd').value = '';
+  document.getElementById('rep-desc').value = '';
+}
+
+function editarPeca(btn) {
+  const row = btn.closest('tr');
+  const codigo = row.cells[0].textContent.trim();
+  const nome = row.cells[1].textContent.trim();
+  const prateleira = row.cells[2].textContent.trim();
+  const estoque = row.cells[3].textContent.trim();
+  
+  // Preencher o modal com os dados atuais
+  document.getElementById('editar-peca-codigo').value = codigo;
+  document.getElementById('editar-peca-nome').value = nome;
+  document.getElementById('editar-peca-prateleira').value = prateleira;
+  document.getElementById('editar-peca-estoque').value = estoque;
+  
+  // Guardar referência da linha para atualizar depois
+  window.pecaEmEdicao = row;
+  
+  openModal('modal-editar-peca');
+}
+
+function salvarEdicaoPeca() {
+  const nome = document.getElementById('editar-peca-nome').value;
+  const prateleira = document.getElementById('editar-peca-prateleira').value;
+  const estoque = document.getElementById('editar-peca-estoque').value;
+  
+  if(!nome || !prateleira || !estoque) {
+    return alert('Preencha todos os campos obrigatórios!');
+  }
+  
+  const row = window.pecaEmEdicao;
+  row.cells[1].textContent = nome;
+  row.cells[2].innerHTML = `<span class="badge badge-blue">${prateleira}</span>`;
+  row.cells[3].textContent = estoque;
+  
+  showSucesso('✏️', 'Peça Atualizada!', `${nome} foi atualizada com sucesso.`);
+  closeModal('modal-editar-peca');
+}
+
+function deletarPeca(btn) {
+  const row = btn.closest('tr');
+  const nome = row.cells[1].textContent;
+  if(confirm(`Deseja deletar a peça "${nome}"?`)) {
+    row.remove();
+    showSucesso('🗑️', 'Peça Deletada!', `${nome} foi removida do estoque.`);
+  }
+}
+
+function editarKit(btn) {
+  const row = btn.closest('tr');
+  const codigo = row.cells[0].textContent.trim();
+  const nome = row.cells[1].textContent.trim();
+  const prateleira = row.cells[2].textContent.trim();
+  const status = row.cells[3].textContent.trim();
+  
+  // Preencher o modal com os dados atuais
+  document.getElementById('editar-kit-codigo').value = codigo;
+  document.getElementById('editar-kit-nome').value = nome;
+  document.getElementById('editar-kit-prateleira').value = prateleira;
+  document.getElementById('editar-kit-status').value = status;
+  
+  // Guardar referência da linha para atualizar depois
+  window.kitEmEdicao = row;
+  
+  openModal('modal-editar-kit');
+}
+
+function salvarEdicaoKit() {
+  const nome = document.getElementById('editar-kit-nome').value;
+  const prateleira = document.getElementById('editar-kit-prateleira').value;
+  const status = document.getElementById('editar-kit-status').value;
+  
+  if(!nome || !prateleira || !status) {
+    return alert('Preencha todos os campos obrigatórios!');
+  }
+  
+  const row = window.kitEmEdicao;
+  row.cells[1].textContent = nome;
+  row.cells[2].innerHTML = `<span class="badge badge-blue">${prateleira}</span>`;
+  
+  const badgeClass = status === 'Disponível' ? 'badge-green' : status === 'Em Manutenção' ? 'badge-yellow' : 'badge-red';
+  row.cells[3].innerHTML = `<span class="badge ${badgeClass}">${status}</span>`;
+  
+  showSucesso('✏️', 'Kit Atualizado!', `${nome} foi atualizado com sucesso.`);
+  closeModal('modal-editar-kit');
+}
+
+function deletarKit(btn) {
+  const row = btn.closest('tr');
+  const nome = row.cells[1].textContent;
+  if(confirm(`Deseja deletar o kit "${nome}"?`)) {
+    row.remove();
+    showSucesso('🗑️', 'Kit Deletado!', `${nome} foi removido do sistema.`);
+  }
+}
+
+function adicionarPeca() {
+  const codigo = document.getElementById('peca-codigo').value;
+  const nome = document.getElementById('peca-nome').value;
+  const prateleira = document.getElementById('peca-prateleira').value;
+  const estoque = document.getElementById('peca-estoque').value;
+  
+  if(!codigo || !nome || !prateleira || !estoque) {
+    return alert('Preencha todos os campos obrigatórios!');
+  }
+  
+  const tbody = document.querySelector('#screen-pecas tbody');
+  const row = document.createElement('tr');
+  row.innerHTML = `<td>${codigo}</td><td>${nome}</td><td><span class="badge badge-blue">${prateleira}</span></td><td>${estoque}</td><td><button class="btn btn-ghost" onclick="editarPeca(this)">Editar</button><button class="btn btn-danger" style="margin-left:4px;" onclick="deletarPeca(this)">Excluir</button></td>`;
+  tbody.appendChild(row);
+  
+  showSucesso('📦', 'Peça Adicionada!', `${nome} foi adicionada ao estoque.`);
+  closeModal('modal-peca');
+  
+  // Limpar formulário
+  document.getElementById('peca-codigo').value = '';
+  document.getElementById('peca-nome').value = '';
+  document.getElementById('peca-prateleira').value = '';
+  document.getElementById('peca-estoque').value = '';
+}
+
+function acionarKit() {
+  const kit = document.getElementById('kit-selecionar').value;
+  const qtd = document.getElementById('kit-quantidade').value;
+  if(!kit) return alert('Selecione um kit!');
+  
+  showSucesso('⚡', 'Kit Acionado!', `${qtd}x ${kit} foi enviado para a linha de produção.`);
+  closeModal('modal-acionar-kit');
+}
+
+let tipoContaSelecionado = 'usuario';
+function selecionarTipoConta(tipo, btn) {
+  tipoContaSelecionado = tipo;
+  
+  // Resetar botões
+  document.querySelectorAll('#modal-cadastro-usuario .btn-ghost').forEach(b => {
+    b.style.background = 'transparent';
+    b.style.color = 'var(--text-light)';
+    b.style.fontWeight = '400';
+  });
+  
+  // Destacar selecionado
+  btn.style.background = '#e3f2fd';
+  btn.style.color = '#1976d2';
+  btn.style.fontWeight = '600';
+  
+  // Mostrar campos específicos
+  document.getElementById('campos-usuario').style.display = tipo === 'usuario' ? 'contents' : 'none';
+  document.getElementById('campos-fornecedor').style.display = tipo === 'fornecedor' ? 'contents' : 'none';
+  document.getElementById('campos-cliente').style.display = tipo === 'cliente' ? 'contents' : 'none';
+}
+
+function cadastrarNovaConta() {
+  const senha = document.getElementById('cad-senha').value;
+  if(!senha) return alert('Crie uma senha!');
+  
+  let nome = '';
+  if(tipoContaSelecionado === 'usuario') nome = document.getElementById('cad-nome').value;
+  else if(tipoContaSelecionado === 'fornecedor') nome = document.getElementById('cad-razao').value;
+  else if(tipoContaSelecionado === 'cliente') nome = document.getElementById('cad-nome-cliente').value;
+  
+  if(!nome) return alert('Preencha o nome/razão social!');
+  
+  showSucesso('✅', 'Conta Criada!', `Bem-vindo, ${nome}! Sua conta de ${tipoContaSelecionado} foi registrada.`);
+  closeModal('modal-cadastro-usuario');
+}
+</script>
+
+</body>
+</html>
+acoa-pecas-v9 (11).html
+Exibindo acoa-pecas-v9 (11).html.

@@ -25,10 +25,10 @@ public class ManutencaoEntity  implements Serializable{
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 	
-	//id kit
-	//@ManyToOne
-	//@JoinColumn(name = "idKit")
-	//private KitEntity kit;
+	
+	@ManyToOne
+	@JoinColumn(name = "idKit")
+	private KitEntity kit;
 	
 	private String ordemServico;
 	
@@ -37,15 +37,15 @@ public class ManutencaoEntity  implements Serializable{
 	@JoinColumn (name = "idCliente")
 	private ClienteEntity cliente;
 	
-	//id mecanico
-	//@ManyToOne
-	//@JoinColumn(name = "idMecanico")
-	//private UsuarioEntity mecanico;
 	
-	//idalmoxarife
-	//@ManyToOne
-	//@JoinColumn(name = "idAlmoxarife")
-	//private UsuarioEntity almoxarife;
+	@ManyToOne
+	@JoinColumn(name = "idMecanico")
+	private UsuarioEntity mecanico;
+	
+	
+	@ManyToOne
+	@JoinColumn(name = "idAlmoxarife")
+	private UsuarioEntity almoxarife;
 	
 	
 	
@@ -55,6 +55,27 @@ public class ManutencaoEntity  implements Serializable{
 	
 	
 	
+	
+	
+	
+	public KitEntity getKit() {
+		return kit;
+	}
+	public void setKit(KitEntity kit) {
+		this.kit = kit;
+	}
+	public UsuarioEntity getMecanico() {
+		return mecanico;
+	}
+	public void setMecanico(UsuarioEntity mecanico) {
+		this.mecanico = mecanico;
+	}
+	public UsuarioEntity getAlmoxarife() {
+		return almoxarife;
+	}
+	public void setAlmoxarife(UsuarioEntity almoxarife) {
+		this.almoxarife = almoxarife;
+	}
 	public int getId() {
 		return id;
 	}
