@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,6 +30,9 @@ public class UsuarioController {
 	
 	@Autowired
 	private UsuarioRepository usuarioRepository;
+	@Autowired
+	private BCryptPasswordEncoder encoder;
+	private BCryptPasswordEncoder passwordEncoder;
 	
 	
 	// listar todods 
@@ -56,7 +60,7 @@ public class UsuarioController {
 	@ResponseStatus(value = HttpStatus.CREATED)
 	
 	public UsuarioEntity salvar(@RequestBody UsuarioEntity usuario) {
-		
+		usuario.setSenha(encoder.encode(usuario.getSenha()));
 		return usuarioRepository.save(usuario);
 	}//fim do salvar
 	
@@ -99,6 +103,38 @@ public ResponseEntity<UsuarioEntity> atualizar(@RequestBody UsuarioEntity usuari
 
 		
 	}//fim do atualizar
+	
+	
+	@PostMapping("/login")
+	public ResponseEntity<UsuarioEntity> login(
+	        @RequestBody UsuarioEntity usuarioLogin) {
+	    
+	    // busca usuário por cpf
+	    Optional<UsuarioEntity> usuario = 
+	            usuarioRepository.findByEmail(usuarioLogin.getEmail());
+	            
+	    // se encontrou usuário, verifica senha
+	    if (usuario.isPresent()) {
+	        
+	        UsuarioEntity usuarioEncontrado = usuario.get();
+	        
+	        
+			// compara senha enviada com senha armazenada (hash)
+	        if (passwordEncoder.matches(
+	                usuarioLogin.getSenha(),
+	                usuarioEncontrado.getSenha())) {
+	            
+	            return ResponseEntity.ok(usuarioEncontrado);
+	        }
+	    }
+	    
+	    // se não encontrou usuário ou senha não bate, retorna 401
+	    return ResponseEntity.status(401).build();
+	}
+	
+	
+	
+	
 	
 	
 }
