@@ -28,7 +28,7 @@ async function logar() {
             );
 
             // Redireciona o usuário para a página principal após o login
-            window.location.href = "index.html";
+            window.location.href = "tela.html";
         } else {
             // Caso o status não seja 'ok' (ex: 401 ou 403)
             alert("Email ou senha inválidos!");
