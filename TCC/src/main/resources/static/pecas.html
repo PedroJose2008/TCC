@@ -25,16 +25,19 @@
     #content { flex:1; overflow-y:auto; padding:28px; }
     .card { background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:20px; box-shadow: 0 2px 10px rgba(59,111,245,.06); }
     .card-title { font-family:'Syne',sans-serif; font-weight:700; font-size:14px; margin-bottom:16px; display:flex; justify-content:space-between; align-items:center; }
+    
+    /* Configuração da tabela e centralização dos campos */
     table { width:100%; border-collapse:collapse; font-size:13.5px; }
-    thead th { text-align:left; padding:10px 14px; font-size:11px; text-transform:uppercase; color:var(--text3); border-bottom:1px solid var(--border); background:var(--surface2); }
-    tbody td { padding:12px 14px; color:var(--text2); border-bottom:1px solid var(--border); }
+    thead th { text-align: center; padding:10px 14px; font-size:11px; text-transform:uppercase; color:var(--text3); border-bottom:1px solid var(--border); background:var(--surface2); }
+    tbody td { text-align: center; padding:12px 14px; color:var(--text2); border-bottom:1px solid var(--border); vertical-align: middle; }
+    
     .btn { padding:6px 12px; border-radius:8px; border:none; cursor:pointer; font-size:12px; font-weight:500; }
     .btn-primary { background:var(--accent); color:#fff; }
     .btn-ghost { background:var(--surface2); color:var(--text2); border:1px solid var(--border); }
     .btn-danger { background:rgba(239,68,68,.1); color:var(--danger); }
- 	    .nav-label { font-size:10px; letter-spacing:1.8px; text-transform:uppercase; color:var(--text3); margin-bottom:8px; padding:0 8px; }
- 	
-    .badge { padding:3px 8px; border-radius:20px; font-size:11px; font-weight:600; background:rgba(59,111,245,.1); color:var(--accent); }
+    .nav-label { font-size:10px; letter-spacing:1.8px; text-transform:uppercase; color:var(--text3); margin-bottom:8px; padding:0 8px; }
+    .badge { padding:3px 8px; border-radius:20px; font-size:11px; font-weight:600; background:rgba(59,111,245,.1); color:var(--accent); display: inline-block; }
+    .actions-cell { display: flex; gap: 6px; justify-content: center; }
   </style>
 </head>
 <body>
@@ -42,44 +45,72 @@
     <aside id="sidebar">
       <div class="logo-area"><div class="logo-icon">⚙️</div><div><div style="font-family:'Syne',sans-serif;font-weight:800;font-size:15px;">ACOA PEÇAS</div></div></div>
       <nav>
-               <div class="nav-label">Principal</div>
-        <a href="dashboard.html" class="nav-item active">📊 Dashboard</a>
+        <div class="nav-label">Principal</div>
+        <a href="dashboard.html" class="nav-item">📊 Dashboard</a>
         <div class="nav-label">Estoque</div>
-        <a href="pecas.html" class="nav-item">🔩 Peças</a>
+        <a href="pecas.html" class="nav-item active">🔩 Peças</a>
         <a href="kits.html" class="nav-item">📶 Kits</a>
         <div class="nav-label">Oficina</div>
         <a href="os.html" class="nav-item">📝 Abrir Ordem de Serviço</a>
         <a href="manutencao.html" class="nav-item">🛠️ Manutenções</a>
-		<a href="retirada.html" class="nav-item">📤 Ordem de retirada</a>
-		
-		<div class="nav-label">Compras</div>       
-       <a href="reposicao.html" class="nav-item">🛒 Reposição</a>
+        <a href="retirada.html" class="nav-item">📤 Ordem de retirada</a>
         <div class="nav-label">Fornecedores</div>
-	<a href="fornecedores.html" class="nav-item">🏭 Fornecedores</a>
-		        
-    <div class="nav-label">Clientes</div>
-		<a href="clientes.html" class="nav-item">👥 Clientes</a>
-		    
-        
-        
-        
-        
-        
-      
+        <a href="fornecedores.html" class="nav-item">🏭 Fornecedores</a>
+        <div class="nav-label">Clientes</div>
+        <a href="clientes.html" class="nav-item">👥 Clientes</a>
         <a href="login.html" class="nav-item" style="margin-top:20px; color:var(--danger)">🚪 Sair</a>
-
       </nav>
     </aside>
+    
     <main id="main">
       <header class="topbar-base"><div style="font-family:'Syne',sans-serif;font-size:18px;font-weight:700;">Gerenciar Peças</div></header>
       <div id="content">
         <div class="card">
           <div class="card-title">Lista de Peças <button class="btn btn-primary">+ Nova Peça</button></div>
           <table>
-            <thead><tr><th>Código</th><th>Nome</th><th>Prateleira</th><th>Estoque</th><th>Ações</th></tr></thead>
+            <thead>
+              <tr>
+                <th>Código (codigo)</th>
+                <th>Nome (nome)</th>
+                <th>Prateleira (prateleira)</th>
+                <th>Tipo (tipo)</th>
+                <th>Fornecedor (idFornecedor)</th>
+                <th>Estoque (quantidadeEstoque)</th>
+                <th>Data Cadastro (dataCadastro)</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
             <tbody>
-              <tr><td>#PC-0001</td><td>Filtro de Óleo</td><td><span class="badge">A-12</span></td><td>45</td><td><button class="btn btn-ghost">Editar</button> <button class="btn btn-danger">Excluir</button></td></tr>
-              <tr><td>#PC-0002</td><td>Bomba d'Água</td><td><span class="badge">B-05</span></td><td>12</td><td><button class="btn btn-ghost">Editar</button> <button class="btn btn-danger">Excluir</button></td></tr>
+              <tr>
+                <td>#PC-0001</td>
+                <td>Filtro de Óleo</td>
+                <td><span class="badge">A-12</span></td>
+                <td>Motor</td>
+                <td>Distribuidora Vale Auto</td>
+                <td>45</td>
+                <td>25/06/2026</td>
+                <td>
+                  <div class="actions-cell">
+                    <button class="btn btn-ghost">Editar</button>
+                    <button class="btn btn-danger">Excluir</button>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>#PC-0002</td>
+                <td>Bomba d'Água</td>
+                <td><span class="badge">B-05</span></td>
+                <td>Arrefecimento</td>
+                <td>Autopeças Mundial Ltda</td>
+                <td>12</td>
+                <td>25/06/2026</td>
+                <td>
+                  <div class="actions-cell">
+                    <button class="btn btn-ghost">Editar</button>
+                    <button class="btn btn-danger">Excluir</button>
+                  </div>
+                </td>
+              </tr>
             </tbody>
           </table>
         </div>

@@ -36,7 +36,9 @@ public class ItensManutencaoEntity implements Serializable {
 	@JoinColumn(name = "idManutencao")
 	private ManutencaoEntity manutencao;
 	
-	private String ordermServico;
+	
+	
+	
 	private int quantidade;
 	private LocalDate dataCadastro;
 	private float precoManutencao;
@@ -68,12 +70,7 @@ public class ItensManutencaoEntity implements Serializable {
 	public void setManutencao(ManutencaoEntity manutencao) {
 		this.manutencao = manutencao;
 	}
-	public String getOrdermServico() {
-		return ordermServico;
-	}
-	public void setOrdermServico(String ordermServico) {
-		this.ordermServico = ordermServico;
-	}
+
 	public int getQuantidade() {
 		return quantidade;
 	}

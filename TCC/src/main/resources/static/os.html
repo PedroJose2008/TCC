@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Abrir OS - Acoa Peças</title>
+  <title>Ordens de Serviço - Acoa Peças</title>
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
   <style>
     :root {
       --bg: #eef2f8; --surface: #ffffff; --surface2: #f0f4fb; --border: #d6dff0;
       --accent: #3b6ff5; --accent2: #5b8af8; --accent-light: #dce8ff;
-      --text: #1a2340; --text2: #4a6080; --text3: #8fa0b8; --sidebar-w: 240px;
+      --success: #22c55e; --danger: #ef4444; --text: #1a2340; --text2: #4a6080; --text3: #8fa0b8; --sidebar-w: 240px;
     }
     * { margin:0; padding:0; box-sizing:border-box; }
     body { font-family:'DM Sans', sans-serif; background:var(--bg); color:var(--text); height:100vh; overflow:hidden; }
@@ -23,18 +23,54 @@
     #main { flex:1; display:flex; flex-direction:column; overflow:hidden; }
     .topbar-base { height:64px; background:var(--surface); border-bottom:1px solid var(--border); display:flex; align-items:center; padding:0 28px; box-shadow: 0 2px 8px rgba(59,111,245,.05); }
     #content { flex:1; overflow-y:auto; padding:28px; }
+    
     .card { background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:20px; box-shadow: 0 2px 10px rgba(59,111,245,.06); }
-    .card-title { font-family:'Syne',sans-serif; font-weight:700; font-size:14px; margin-bottom:16px; }
-    .form-grid { display:grid; gap:16px; }
-    .form-group { display:flex; flex-direction:column; gap:6px; }
-    .form-group label { font-size:12px; font-weight:600; color:var(--text2); text-transform:uppercase; }
-    .form-group input, .form-group select, .form-group textarea { background:var(--surface2); border:1.5px solid var(--border); border-radius:10px; color:var(--text); font-size:13.5px; padding:10px 14px; outline:none; }
-    .btn-primary { padding:10px 16px; border-radius:10px; border:none; cursor:pointer; background:var(--accent); color:#fff; font-weight:600; transition:all .15s; }
-  
-   	    .nav-label { font-size:10px; letter-spacing:1.8px; text-transform:uppercase; color:var(--text3); margin-bottom:8px; padding:0 8px; }
-  
-  
-    .btn-primary:hover { transform:translateY(-1px); box-shadow:0 4px 12px rgba(59,111,245,.3); }
+    .card-title { font-family:'Syne',sans-serif; font-weight:700; font-size:14px; margin-bottom:16px; display:flex; justify-content:space-between; align-items:center; }
+    
+    table { width:100%; border-collapse:collapse; font-size:13.5px; }
+    thead th { text-align:left; padding:10px 14px; font-size:11px; text-transform:uppercase; color:var(--text3); border-bottom:1px solid var(--border); background:var(--surface2); }
+    tbody td { padding:12px 14px; color:var(--text2); border-bottom:1px solid var(--border); }
+    
+    .btn { padding:6px 12px; border-radius:8px; border:none; cursor:pointer; font-size:12px; font-weight:500; transition: all 0.2s; }
+    .btn-success { background:var(--success); color:#fff; }
+    .btn-ghost { background:var(--surface2); color:var(--text2); border:1px solid var(--border); }
+    .btn-danger { background:rgba(239,68,68,.1); color:var(--danger); }
+    .btn-accent { background:var(--accent); color:#fff; }
+    .btn-accent:hover { background:var(--accent2); }
+    
+    .nav-label { font-size:10px; letter-spacing:1.8px; text-transform:uppercase; color:var(--text3); margin-bottom:8px; padding:0 8px; }
+    .badge-green { padding:3px 8px; border-radius:20px; font-size:11px; font-weight:600; background:rgba(34,197,94,.1); color:#16a34a; }
+
+    /* MODAL PADRÃO */
+    .modal-overlay {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(26, 35, 64, 0.4); backdrop-filter: blur(2px);
+      display: flex; align-items: center; justify-content: center; z-index: 1000;
+      opacity: 0; pointer-events: none; transition: opacity 0.2s ease;
+    }
+    .modal-overlay.active { opacity: 1; pointer-events: auto; }
+    .modal-container {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 16px; width: 90%; max-width: 600px; max-height: 85vh;
+      box-shadow: 0 10px 30px rgba(26, 35, 64, 0.15); display: flex; flex-direction: column;
+      transform: translateY(-20px); transition: transform 0.2s ease;
+    }
+    .modal-overlay.active .modal-container { transform: translateY(0); }
+    .modal-header { padding: 20px 24px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+    .modal-header h3 { font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 700; }
+    .modal-close { background: none; border: none; font-size: 22px; color: var(--text3); cursor: pointer; }
+    .modal-body { padding: 24px; overflow-y: auto; }
+    .modal-footer { padding: 16px 24px; border-top: 1px solid var(--border); background: var(--surface2); display: flex; justify-content: flex-end; gap: 10px; border-bottom-left-radius: 16px; border-bottom-right-radius: 16px; }
+    
+    /* Estrutura de Formulários dentro do Modal */
+    .modal-form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .full-width { grid-column: span 2; }
+    .form-group { display: flex; flex-direction: column; gap: 4px; }
+    .form-group label { font-size: 11px; font-weight: 600; color: var(--text2); text-transform: uppercase; }
+    .form-input { padding: 10px 12px; border-radius: 8px; border: 1px solid var(--border); background: var(--surface2); color: var(--text); font-size: 13.5px; outline: none; }
+    .form-input:focus { border-color: var(--accent); background: var(--surface); }
+
+    .add-piece-row { display: flex; gap: 10px; margin-bottom: 20px; }
   </style>
 </head>
 <body>
@@ -43,48 +79,250 @@
       <div class="logo-area"><div class="logo-icon">⚙️</div><div><div style="font-family:'Syne',sans-serif;font-weight:800;font-size:15px;">ACOA PEÇAS</div></div></div>
       <nav>
         <div class="nav-label">Principal</div>
-        <a href="dashboard.html" class="nav-item active">📊 Dashboard</a>
+        <a href="dashboard.html" class="nav-item">📊 Dashboard</a>
         <div class="nav-label">Estoque</div>
         <a href="pecas.html" class="nav-item">🔩 Peças</a>
         <a href="kits.html" class="nav-item">📶 Kits</a>
         <div class="nav-label">Oficina</div>
-        <a href="os.html" class="nav-item">📝 Abrir Ordem de Serviço</a>
+        <a href="os.html" class="nav-item active">📝 Abrir Ordem de Serviço</a>
         <a href="manutencao.html" class="nav-item">🛠️ Manutenções</a>
 		<a href="retirada.html" class="nav-item">📤 Ordem de retirada</a>
 		
-		<div class="nav-label">Compras</div>       
-       <a href="reposicao.html" class="nav-item">🛒 Reposição</a>
+	
         <div class="nav-label">Fornecedores</div>
-	<a href="fornecedores.html" class="nav-item">🏭 Fornecedores</a>
+	    <a href="fornecedores.html" class="nav-item">🏭 Fornecedores</a>
 		        
-    <div class="nav-label">Clientes</div>
+        <div class="nav-label">Clientes</div>
 		<a href="clientes.html" class="nav-item">👥 Clientes</a>
-		    
-        
-        
-        
-        
-        
-      
+		
         <a href="login.html" class="nav-item" style="margin-top:20px; color:var(--danger)">🚪 Sair</a>
-        
       </nav>
     </aside>
+
     <main id="main">
       <header class="topbar-base"><div style="font-family:'Syne',sans-serif;font-size:18px;font-weight:700;">Abertura de Ordem de Serviço</div></header>
       <div id="content">
+        
         <div class="card">
-          <div class="card-title">📝 Nova OS</div>
-          <div class="form-grid">
-            <div class="form-group"><label>Tipo de OS</label><select><option value="externa">Cliente Externo</option><option value="interna">Manutenção Interna</option></select></div>
-            <div class="form-group"><label>Nome do Cliente / Setor</label><input type="text" placeholder="Digite o nome..."></div>
-            <div class="form-group"><label>Peças para Manutenção</label><textarea rows="3" placeholder="Ex: 1x Bomba D'Água, 2x Filtros..."></textarea></div>
-            <div class="form-group"><label>Mecânico Responsável</label><select><option>Carlos Mendes</option><option>Roberto Silva</option></select></div>
-            <button class="btn-primary">Abrir Ordem de Serviço</button>
-          </div>
+          <div class="card-title">Ordens de Serviço Ativas <button class="btn btn-success" onclick="abrirModalNovaOS()">⚡ Criar OS</button></div>
+          <table>
+            <thead>
+              <tr>
+                <th>Código</th>
+                <th>Cliente</th>
+            <th>Kit</th>
+                <th>Data Abertura</th>
+                <th>Valor Total</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody id="listaOrdensServico">
+              <tr>
+                <td>#OS-001</td>
+                <td>Marcos Silva</td>
+                <td>Kit- Cadeira  </td>
+                <td>25/06/2026</td>
+                <td>R$ 450,00</td>
+                <td>
+                  <button class="btn btn-accent" onclick="abrirModalPecasOS(1)">🧩 Peças da OS</button> 
+                  <button class="btn btn-ghost">Editar</button> 
+                  <button class="btn btn-danger">Excluir</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
+
       </div>
     </main>
   </div>
+
+  <div class="modal-overlay" id="modalNovaOS">
+    <div class="modal-container">
+      <div class="modal-header">
+        <h3>📝 Nova Ordem de Serviço</h3>
+        <button class="modal-close" onclick="fecharModalNovaOS()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="modal-form-grid">
+          
+          <div class="form-group full-width">
+            <label>Cliente (Entity: idCliente)</label>
+            <select class="form-input" id="osCliente">
+              <option value="1">Marcos Silva</option>
+              <option value="2">Oficina Central S.A.</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Usuário Responsável (Entity: idUsuario)</label>
+            <select class="form-input" id="osUsuario">
+              <option value="1">Carlos Mendes (Mecânico)</option>
+              <option value="2">Roberto Silva (Atendente)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Forma de Pagamento (Entity: idTipoPagamento)</label>
+            <select class="form-input" id="osPagamento">
+              <option value="1">Cartão de Crédito</option>
+              <option value="2">Pix</option>
+              <option value="3">Boleto Bancário</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Vincular Kit Inicial (Entity: idKit)</label>
+            <select class="form-input" id="osKit">
+              <option value="">-- Nenhum Kit Selecionado --</option>
+              <option value="1">Kit Revisão Completa</option>
+              <option value="2">Kit Embreagem Civic</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Peça Principal (Entity: idPeca)</label>
+            <select class="form-input" id="osPeca">
+              <option value="">-- Nenhuma Peça Selecionada --</option>
+              <option value="1">Filtro de Óleo</option>
+              <option value="2">Amortecedor Dianteiro</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Valor Inicial (Entity: valor - BigDecimal)</label>
+            <input type="number" step="0.01" class="form-input" id="osValor" placeholder="0,00">
+          </div>
+
+          <div class="form-group">
+            <label>Data de Abertura (Entity: dataAbertura)</label>
+            <input type="date" class="form-input" id="osData">
+          </div>
+
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" onclick="fecharModalNovaOS()">Cancelar</button>
+        <button class="btn btn-success" onclick="salvarNovaOS()">Salvar Ordem</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="modalPecasOS">
+    <div class="modal-container">
+      <div class="modal-header">
+        <div>
+          <h3 id="modalPecasTitle">Peças Utilizadas na OS</h3>
+          <span style="font-size: 11px; color: var(--text3);">Gerencie as peças aplicadas diretamente nesta ordem</span>
+        </div>
+        <button class="modal-close" onclick="fecharModalPecasOS()">&times;</button>
+      </div>
+      <div class="modal-body">
+        
+        <div class="add-piece-row">
+          <select id="selectPecas" class="form-input" style="flex: 1; background: var(--surface);">
+            <option value="">-- Selecione uma Peça para Adicionar --</option>
+            <option value="PC-102">Filtro de Óleo (Ref: FO-32)</option>
+            <option value="PC-105">Vela de Ignição Iridium</option>
+            <option value="PC-501">Amortecedor Dianteiro</option>
+          </select>
+          <button class="btn btn-success" onclick="adicionarPecaOS()">＋ Adicionar</button>
+        </div>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Código</th>
+              <th>Nome da Peça</th>
+              <th style="text-align: right;">Ação</th>
+            </tr>
+          </thead>
+          <tbody id="listaPecasDinamicaOS">
+            </tbody>
+        </table>
+
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" onclick="fecharModalPecasOS()">Concluir</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Simulação do Array de Peças vinculadas à OS ativa
+    let pecasDaOS = [
+      { codigo: "PC-102", nome: "Filtro de Óleo (Ref: FO-32)" }
+    ];
+
+    // Modals de manipulação
+    const modalOS = document.getElementById('modalNovaOS');
+    const modalPecas = document.getElementById('modalPecasOS');
+
+    function abrirModalNovaOS() {
+      // Seta data atual por conveniência
+      document.getElementById('osData').valueAsDate = new Date();
+      modalOS.classList.add('active');
+    }
+    function fecharModalNovaOS() { modalOS.classList.remove('active'); }
+
+    function salvarNovaOS() {
+      alert("Ordem de Serviço cadastrada com sucesso com base nas Entities!");
+      fecharModalNovaOS();
+    }
+
+    function abrirModalPecasOS(idOS) {
+      document.getElementById('modalPecasTitle').innerText = `Componentes Utilizados na OS #OS-00${idOS}`;
+      modalPecas.classList.add('active');
+      renderizarPecasOS();
+    }
+    function fecharModalPecasOS() { modalPecas.classList.remove('active'); }
+
+    function renderizarPecasOS() {
+      const tbody = document.getElementById('listaPecasDinamicaOS');
+      tbody.innerHTML = '';
+
+      if (pecasDaOS.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="3" style="text-align:center; color:var(--text3); padding: 16px 0;">Nenhuma peça adicionada.</td></tr>`;
+        return;
+      }
+
+      pecasDaOS.forEach((peca, index) => {
+        tbody.innerHTML += `
+          <tr>
+            <td style="font-family: monospace; font-weight: 600;">${peca.codigo}</td>
+                        <td>${peca.nome}</td>
+						
+            <td style="text-align: right;">
+              <button class="btn btn-danger" style="padding: 4px 8px; font-size: 11px;" onclick="removerPecaOS(${index})">Excluir</button>
+            </td>
+          </tr>
+        `;
+      });
+    }
+
+    function adicionarPecaOS() {
+      const select = document.getElementById('selectPecas');
+      if (!select.value) { alert("Selecione uma peça."); return; }
+
+    
+
+      pecasDaOS.push({ codigo: select.value, nome: select.options[select.selectedIndex].text });
+      select.value = "";
+      renderizarPecasOS();
+    }
+
+    function removerPecaOS(index) {
+      if (confirm("Remover esta peça da Ordem de Serviço?")) {
+        pecasDaOS.splice(index, 1);
+        renderizarPecasOS();
+      }
+    }
+
+    // Fecha ao clicar fora do container
+    window.addEventListener('click', function(e) {
+      if (e.target === modalOS) fecharModalNovaOS();
+      if (e.target === modalPecas) fecharModalPecasOS();
+    });
+  </script>
 </body>
 </html>

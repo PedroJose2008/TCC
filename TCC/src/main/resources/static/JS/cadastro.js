@@ -11,7 +11,7 @@ function switchTab(type) {
 	opcao=type;
 	
 	document.querySelectorAll('.tab-btn').forEach((btn, index) => {
-    const types = ['usuario', 'fornecedor', 'cliente'];
+    const types = ['usuario'];
     if(types[index] === type) {
       btn.classList.add('active');
     } else {
@@ -35,15 +35,7 @@ async function salvar(){
 		alert("salvando usuario");
 		salvarUsu();
 	}
-	else if (opcao==="fornecedor"){
-		alert("salvando firnecedor");
-	}
-	else if(opcao==="cliente"){
-		alert("salvando cliente");
-	}
-	else{
-		alert("selecione uma opção para salvar ");
-	}
+	
 }
 
 
@@ -71,7 +63,7 @@ function validaUsu(){
 		return  nomeInput.value="";
 	}
 	
-	alert("esta funcionando")
+	
 	
 	
 	

@@ -28,7 +28,7 @@ public class PecaEntity implements Serializable{
 	@JoinColumn(name = "idFornecedor")
 	private FornecedorEntity fornecedor;
 	private String nome;
-	private String descricao;
+	private String prateleira;
 	private String tipo;
 	private int quantidadeEstoque;
 	private String codigo;
@@ -52,11 +52,19 @@ public class PecaEntity implements Serializable{
 	public void setNome(String nome) {
 		this.nome = nome;
 	}
-	public String getDescricao() {
-		return descricao;
+	
+	
+	
+	
+	
+	public String getPrateleira() {
+		return prateleira;
 	}
-	public void setDescricao(String descricao) {
-		this.descricao = descricao;
+	public void setPrateleira(String prateleira) {
+		this.prateleira = prateleira;
+	}
+	public static long getSerialversionuid() {
+		return serialVersionUID;
 	}
 	public String getTipo() {
 		return tipo;

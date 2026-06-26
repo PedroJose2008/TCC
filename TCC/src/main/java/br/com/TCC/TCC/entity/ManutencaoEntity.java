@@ -3,14 +3,17 @@ package br.com.TCC.TCC.entity;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "Manutencao")
@@ -26,80 +29,86 @@ public class ManutencaoEntity  implements Serializable{
 	private int id;
 	
 	
+	@ManyToMany
+	@JoinColumn(name = "idPeca")
+	@NotNull
+	private List<PecaEntity> peca;
+	
 	@ManyToOne
 	@JoinColumn(name = "idKit")
-	private KitEntity kit;
+	private List<KitEntity> kit;
 	
-	private String ordemServico;
+	@ManyToOne
+	@JoinColumn(name = "idOrdemServico")
+	private OrdemServicoEntity ordemServico;
 	
 	//id cliente
 	@ManyToOne
 	@JoinColumn (name = "idCliente")
-	private ClienteEntity cliente;
+	private List<ClienteEntity> cliente;
 	
 	
 	@ManyToOne
 	@JoinColumn(name = "idMecanico")
-	private UsuarioEntity mecanico;
-	
-	
-	@ManyToOne
-	@JoinColumn(name = "idAlmoxarife")
-	private UsuarioEntity almoxarife;
-	
-	
-	
-	private String descricao;
-	private String status;
-	private LocalDate datacadastro;
+	private List<UsuarioEntity> mecanico;
 	
 	
 	
 	
 	
 	
-	public KitEntity getKit() {
+	public List<PecaEntity> getPeca() {
+		return peca;
+	}
+	public void setPeca(List<PecaEntity> peca) {
+		this.peca = peca;
+	}
+	public List<KitEntity> getKit() {
 		return kit;
 	}
-	public void setKit(KitEntity kit) {
+	public void setKit(List<KitEntity> kit) {
 		this.kit = kit;
 	}
-	public UsuarioEntity getMecanico() {
+	public OrdemServicoEntity getOrdemServico() {
+		return ordemServico;
+	}
+	public void setOrdemServico(OrdemServicoEntity ordemServico) {
+		this.ordemServico = ordemServico;
+	}
+	public List<ClienteEntity> getCliente() {
+		return cliente;
+	}
+	public void setCliente(List<ClienteEntity> cliente) {
+		this.cliente = cliente;
+	}
+	public List<UsuarioEntity> getMecanico() {
 		return mecanico;
 	}
-	public void setMecanico(UsuarioEntity mecanico) {
+	public void setMecanico(List<UsuarioEntity> mecanico) {
 		this.mecanico = mecanico;
 	}
-	public UsuarioEntity getAlmoxarife() {
-		return almoxarife;
-	}
-	public void setAlmoxarife(UsuarioEntity almoxarife) {
-		this.almoxarife = almoxarife;
-	}
+	
+	private String status;
+	private LocalDate dataFinalizacao;
+	
+	
+	
+	
+	
+	
+
 	public int getId() {
 		return id;
 	}
 	public void setId(int id) {
 		this.id = id;
 	}
-	public String getOrdemServico() {
-		return ordemServico;
-	}
-	public void setOrdemServico(String ordemServico) {
-		this.ordemServico = ordemServico;
-	}
-	public ClienteEntity getCliente() {
-		return cliente;
-	}
-	public void setCliente(ClienteEntity cliente) {
-		this.cliente = cliente;
-	}
-	public String getDescricao() {
-		return descricao;
-	}
-	public void setDescricao(String descricao) {
-		this.descricao = descricao;
-	}
+	
+	
+	
+	
+	
+
 	public String getStatus() {
 		return status;
 	}
@@ -110,11 +119,12 @@ public class ManutencaoEntity  implements Serializable{
 	
 	
 	
-	public LocalDate getDatacadastro() {
-		return datacadastro;
+
+	public LocalDate getDataFinalizacao() {
+		return dataFinalizacao;
 	}
-	public void setDatacadastro(LocalDate datacadastro) {
-		this.datacadastro = datacadastro;
+	public void setDataFinalizacao(LocalDate dataFinalizacao) {
+		this.dataFinalizacao = dataFinalizacao;
 	}
 	public static long getSerialversionuid() {
 		return serialVersionUID;

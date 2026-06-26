@@ -2,7 +2,7 @@ package br.com.TCC.TCC.entity;
 
 import java.io.Serializable;
 import java.time.LocalDate;
-
+import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -24,28 +24,31 @@ public class KitEntity implements Serializable{
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
+	
 	@ManyToOne
 	@JoinColumn(name = "idPeca")
 	private PecaEntity peca;
+	
 	@ManyToOne
 	@JoinColumn(name = "idCliente")
-	private ClienteEntity cliente;
+	private List<ClienteEntity> cliente;
+	
+	//tem que fazer o código aleatorio e não poder deixar o ususario mexer 
 	private String codigo;
 	private String nome;
 	private String descricao;
 	private LocalDate dataCadastro;
+	
 	public int getId() {
 		return id;
 	}
 	public void setId(int id) {
 		this.id = id;
 	}
-	public PecaEntity getPeca() {
-		return peca;
-	}
-	public void setPeca(PecaEntity peca) {
-		this.peca = peca;
-	}
+
+	
+	
+	
 	public String getCodigo() {
 		return codigo;
 	}

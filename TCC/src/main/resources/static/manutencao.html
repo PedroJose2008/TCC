@@ -10,6 +10,8 @@
       --bg: #eef2f8; --surface: #ffffff; --surface2: #f0f4fb; --border: #d6dff0;
       --accent: #3b6ff5; --accent2: #5b8af8; --accent-light: #dce8ff;
       --success: #22c55e; --text: #1a2340; --text2: #4a6080; --text3: #8fa0b8; --sidebar-w: 240px;
+      --btn-blue: #3b82f6; --btn-blue-hover: #2563eb;
+      --btn-gray: #f1f5f9; --btn-gray-border: #cbd5e1; --btn-gray-text: #475569;
     }
     * { margin:0; padding:0; box-sizing:border-box; }
     body { font-family:'DM Sans', sans-serif; background:var(--bg); color:var(--text); height:100vh; overflow:hidden; }
@@ -27,13 +29,22 @@
     .card-title { font-family:'Syne',sans-serif; font-weight:700; font-size:14px; margin-bottom:16px; }
     table { width:100%; border-collapse:collapse; font-size:13.5px; }
     thead th { text-align:left; padding:10px 14px; font-size:11px; text-transform:uppercase; color:var(--text3); border-bottom:1px solid var(--border); background:var(--surface2); }
-    tbody td { padding:12px 14px; color:var(--text2); border-bottom:1px solid var(--border); }
-    .btn-success { padding:6px 12px; border-radius:8px; border:none; cursor:pointer; font-size:12px; font-weight:500; background:var(--success); color:#fff; }
+    tbody td { padding:12px 14px; color:var(--text2); border-bottom:1px solid var(--border); vertical-align: middle; }
     
-     	    .nav-label { font-size:10px; letter-spacing:1.8px; text-transform:uppercase; color:var(--text3); margin-bottom:8px; padding:0 8px; }
+    /* Botões padronizados com a Ordem de Serviço */
+    .btn-success { padding:6px 12px; border-radius:8px; border:none; cursor:pointer; font-size:12px; font-weight:500; background:var(--success); color:#fff; transition: background 0.2s; }
+    .btn-success:hover { background: #16a34a; }
     
+    .btn-pecas-os { padding:6px 12px; border-radius:8px; border:none; cursor:pointer; font-size:12px; font-weight:500; background:var(--btn-blue); color:#fff; display: inline-flex; align-items: center; gap: 4px; transition: background 0.2s; }
+    .btn-pecas-os:hover { background: var(--btn-blue-hover); }
     
+    .btn-edit-os { padding:5px 12px; border-radius:8px; border:1px solid var(--btn-gray-border); cursor:pointer; font-size:12px; font-weight:500; background:var(--btn-gray); color:var(--btn-gray-text); transition: all 0.2s; }
+    .btn-edit-os:hover { background: #e2e8f0; }
+    
+    .nav-label { font-size:10px; letter-spacing:1.8px; text-transform:uppercase; color:var(--text3); margin-bottom:8px; padding:0 8px; }
     .badge-blue { padding:3px 8px; border-radius:20px; font-size:11px; font-weight:600; background:rgba(59,111,245,.1); color:var(--accent); }
+    
+    .actions-cell { display: flex; gap: 6px; align-items: center; }
   </style>
 </head>
 <body>
@@ -42,47 +53,66 @@
       <div class="logo-area"><div class="logo-icon">⚙️</div><div><div style="font-family:'Syne',sans-serif;font-weight:800;font-size:15px;">ACOA PEÇAS</div></div></div>
       <nav>
         <div class="nav-label">Principal</div>
-        <a href="dashboard.html" class="nav-item active">📊 Dashboard</a>
+        <a href="dashboard.html" class="nav-item">📊 Dashboard</a>
         <div class="nav-label">Estoque</div>
         <a href="pecas.html" class="nav-item">🔩 Peças</a>
         <a href="kits.html" class="nav-item">📶 Kits</a>
         <div class="nav-label">Oficina</div>
         <a href="os.html" class="nav-item">📝 Abrir Ordem de Serviço</a>
-        <a href="manutencao.html" class="nav-item">🛠️ Manutenções</a>
-		<a href="retirada.html" class="nav-item">📤 Ordem de retirada</a>
-		
-		<div class="nav-label">Compras</div>       
-       <a href="reposicao.html" class="nav-item">🛒 Reposição</a>
+        <a href="manutencao.html" class="nav-item active">🛠️ Manutenções</a>
+        <a href="retirada.html" class="nav-item">📤 Ordem de retirada</a>
+       
         <div class="nav-label">Fornecedores</div>
-	<a href="fornecedores.html" class="nav-item">🏭 Fornecedores</a>
-		        
-    <div class="nav-label">Clientes</div>
-		<a href="clientes.html" class="nav-item">👥 Clientes</a>
-		    
-        
-        
-        
-        
-        
-      
+        <a href="fornecedores.html" class="nav-item">🏭 Fornecedores</a>
+        <div class="nav-label">Clientes</div>
+        <a href="clientes.html" class="nav-item">👥 Clientes</a>
         <a href="login.html" class="nav-item" style="margin-top:20px; color:var(--danger)">🚪 Sair</a>
-        
       </nav>
     </aside>
+    
     <main id="main">
       <header class="topbar-base"><div style="font-family:'Syne',sans-serif;font-size:18px;font-weight:700;">Manutenções em Andamento</div></header>
       <div id="content">
         <div class="card">
           <div class="card-title">🛠️ Serviços Ativos</div>
           <table>
-            <thead><tr><th>OS</th><th>Cliente/Setor</th><th>Peças</th><th>Status</th><th>Ação</th></tr></thead>
+            <thead>
+              <tr>
+                <th>OS (IDORDEMSERVICO)</th>
+                <th>CLIENTE (IDCLIENTE)</th>
+                <th>MECÂNICO (IDMECANICO)</th>
+                <th>KIT (IDKIT)</th>
+                <th>PEÇAS (IDPECA)</th>
+                <th>STATUS</th>
+                <th>DATA FINALIZAÇÃO</th>
+                <th>AÇÕES</th>
+              </tr>
+            </thead>
             <tbody>
-              <tr><td>OS-0112</td><td>João da Silva</td><td>Bomba D'Água VW</td><td><span class="badge-blue">Em Manutenção</span></td><td><button class="btn-success">Gerar Retirada</button></td></tr>
+              <tr>
+                <td>OS-0112</td>
+                <td>João da Silva</td>
+                <td>Carlos Souza</td>
+                <td><span style="color: var(--text3); font-style: italic;">Nenhum</span></td>
+                <td>Bomba D'Água VW</td>
+                <td><span class="badge-blue">Em Manutenção</span></td>
+                <td>-</td>
+                <td>
+                  <div class="actions-cell">
+                    <button class="btn-pecas-os">🧩 Peças da OS</button>
+                    <button class="btn-edit-os">Editar</button>
+                    <button class="btn-success">Gerar Retirada</button>
+                  </div>
+                </td>
+              </tr>
             </tbody>
           </table>
         </div>
       </div>
     </main>
   </div>
+  
+  
+  
 </body>
 </html>

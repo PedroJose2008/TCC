@@ -28,15 +28,45 @@
     table { width:100%; border-collapse:collapse; font-size:13.5px; }
     thead th { text-align:left; padding:10px 14px; font-size:11px; text-transform:uppercase; color:var(--text3); border-bottom:1px solid var(--border); background:var(--surface2); }
     tbody td { padding:12px 14px; color:var(--text2); border-bottom:1px solid var(--border); }
-    .btn { padding:6px 12px; border-radius:8px; border:none; cursor:pointer; font-size:12px; font-weight:500; }
+    .btn { padding:6px 12px; border-radius:8px; border:none; cursor:pointer; font-size:12px; font-weight:500; transition: all 0.2s; }
     .btn-success { background:var(--success); color:#fff; }
     .btn-ghost { background:var(--surface2); color:var(--text2); border:1px solid var(--border); }
     .btn-danger { background:rgba(239,68,68,.1); color:var(--danger); }
+    .btn-accent { background:var(--accent); color:#fff; }
+    .btn-accent:hover { background:var(--accent2); }
     
-     	    .nav-label { font-size:10px; letter-spacing:1.8px; text-transform:uppercase; color:var(--text3); margin-bottom:8px; padding:0 8px; }
-    
-    
+    .nav-label { font-size:10px; letter-spacing:1.8px; text-transform:uppercase; color:var(--text3); margin-bottom:8px; padding:0 8px; }
     .badge-green { padding:3px 8px; border-radius:20px; font-size:11px; font-weight:600; background:rgba(34,197,94,.1); color:#16a34a; }
+
+    /* ESTILOS DO MODAL (Combinando com seu padrão de design) */
+    .modal-overlay {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(26, 35, 64, 0.4); backdrop-filter: blur(2px);
+      display: flex; align-items: center; justify-content: center; z-index: 1000;
+      opacity: 0; pointer-events: none; transition: opacity 0.2s ease;
+    }
+    .modal-overlay.active { opacity: 1; pointer-events: auto; }
+    .modal-container {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 16px; width: 90%; max-width: 600px; max-height: 85vh;
+      box-shadow: 0 10px 30px rgba(26,35,64,0.15); display: flex; flex-direction: column;
+      transform: translateY(-20px); transition: transform 0.2s ease;
+    }
+    .modal-overlay.active .modal-container { transform: translateY(0); }
+    .modal-header { padding: 20px 24px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+    .modal-header h3 { font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 700; }
+    .modal-close { background: none; border: none; font-size: 22px; color: var(--text3); cursor: pointer; }
+    .modal-close:hover { color: var(--danger); }
+    .modal-body { padding: 24px; overflow-y: auto; }
+    .modal-footer { padding: 16px 24px; border-top: 1px solid var(--border); background: var(--surface2); display: flex; justify-content: flex-end; border-bottom-left-radius: 16px; border-bottom-right-radius: 16px; }
+    
+    /* Linha de adição rápida interna */
+    .add-piece-row { display: flex; gap: 10px; margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px dashed var(--border); }
+    .select-input { flex: 1; padding: 8px 12px; border-radius: 8px; border: 1px solid var(--border); background: var(--surface); color: var(--text); font-size: 13.5px; outline: none; }
+    .select-input:focus { border-color: var(--accent); }
+    .mini-table { font-size: 13px; }
+    .mini-table th { padding: 8px 10px; }
+    .mini-table td { padding: 8px 10px; }
   </style>
 </head>
 <body>
@@ -45,47 +75,173 @@
       <div class="logo-area"><div class="logo-icon">⚙️</div><div><div style="font-family:'Syne',sans-serif;font-weight:800;font-size:15px;">ACOA PEÇAS</div></div></div>
       <nav>
         <div class="nav-label">Principal</div>
-        <a href="dashboard.html" class="nav-item active">📊 Dashboard</a>
+        <a href="dashboard.html" class="nav-item">📊 Dashboard</a>
         <div class="nav-label">Estoque</div>
         <a href="pecas.html" class="nav-item">🔩 Peças</a>
-        <a href="kits.html" class="nav-item">📶 Kits</a>
+        <a href="kits.html" class="nav-item active">📶 Kits</a>
         <div class="nav-label">Oficina</div>
         <a href="os.html" class="nav-item">📝 Abrir Ordem de Serviço</a>
         <a href="manutencao.html" class="nav-item">🛠️ Manutenções</a>
 		<a href="retirada.html" class="nav-item">📤 Ordem de retirada</a>
 		
-		<div class="nav-label">Compras</div>       
-       <a href="reposicao.html" class="nav-item">🛒 Reposição</a>
+		s
         <div class="nav-label">Fornecedores</div>
-	<a href="fornecedores.html" class="nav-item">🏭 Fornecedores</a>
+	    <a href="fornecedores.html" class="nav-item">🏭 Fornecedores</a>
 		        
-    <div class="nav-label">Clientes</div>
+        <div class="nav-label">Clientes</div>
 		<a href="clientes.html" class="nav-item">👥 Clientes</a>
-		    
-        
-        
-        
-        
-        
-      
+		
         <a href="login.html" class="nav-item" style="margin-top:20px; color:var(--danger)">🚪 Sair</a>
-        
       </nav>
     </aside>
+
     <main id="main">
       <header class="topbar-base"><div style="font-family:'Syne',sans-serif;font-size:18px;font-weight:700;">Gerenciamento de Kits</div></header>
       <div id="content">
         <div class="card">
-          <div class="card-title">Kits Disponíveis <button class="btn btn-success">⚡ Acionar Kit</button></div>
+          <div class="card-title">Kits Disponíveis <button class="btn btn-success">⚡ Criar Kit</button></div>
           <table>
             <thead><tr><th>Código</th><th>Nome</th><th>Prateleira</th><th>Status</th><th>Ações</th></tr></thead>
             <tbody>
-              <tr><td>#KT-001</td><td>Kit Revisão</td><td><span class="badge-green">K-01</span></td><td><span class="badge-green">Disponível</span></td><td><button class="btn btn-ghost">Editar</button> <button class="btn btn-danger">Excluir</button></td></tr>
+              <tr>
+                <td>#KT-001</td>
+                <td id="kit-nome-1">Kit Revisão Completa</td>
+                <td><span class="badge-green">K-01</span></td>
+                <td><span class="badge-green">Disponível</span></td>
+                <td>
+                  <button class="btn btn-accent" onclick="abrirModalPecas(1)">🧩 Peças do Kit</button> 
+                  <button class="btn btn-ghost">Editar</button> 
+                  <button class="btn btn-danger">Excluir</button>
+                </td>
+              </tr>
             </tbody>
           </table>
         </div>
       </div>
     </main>
   </div>
+
+  <div class="modal-overlay" id="modalPecas">
+    <div class="modal-container">
+      <div class="modal-header">
+        <div>
+          <h3 id="modalTitle">Peças do Kit</h3>
+          <span style="font-size: 11px; color: var(--text3);" id="modalSubtitle">Gerencie os componentes pertencentes a este kit</span>
+        </div>
+        <button class="modal-close" onclick="fecharModalPecas()">&times;</button>
+      </div>
+      <div class="modal-body">
+        
+        <div class="add-piece-row">
+          <select id="selectPecas" class="select-input">
+            <option value="">-- Selecione uma Peça para Adicionar --</option>
+            <option value="PC-102">Filtro de Óleo (Ref: FO-32)</option>
+            <option value="PC-105">Vela de Ignição Iridium</option>
+            <option value="PC-201">Anel de Vedação do Carter</option>
+            <option value="PC-304">Filtro de Combustível</option>
+          </select>
+          <button class="btn btn-success" onclick="adicionarPecaALista()">＋ Vincular</button>
+        </div>
+
+        <table class="mini-table">
+          <thead>
+            <tr>
+              <th>Código</th>
+              <th>Nome do Componente</th>
+              <th style="text-align: right;">Ação</th>
+            </tr>
+          </thead>
+          <tbody id="listaPecasKit">
+            </tbody>
+        </table>
+
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" onclick="fecharModalPecas()">Concluir e Salvar</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Simulação do seu banco de dados local para o Kit 1
+    let pecasVinculadas = [
+      { codigo: "PC-102", nome: "Filtro de Óleo (Ref: FO-32)" },
+      { codigo: "PC-105", nome: "Vela de Ignição Iridium" }
+    ];
+
+    const modal = document.getElementById('modalPecas');
+    const listaTbody = document.getElementById('listaPecasKit');
+    const selectPecas = document.getElementById('selectPecas');
+
+    function abrirModalPecas(idKit) {
+      // Captura dinamicamente o nome do kit do seu grid
+      const nomeKit = document.getElementById(`kit-nome-${idKit}`).innerText;
+      document.getElementById('modalTitle').innerText = `Componentes do ${nomeKit}`;
+      
+      modal.classList.add('active');
+      renderizarPecas();
+    }
+
+    function fecharModalPecas() {
+      modal.classList.remove('active');
+    }
+
+    function renderizarPecas() {
+      listaTbody.innerHTML = '';
+
+      if (pecasVinculadas.length === 0) {
+        listaTbody.innerHTML = `<tr><td colspan="3" style="text-align:center; color:var(--text3); padding: 20px 0;">Nenhuma peça vinculada a este kit.</td></tr>`;
+        return;
+      }
+
+      pecasVinculadas.forEach((peca, index) => {
+        listaTbody.innerHTML += `
+          <tr>
+            <td style="font-family: monospace; font-weight: 600;">${peca.codigo}</td>
+            <td>${peca.nome}</td>
+            <td style="text-align: right;">
+              <button class="btn btn-danger" style="padding: 4px 8px; font-size: 11px;" onclick="removerPeca(${index})">Remover</button>
+            </td>
+          </tr>
+        `;
+      });
+    }
+
+    function adicionarPecaALista() {
+      const codigoSelecionado = selectPecas.value;
+      const nomeSelecionado = selectPecas.options[selectPecas.selectedIndex].text;
+
+      if (!codigoSelecionado) {
+        alert("Por favor, selecione uma peça válida da lista.");
+        return;
+      }
+
+      // Evita duplicar a peça dentro do mesmo kit
+      const jaExiste = pecasVinculadas.some(p => p.codigo === codigoSelecionado);
+      if (jaExiste) {
+        alert("Esta peça já está adicionada a este kit.");
+        return;
+      }
+
+      // Adiciona na nossa lista temporária
+      pecasVinculadas.push({ codigo: codigoSelecionado, nome: nomeSelecionado });
+      
+      // Reseta o select e atualiza a tabela visual
+      selectPecas.value = "";
+      renderizarPecas();
+    }
+
+    function removerPeca(index) {
+      if(confirm("Deseja realmente retirar esta peça deste kit?")) {
+        pecasVinculadas.splice(index, 1);
+        renderizarPecas();
+      }
+    }
+
+    // Fecha o modal caso o usuário clique fora da caixa branca
+    modal.addEventListener('click', function(e) {
+      if (e.target === modal) fecharModalPecas();
+    });
+  </script>
 </body>
 </html>
