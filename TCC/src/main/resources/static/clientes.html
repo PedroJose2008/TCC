@@ -29,12 +29,25 @@
     thead th { text-align:left; padding:10px 14px; font-size:11px; text-transform:uppercase; color:var(--text3); border-bottom:1px solid var(--border); background:var(--surface2); }
     tbody td { padding:12px 14px; color:var(--text2); border-bottom:1px solid var(--border); }
     .btn-primary { padding:6px 12px; border-radius:8px; border:none; cursor:pointer; font-size:12px; font-weight:500; background:var(--accent); color:#fff; }
-    .btn-ghost { background:var(--surface2); color:var(--text2); border:1px solid var(--border); padding:6px 12px; border-radius:8px; font-size:12px; }
-   
-    	    .nav-label { font-size:10px; letter-spacing:1.8px; text-transform:uppercase; color:var(--text3); margin-bottom:8px; padding:0 8px; }
-   
-   
+    .btn-ghost { background:var(--surface2); color:var(--text2); border:1px solid var(--border); padding:6px 12px; border-radius:8px; font-size:12px; cursor:pointer; }
+    .nav-label { font-size:10px; letter-spacing:1.8px; text-transform:uppercase; color:var(--text3); margin-bottom:8px; padding:0 8px; }
     .btn-danger { background:rgba(239,68,68,.1); color:var(--danger); padding:6px 12px; border-radius:8px; border:none; cursor:pointer; font-size:12px; }
+    
+    /* Área de busca superior */
+    .search-container { display: flex; gap: 10px; margin-bottom: 20px; }
+    .input-search { flex: 1; padding: 10px; border: 1px solid var(--border); border-radius: 8px; font-size: 13px; }
+
+    /* Estilos do Modal Customizado */
+    .custom-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); justify-content: center; align-items: center; z-index: 999; }
+    .custom-modal.active { display: flex; }
+    .modal-content { background: var(--surface); border-radius: 14px; width: 500px; padding: 24px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); border: 1px solid var(--border); }
+    .modal-header { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 16px; margin-bottom: 20px; display: flex; justify-content: space-between; }
+    .modal-close { cursor: pointer; font-size: 18px; color: var(--text3); }
+    .form-group { margin-bottom: 12px; display: flex; flex-direction: column; gap: 4px; }
+    .form-group label { font-size: 12px; color: var(--text2); font-weight: 500; }
+    .form-group input { padding: 8px 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 13px; color: var(--text); }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .modal-footer { display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; }
   </style>
 </head>
 <body>
@@ -42,47 +55,102 @@
     <aside id="sidebar">
       <div class="logo-area"><div class="logo-icon">⚙️</div><div><div style="font-family:'Syne',sans-serif;font-weight:800;font-size:15px;">ACOA PEÇAS</div></div></div>
       <nav>
-         <div class="nav-label">Principal</div>
-        <a href="dashboard.html" class="nav-item active">📊 Dashboard</a>
+        <div class="nav-label">Principal</div>
+        <a href="dashboard.html" class="nav-item">📊 Dashboard</a>
         <div class="nav-label">Estoque</div>
         <a href="pecas.html" class="nav-item">🔩 Peças</a>
         <a href="kits.html" class="nav-item">📶 Equipamentos</a>
         <div class="nav-label">Oficina</div>
         <a href="os.html" class="nav-item">📝 Abrir Ordem de Serviço</a>
         <a href="manutencao.html" class="nav-item">🛠️ Manutenções</a>
-		<a href="retirada.html" class="nav-item">📤 Ordem de retirada</a>
-		
-      
+        <a href="retirada.html" class="nav-item">📤 Ordem de retirada</a>
         <div class="nav-label">Fornecedores</div>
-	<a href="fornecedores.html" class="nav-item">🏭 Fornecedores</a>
-		        
-    <div class="nav-label">Clientes</div>
-		<a href="clientes.html" class="nav-item">👥 Clientes</a>
-		    
-        
-        
-        
-        
-        
-      
+        <a href="fornecedores.html" class="nav-item">🏭 Fornecedores</a>
+        <div class="nav-label">Clientes</div>
+        <a href="clientes.html" class="nav-item active">👥 Clientes</a>
         <a href="login.html" class="nav-item" style="margin-top:20px; color:var(--danger)">🚪 Sair</a>
-        
       </nav>
     </aside>
+
     <main id="main">
       <header class="topbar-base"><div style="font-family:'Syne',sans-serif;font-size:18px;font-weight:700;">Gestão de Clientes</div></header>
       <div id="content">
+        
+        <div class="search-container">
+          <input type="text" id="filtroNome" class="input-search" placeholder="Buscar cliente por nome..." oninput="buscarCliente()">
+          <button class="btn btn-primary" onclick="buscarCliente()">Buscar</button>
+        </div>
+
         <div class="card">
-          <div class="card-title">👥 Clientes <button class="btn btn-primary">+ Novo Cliente</button></div>
+          <div class="card-title">
+            👥 Lista de Clientes 
+            <button class="btn btn-primary" onclick="abrirModal()">+ Novo Cliente</button>
+          </div>
           <table>
-            <thead><tr><th>Nome</th><th>CPF/CNPJ</th><th>Ações</th></tr></thead>
-            <tbody>
-              <tr><td>João da Silva</td><td>123.456.789-00</td><td><button class="btn btn-ghost">Editar</button> <button class="btn btn-danger">Excluir</button></td></tr>
-            </tbody>
+            <thead>
+              <tr>
+                <th>Nome / Razão Social</th>
+                <th>CPF / CNPJ</th>
+                <th>Telefone</th>
+                <th>E-mail</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody id="clienteTableBody">
+              </tbody>
           </table>
         </div>
       </div>
     </main>
   </div>
+
+  <div id="clienteModal" class="custom-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <span id="modalTitulo">Adicionar Novo Cliente</span>
+        <span class="modal-close" onclick="fecharModal()">&times;</span>
+      </div>
+      <form id="clienteForm">
+        <div class="form-group">
+          <label>Nome / Razão Social</label>
+          <input type="text" id="razaoSocial" required>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>CPF / CNPJ</label>
+            <input type="text" id="cpf_cnpj" required>
+          </div>
+          <div class="form-group">
+            <label>Telefone</label>
+            <input type="text" id="telefone">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>E-mail</label>
+          <input type="email" id="email">
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>CEP</label>
+            <input type="text" id="cep">
+          </div>
+          <div class="form-group">
+            <label>Número</label>
+            <input type="text" id="numero">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Complemento</label>
+          <input type="text" id="complemento">
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-ghost" onclick="fecharModal()">Cancelar</button>
+          <button type="button" class="btn btn-primary" onclick="salvarCliente()">Salvar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+<script type="text/javascript" src="JS/clientes.js"></script>
 </body>
 </html>

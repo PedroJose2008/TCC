@@ -9,6 +9,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
@@ -25,15 +27,17 @@ public class KitEntity implements Serializable{
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 	
-	@ManyToOne
-	@JoinColumn(name = "idPeca")
-	private PecaEntity peca;
+	@ManyToMany
+	@JoinTable(
+	    name = "kit_pecas", 
+	    joinColumns = @JoinColumn(name = "kit_id"),
+	    inverseJoinColumns = @JoinColumn(name = "peca_id")
+	)
+	private List<PecaEntity> pecas; 
 	
 	@ManyToOne
 	@JoinColumn(name = "idCliente")
-	private List<ClienteEntity> cliente;
-	
-	//tem que fazer o código aleatorio e não poder deixar o ususario mexer 
+	private ClienteEntity cliente;
 	private String codigo;
 	private String nome;
 	private String descricao;
@@ -49,6 +53,18 @@ public class KitEntity implements Serializable{
 	
 	
 	
+	public List<PecaEntity> getPecas() {
+		return pecas;
+	}
+	public void setPecas(List<PecaEntity> pecas) {
+		this.pecas = pecas;
+	}
+	public ClienteEntity getCliente() {
+		return cliente;
+	}
+	public void setCliente(ClienteEntity cliente) {
+		this.cliente = cliente;
+	}
 	public String getCodigo() {
 		return codigo;
 	}
@@ -73,6 +89,7 @@ public class KitEntity implements Serializable{
 	public void setDataCadastro(LocalDate dataCadastro) {
 		this.dataCadastro = dataCadastro;
 	}
+
 	
 	
 	

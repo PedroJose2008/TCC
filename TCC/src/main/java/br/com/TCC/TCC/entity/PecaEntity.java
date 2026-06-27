@@ -27,10 +27,20 @@ public class PecaEntity implements Serializable{
 	@ManyToOne
 	@JoinColumn(name = "idFornecedor")
 	private FornecedorEntity fornecedor;
+	@ManyToOne
+	@JoinColumn(name = "manutencao_id")
+	private ManutencaoEntity manutencao; 
+	public ManutencaoEntity getManutencao() {
+		return manutencao;
+	}
+	public void setManutencao(ManutencaoEntity manutencao) {
+		this.manutencao = manutencao;
+	}
 	private String nome;
 	private String prateleira;
 	private String tipo;
 	private int quantidadeEstoque;
+	private Float preco;
 	private String codigo;
 	private LocalDate dataCadastro;
 	
@@ -89,6 +99,12 @@ public class PecaEntity implements Serializable{
 	}
 	public void setDataCadastro(LocalDate dataCadastro) {
 		this.dataCadastro = dataCadastro;
+	}
+	public Float getPreco() {
+		return preco;
+	}
+	public void setPreco(Float preco) {
+		this.preco = preco;
 	}
 
 	

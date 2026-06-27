@@ -14,12 +14,15 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 
 import br.com.TCC.TCC.entity.KitEntity;
+import br.com.TCC.TCC.entity.PecaEntity;
 import br.com.TCC.TCC.repository.KitRepository;
+import br.com.TCC.TCC.repository.PecaRepository;
 
 @RestController
 @RequestMapping("/kits")
@@ -28,7 +31,44 @@ public class KitController {
 
 	@Autowired
 	private KitRepository KitRepository;
+	
+	@Autowired
+    private PecaRepository pecaRepository;
 
+	// 1. LISTAR PEÇAS DO KIT
+    @GetMapping("/listarpecas/{idKit}")
+    public List<PecaEntity> listarPecasDoKit(@PathVariable Integer idKit) {
+        KitEntity kit = KitRepository.findById(idKit).get();
+        return kit.getPecas();
+    }
+
+    // 2. VINCULAR PEÇA AO KIT
+    @PostMapping("/vincularpeca/{idKit}/{idPeca}")
+    public void vincularPeca(@PathVariable Integer idKit, @PathVariable Integer idPeca) {
+        KitEntity kit = KitRepository.findById(idKit).get();
+        PecaEntity peca = pecaRepository.findById(idPeca).get();
+        
+        kit.getPecas().add(peca);
+        KitRepository.save(kit);
+    }
+ 
+    @GetMapping("/buscarpornome")
+    public List<KitEntity> buscarPorNome(@RequestParam String nome) {
+        
+        return KitRepository.findByNomeContainingIgnoreCase(nome);
+    }
+
+    // 3. DESVINCULAR PEÇA DO KIT
+    @DeleteMapping("/desvincularpeca/{idKit}/{idPeca}")
+    public void desvincularPeca(@PathVariable Integer idKit, @PathVariable Integer idPeca) {
+        KitEntity kit = KitRepository.findById(idKit).get();
+        PecaEntity peca = pecaRepository.findById(idPeca).get();
+
+        kit.getPecas().remove(peca);
+        KitRepository.save(kit);
+    }
+
+	
 	// listar todods 
 	@GetMapping("/listartodos")
 	@ResponseStatus(HttpStatus.OK)

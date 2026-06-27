@@ -1,18 +1,106 @@
 package br.com.TCC.TCC.controllers;
 
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.TCC.TCC.entity.OrdemServicoEntity;
+import br.com.TCC.TCC.entity.PecaEntity;
 import br.com.TCC.TCC.repository.OrdemServicoRepository;
+import br.com.TCC.TCC.repository.PecaRepository;
 
 @RestController
-@RequestMapping("/ordemServico")
+@RequestMapping("/ordens")
 @CrossOrigin("*")
 public class OrdemServicoController {
 
 	@Autowired
-	private OrdemServicoRepository  ordemServicoRepository; 
+	private OrdemServicoRepository ordemRepository;
+
+	@Autowired
+	private PecaRepository pecaRepository;
+
+	// listar todos 
+	@GetMapping("/listartodos")
+	@ResponseStatus(HttpStatus.OK)
+	public List<OrdemServicoEntity> listar(){
+		return ordemRepository.findAll();
+	}
 	
+	// listar por ID
+	@GetMapping("/listarporid/{id}")
+	@ResponseStatus(value = HttpStatus.OK)
+	public Optional<OrdemServicoEntity> lisarPorId(@PathVariable Integer id){	
+		return ordemRepository.findById(id);
+	}
+	
+	// salvando por json
+	@PostMapping("/salvar")
+	@ResponseStatus(value = HttpStatus.CREATED)
+	public OrdemServicoEntity salvar(@RequestBody OrdemServicoEntity ordem) {
+		return ordemRepository.save(ordem);
+	}
+	
+	// deletando por id
+	@DeleteMapping("/deletar/{id}")
+	@ResponseStatus(value = HttpStatus.NO_CONTENT)
+	public void deletar(@PathVariable Integer id) {
+		if(ordemRepository.existsById(id)) {
+			ordemRepository.deleteById(id);
+			System.out.println("deletado com sucesso");
+		} else {
+			System.out.println("não encontrado");
+		}
+	}
+	
+	// atualizando por ID
+	@PutMapping("/atualizar/{id}")
+	public ResponseEntity<OrdemServicoEntity> atualizar(@RequestBody OrdemServicoEntity ordem, @PathVariable Integer id) {
+		if (ordemRepository.existsById(id)) {
+			ordem.setId(id);
+			OrdemServicoEntity ordemAtualizada = ordemRepository.save(ordem);
+			return ResponseEntity.ok(ordemAtualizada);
+		} 
+		return ResponseEntity.notFound().build();
+	}
+	
+	// --- ROTAS DO MODAL DE PEÇAS ---
+	
+	@GetMapping("/listarpecas/{idOS}")
+	@ResponseStatus(HttpStatus.OK)
+	public List<PecaEntity> listarPecasDaOS(@PathVariable Integer idOS) {
+		OrdemServicoEntity os = ordemRepository.findById(idOS).get();
+		return os.getPecas();
+	}
+
+	@PostMapping("/vincularpeca/{idOS}/{idPeca}")
+	@ResponseStatus(HttpStatus.OK)
+	public void vincularPeca(@PathVariable Integer idOS, @PathVariable Integer idPeca) {
+		OrdemServicoEntity os = ordemRepository.findById(idOS).get();
+		PecaEntity peca = pecaRepository.findById(idPeca).get();
+		os.getPecas().add(peca);
+		ordemRepository.save(os);
+	}
+
+	@DeleteMapping("/desvincularpeca/{idOS}/{idPeca}")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void desvincularPeca(@PathVariable Integer idOS, @PathVariable Integer idPeca) {
+		OrdemServicoEntity os = ordemRepository.findById(idOS).get();
+		PecaEntity peca = pecaRepository.findById(idPeca).get();
+		os.getPecas().remove(peca);
+		ordemRepository.save(os);
+	}
 }

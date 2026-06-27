@@ -2,7 +2,7 @@ package br.com.TCC.TCC.entity;
 
 import java.io.Serializable;
 import java.time.LocalDate;
-import java.util.List;
+
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -24,12 +24,13 @@ public class KitPecaEntity implements Serializable{
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
+	
 	@ManyToOne
-	@JoinColumn(name = "idKit")
-	private List<KitEntity> kit;
+	@JoinColumn(name = "kit_id") 
+	private KitEntity kit;
 	@ManyToOne
 	@JoinColumn(name = "idPeca")
-	private List<PecaEntity> peca;
+	private PecaEntity peca;
 	
 	
 	private int quantidade;
@@ -54,6 +55,18 @@ public class KitPecaEntity implements Serializable{
 	}
 	public void setDataCadastro(LocalDate dataCadastro) {
 		this.dataCadastro = dataCadastro;
+	}
+	public KitEntity getKit() {
+		return kit;
+	}
+	public void setKit(KitEntity kit) {
+		this.kit = kit;
+	}
+	public PecaEntity getPeca() {
+		return peca;
+	}
+	public void setPeca(PecaEntity peca) {
+		this.peca = peca;
 	}
 	
 	

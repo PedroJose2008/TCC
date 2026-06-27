@@ -12,6 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
@@ -29,14 +30,13 @@ public class ManutencaoEntity  implements Serializable{
 	private int id;
 	
 	
-	@ManyToMany
-	@JoinColumn(name = "idPeca")
-	@NotNull
+	// SE FOREM VÁRIAS PEÇAS:
+	@OneToMany(mappedBy = "manutencao") 
 	private List<PecaEntity> peca;
 	
 	@ManyToOne
 	@JoinColumn(name = "idKit")
-	private List<KitEntity> kit;
+	private KitEntity kit;
 	
 	@ManyToOne
 	@JoinColumn(name = "idOrdemServico")
@@ -45,12 +45,14 @@ public class ManutencaoEntity  implements Serializable{
 	//id cliente
 	@ManyToOne
 	@JoinColumn (name = "idCliente")
-	private List<ClienteEntity> cliente;
+	private ClienteEntity cliente;
 	
 	
 	@ManyToOne
 	@JoinColumn(name = "idMecanico")
-	private List<UsuarioEntity> mecanico;
+	private UsuarioEntity mecanico;
+	
+	
 	
 	
 	
@@ -63,10 +65,10 @@ public class ManutencaoEntity  implements Serializable{
 	public void setPeca(List<PecaEntity> peca) {
 		this.peca = peca;
 	}
-	public List<KitEntity> getKit() {
+	public KitEntity getKit() {
 		return kit;
 	}
-	public void setKit(List<KitEntity> kit) {
+	public void setKit(KitEntity kit) {
 		this.kit = kit;
 	}
 	public OrdemServicoEntity getOrdemServico() {
@@ -75,19 +77,22 @@ public class ManutencaoEntity  implements Serializable{
 	public void setOrdemServico(OrdemServicoEntity ordemServico) {
 		this.ordemServico = ordemServico;
 	}
-	public List<ClienteEntity> getCliente() {
+	
+	
+	public ClienteEntity getCliente() {
 		return cliente;
 	}
-	public void setCliente(List<ClienteEntity> cliente) {
+	public void setCliente(ClienteEntity cliente) {
 		this.cliente = cliente;
 	}
-	public List<UsuarioEntity> getMecanico() {
+	public UsuarioEntity getMecanico() {
 		return mecanico;
 	}
-	public void setMecanico(List<UsuarioEntity> mecanico) {
+	public void setMecanico(UsuarioEntity mecanico) {
 		this.mecanico = mecanico;
 	}
-	
+
+
 	private String status;
 	private LocalDate dataFinalizacao;
 	

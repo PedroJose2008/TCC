@@ -21,7 +21,6 @@ public class ClienteEntity implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
-
 	private String razaoSocial;
 	private String telefone;
 	private String email;

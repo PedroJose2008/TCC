@@ -11,6 +11,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
@@ -30,20 +32,18 @@ public class OrdemServicoEntity implements Serializable {
 	private int id;
 	
 	@ManyToOne
-	@JoinColumn(name = "idCliente")
-	@NotNull
-	private List<ClienteEntity> cliente;
-	
+	@JoinColumn(name = "cliente_id")
+	private ClienteEntity cliente;
 	
 	@ManyToOne
 	@JoinColumn(name = "idUsuario")
 	@NotNull
-	private List<UsuarioEntity> usuario;
+	private UsuarioEntity usuario;
 	
 	@ManyToOne
 	@JoinColumn(name = "idTipoPagamento")
 	@NotNull
-	private List<TipoPagamentoEntity> tipoPagamento;
+	private TipoPagamentoEntity tipoPagamento;
 	
 	@ManyToOne
 	@JoinColumn(name = "idKit")
@@ -51,10 +51,13 @@ public class OrdemServicoEntity implements Serializable {
 	private KitEntity kit;
 	
 	
-	@ManyToOne
-	@JoinColumn(name = "idPeca")
-	@NotNull
-	private PecaEntity peca;
+	@ManyToMany
+	@JoinTable(
+	    name = "ordem_servico_pecas",
+	    joinColumns = @JoinColumn(name = "ordem_id"),
+	    inverseJoinColumns = @JoinColumn(name = "peca_id")
+	)
+	private List<PecaEntity> pecas;
 	
 	@NotNull
 	@Column(precision = 5, scale = 2)
@@ -70,27 +73,31 @@ public class OrdemServicoEntity implements Serializable {
 		this.id = id;
 	}
 
-	public List<ClienteEntity> getCliente() {
+	
+
+	public ClienteEntity getCliente() {
 		return cliente;
 	}
 
-	public void setCliente(List<ClienteEntity> cliente) {
+	public void setCliente(ClienteEntity cliente) {
 		this.cliente = cliente;
 	}
 
-	public List<UsuarioEntity> getUsuario() {
+	
+
+	public UsuarioEntity getUsuario() {
 		return usuario;
 	}
 
-	public void setUsuario(List<UsuarioEntity> usuario) {
+	public void setUsuario(UsuarioEntity usuario) {
 		this.usuario = usuario;
 	}
 
-	public List<TipoPagamentoEntity> getTipoPagamento() {
+	public TipoPagamentoEntity getTipoPagamento() {
 		return tipoPagamento;
 	}
 
-	public void setTipoPagamento(List<TipoPagamentoEntity> tipoPagamento) {
+	public void setTipoPagamento(TipoPagamentoEntity tipoPagamento) {
 		this.tipoPagamento = tipoPagamento;
 	}
 
@@ -102,12 +109,14 @@ public class OrdemServicoEntity implements Serializable {
 		this.kit = kit;
 	}
 
-	public PecaEntity getPeca() {
-		return peca;
+	
+
+	public List<PecaEntity> getPecas() {
+		return pecas;
 	}
 
-	public void setPeca(PecaEntity peca) {
-		this.peca = peca;
+	public void setPecas(List<PecaEntity> pecas) {
+		this.pecas = pecas;
 	}
 
 	public BigDecimal getValor() {
