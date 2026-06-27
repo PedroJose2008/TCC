@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard - Acoa Peças</title>
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+ <link rel="stylesheet" href="css/cadastro.css" >
+ 
   <style>
     :root {
       --bg: #eef2f8; --surface: #ffffff; --surface2: #f0f4fb; --border: #d6dff0;
@@ -65,10 +67,41 @@
       
     </aside>
     <main id="main">
-      <header class="topbar-base">
-        <div class="page-title">Dashboard Geral</div>
-        <div class="avatar">AL</div>
-      </header>
+    
+    <header style="display: flex; justify-content: space-between; align-items: center; padding: 15px 30px; background: #ffffff; border-bottom: 1px solid #d6dff0; font-family: 'Syne', sans-serif;">
+  <h2 style="font-size: 20px; font-weight: 800; color: #1a2340;">Dashboard Geral</h2>
+  
+  <div id="user-menu-btn" style="background: #3b6ff5; color: #ffffff; width: 42px; height: 42px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; cursor: pointer; user-select: none;">
+    AL
+  </div>
+</header>
+
+<div id="user-modal" class="user-modal-container">
+  <div class="user-modal-content">
+    
+    <div class="user-info">
+      <span class="user-avatar-mini">AL</span>
+      <div class="user-text-details">
+        <span id="modal-username" class="user-name-title">Nome do Usuário</span>
+        <span class="user-role-subtitle">Administrador</span>
+        
+      </div>
+    </div>
+    
+    <hr class="modal-divider">
+    
+    <button class="modal-item btn-logout" onclick="logout()">
+      🚪 Sair da Conta
+    </button>
+    
+    <button class="modal-item btn-delete" onclick="excluirConta(event)" id="butaoExcluir" >
+      🗑️ Excluir Conta
+    </button>
+    
+  </div>
+</div>
+    
+    
         <div id="content">
       
       <!-- DASHBOARD -->
@@ -141,5 +174,7 @@
       </div>
     </main>
   </div>
+  <script type="text/javascript" src="JS/dashboard.js"></script>
+  
 </body>
 </html>
