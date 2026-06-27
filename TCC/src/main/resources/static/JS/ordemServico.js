@@ -247,3 +247,5 @@ function abrirModalNovaOS() {
 function fecharModalNovaOS() {
     document.getElementById('modalNovaOS').classList.remove('active');
 }
+
+//teste
