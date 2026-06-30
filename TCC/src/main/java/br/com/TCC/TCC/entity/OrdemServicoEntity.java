@@ -16,7 +16,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
+
 
 @Entity
 @Table(name = "OrdemServico")
@@ -73,7 +73,6 @@ public class OrdemServicoEntity implements Serializable {
 	}
 
 
-	
 
 	public ClienteEntity getCliente() {
 		return cliente;
