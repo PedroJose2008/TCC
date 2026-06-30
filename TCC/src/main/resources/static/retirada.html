@@ -9,7 +9,7 @@
     :root {
       --bg: #eef2f8; --surface: #ffffff; --surface2: #f0f4fb; --border: #d6dff0;
       --accent: #3b6ff5; --accent2: #5b8af8; --accent-light: #dce8ff;
-      --warning: #f59e0b; --text: #1a2340; --text2: #4a6080; --text3: #8fa0b8; --sidebar-w: 240px;
+      --success: #22c55e; --warning: #f59e0b; --text: #1a2340; --text2: #4a6080; --text3: #8fa0b8; --sidebar-w: 240px;
     }
     * { margin:0; padding:0; box-sizing:border-box; }
     body { font-family:'DM Sans', sans-serif; background:var(--bg); color:var(--text); height:100vh; overflow:hidden; }
@@ -23,16 +23,18 @@
     #main { flex:1; display:flex; flex-direction:column; overflow:hidden; }
     .topbar-base { height:64px; background:var(--surface); border-bottom:1px solid var(--border); display:flex; align-items:center; padding:0 28px; box-shadow: 0 2px 8px rgba(59,111,245,.05); }
     #content { flex:1; overflow-y:auto; padding:28px; }
+    
     .card { background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:20px; box-shadow: 0 2px 10px rgba(59,111,245,.06); }
     .card-title { font-family:'Syne',sans-serif; font-weight:700; font-size:14px; margin-bottom:16px; }
+    
     table { width:100%; border-collapse:collapse; font-size:13.5px; }
-    thead th { text-align:left; padding:10px 14px; font-size:11px; text-transform:uppercase; color:var(--text3); border-bottom:1px solid var(--border); background:var(--surface2); }
-    tbody td { padding:12px 14px; color:var(--text2); border-bottom:1px solid var(--border); }
-    .btn-primary { padding:6px 12px; border-radius:8px; border:none; cursor:pointer; font-size:12px; font-weight:500; background:var(--accent); color:#fff; }
+    thead th { text-align:center; padding:10px 14px; font-size:11px; text-transform:uppercase; color:var(--text3); border-bottom:1px solid var(--border); background:var(--surface2); }
+    tbody td { text-align:center; padding:12px 14px; color:var(--text2); border-bottom:1px solid var(--border); vertical-align: middle; }
     
-     	    .nav-label { font-size:10px; letter-spacing:1.8px; text-transform:uppercase; color:var(--text3); margin-bottom:8px; padding:0 8px; }
+    .btn-success { padding:6px 14px; border-radius:8px; border:none; cursor:pointer; font-size:12px; font-weight:500; background:var(--success); color:#fff; transition: background 0.2s; }
+    .btn-success:hover { background: #16a34a; }
     
-    
+    .nav-label { font-size:10px; letter-spacing:1.8px; text-transform:uppercase; color:var(--text3); margin-bottom:8px; padding:0 8px; }
     .badge-yellow { padding:3px 8px; border-radius:20px; font-size:11px; font-weight:600; background:rgba(245,158,11,.1); color:#d97706; }
   </style>
 </head>
@@ -41,47 +43,62 @@
     <aside id="sidebar">
       <div class="logo-area"><div class="logo-icon">⚙️</div><div><div style="font-family:'Syne',sans-serif;font-weight:800;font-size:15px;">ACOA PEÇAS</div></div></div>
       <nav>
-         <div class="nav-label">Principal</div>
-        <a href="dashboard.html" class="nav-item active">📊 Dashboard</a>
+        <div class="nav-label">Principal</div>
+        <a href="dashboard.html" class="nav-item">📊 Dashboard</a>
         <div class="nav-label">Estoque</div>
         <a href="pecas.html" class="nav-item">🔩 Peças</a>
         <a href="kits.html" class="nav-item">📶 Kits</a>
         <div class="nav-label">Oficina</div>
         <a href="os.html" class="nav-item">📝 Abrir Ordem de Serviço</a>
         <a href="manutencao.html" class="nav-item">🛠️ Manutenções</a>
-		<a href="retirada.html" class="nav-item">📤 Ordem de retirada</a>
-		
+        <a href="retirada.html" class="nav-item active">📤 Ordem de retirada</a>
 		
         <div class="nav-label">Fornecedores</div>
-	<a href="fornecedores.html" class="nav-item">🏭 Fornecedores</a>
+        <a href="fornecedores.html" class="nav-item">🏭 Fornecedores</a>
 		        
-    <div class="nav-label">Clientes</div>
-		<a href="clientes.html" class="nav-item">👥 Clientes</a>
-		    
+        <div class="nav-label">Clientes</div>
+        <a href="clientes.html" class="nav-item">👥 Clientes</a>
         
-        
-        
-        
-        
-      
         <a href="login.html" class="nav-item" style="margin-top:20px; color:var(--danger)">🚪 Sair</a>
-        
       </nav>
     </aside>
+    
     <main id="main">
       <header class="topbar-base"><div style="font-family:'Syne',sans-serif;font-size:18px;font-weight:700;">Ordens de Retirada</div></header>
       <div id="content">
         <div class="card">
           <div class="card-title">📤 Retiradas Pendentes</div>
           <table>
-            <thead><tr><th>OS</th><th>Destino</th><th>Valor (R$)</th><th>Status</th><th>Ação</th></tr></thead>
-            <tbody>
-              <tr><td>OS-0110</td><td>João da Silva</td><td>R$ 450,00</td><td><span class="badge-yellow">Aguardando Pagamento</span></td><td><button class="btn-primary">Confirmar Retirada</button></td></tr>
+            <thead>
+              <tr>
+                <th>OS</th>
+                <th>Cliente</th>
+                <th>Mecânico Responsável</th>
+                <th>Kit</th>
+                <th>Forma de Pagamento</th>
+                <th>Valor (R$)</th>
+                <th>Status</th>
+                <th>Ação</th>
+              </tr>
+            </thead>
+            <tbody id="listaRetiradas">
+              <tr>
+                <td>OS-0110</td>
+                <td>João da Silva</td>
+                <td>Carlos Souza</td>
+                <td>Kit Inicial Padrão</td>
+                <td>Pix</td>
+                <td>R$ 450,00</td>
+                <td><span class="badge-yellow">Aguardando Pagamento</span></td>
+                <td><button class="btn-success" onclick="concluirRetirada('OS-0110')">Concluir Retirada</button></td>
+              </tr>
             </tbody>
           </table>
         </div>
       </div>
     </main>
   </div>
+
+  <script type="text/javascript" src="JS/retirada.js"></script>
 </body>
 </html>

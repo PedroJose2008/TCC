@@ -43,7 +43,7 @@ public class ItensManutencaoEntity implements Serializable {
 	private LocalDate dataCadastro;
 	private float precoManutencao;
 	
-	
+	private boolean emManutencao;
 	
 
 	public PecaEntity getPeca() {
@@ -83,6 +83,12 @@ public class ItensManutencaoEntity implements Serializable {
 	}
 	public void setPrecoManutencao(float precoManutencao) {
 		this.precoManutencao = precoManutencao;
+	}
+	public boolean isEmManutencao() {
+		return emManutencao;
+	}
+	public void setEmManutencao(boolean emManutencao) {
+		this.emManutencao = emManutencao;
 	}
 	
 	

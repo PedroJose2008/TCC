@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -28,7 +29,7 @@ public class OrdemServicoEntity implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@NotNull
+	
 	private int id;
 	
 	@ManyToOne
@@ -37,17 +38,14 @@ public class OrdemServicoEntity implements Serializable {
 	
 	@ManyToOne
 	@JoinColumn(name = "idUsuario")
-	@NotNull
+	
 	private UsuarioEntity usuario;
 	
-	@ManyToOne
-	@JoinColumn(name = "idTipoPagamento")
-	@NotNull
-	private TipoPagamentoEntity tipoPagamento;
+	private String pagamento;
 	
 	@ManyToOne
 	@JoinColumn(name = "idKit")
-	@NotNull
+	
 	private KitEntity kit;
 	
 	
@@ -59,7 +57,7 @@ public class OrdemServicoEntity implements Serializable {
 	)
 	private List<PecaEntity> pecas;
 	
-	@NotNull
+	
 	@Column(precision = 5, scale = 2)
 	private BigDecimal valor;
 	
@@ -93,13 +91,8 @@ public class OrdemServicoEntity implements Serializable {
 		this.usuario = usuario;
 	}
 
-	public TipoPagamentoEntity getTipoPagamento() {
-		return tipoPagamento;
-	}
-
-	public void setTipoPagamento(TipoPagamentoEntity tipoPagamento) {
-		this.tipoPagamento = tipoPagamento;
-	}
+	
+	
 
 	public KitEntity getKit() {
 		return kit;
@@ -137,6 +130,14 @@ public class OrdemServicoEntity implements Serializable {
 
 	public static long getSerialversionuid() {
 		return serialVersionUID;
+	}
+
+	public String getPagamento() {
+		return pagamento;
+	}
+
+	public void setPagamento(String pagamento) {
+		this.pagamento = pagamento;
 	}
 	
 	

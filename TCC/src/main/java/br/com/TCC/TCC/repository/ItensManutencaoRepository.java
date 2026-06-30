@@ -1,5 +1,7 @@
 package br.com.TCC.TCC.repository;
 
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -8,4 +10,5 @@ import br.com.TCC.TCC.entity.ItensManutencaoEntity;
 @Repository
 public interface ItensManutencaoRepository extends JpaRepository<ItensManutencaoEntity, Integer> {
 
+	List<ItensManutencaoEntity> findByEmManutencao(boolean status);
 }
