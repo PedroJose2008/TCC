@@ -13,7 +13,9 @@ import br.com.TCC.TCC.entity.UsuarioEntity;
 public interface UsuarioRepository extends JpaRepository<UsuarioEntity, Integer> {
 
 	
+	Optional<UsuarioEntity> findByCpf (String cpf);
 	
+	Optional<UsuarioEntity>findByTelefone(String telefone);
 	
 	Optional<UsuarioEntity> findByEmail(String email);
 	

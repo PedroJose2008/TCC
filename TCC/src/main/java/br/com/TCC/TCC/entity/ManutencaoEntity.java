@@ -29,14 +29,14 @@ public class ManutencaoEntity  implements Serializable{
 	private int id;
 	
 	
-	@ManyToMany
+	@ManyToOne
 	@JoinColumn(name = "idPeca")
 	@NotNull
-	private List<PecaEntity> peca;
+	private PecaEntity peca;
 	
 	@ManyToOne
 	@JoinColumn(name = "idKit")
-	private List<KitEntity> kit;
+	private KitEntity kit;
 	
 	@ManyToOne
 	@JoinColumn(name = "idOrdemServico")
@@ -45,28 +45,29 @@ public class ManutencaoEntity  implements Serializable{
 	//id cliente
 	@ManyToOne
 	@JoinColumn (name = "idCliente")
-	private List<ClienteEntity> cliente;
+	private ClienteEntity cliente;
 	
 	
 	@ManyToOne
 	@JoinColumn(name = "idMecanico")
-	private List<UsuarioEntity> mecanico;
+	private UsuarioEntity mecanico;
 	
 	
 	
 	
 	
 	
-	public List<PecaEntity> getPeca() {
+	
+	public PecaEntity getPeca() {
 		return peca;
 	}
-	public void setPeca(List<PecaEntity> peca) {
+	public void setPeca(PecaEntity peca) {
 		this.peca = peca;
 	}
-	public List<KitEntity> getKit() {
+	public KitEntity getKit() {
 		return kit;
 	}
-	public void setKit(List<KitEntity> kit) {
+	public void setKit(KitEntity kit) {
 		this.kit = kit;
 	}
 	public OrdemServicoEntity getOrdemServico() {
@@ -75,18 +76,14 @@ public class ManutencaoEntity  implements Serializable{
 	public void setOrdemServico(OrdemServicoEntity ordemServico) {
 		this.ordemServico = ordemServico;
 	}
-	public List<ClienteEntity> getCliente() {
+	
+	public ClienteEntity getCliente() {
 		return cliente;
 	}
-	public void setCliente(List<ClienteEntity> cliente) {
+	public void setCliente(ClienteEntity cliente) {
 		this.cliente = cliente;
 	}
-	public List<UsuarioEntity> getMecanico() {
-		return mecanico;
-	}
-	public void setMecanico(List<UsuarioEntity> mecanico) {
-		this.mecanico = mecanico;
-	}
+	
 	
 	private String status;
 	private LocalDate dataFinalizacao;
@@ -97,6 +94,12 @@ public class ManutencaoEntity  implements Serializable{
 	
 	
 
+	public UsuarioEntity getMecanico() {
+		return mecanico;
+	}
+	public void setMecanico(UsuarioEntity mecanico) {
+		this.mecanico = mecanico;
+	}
 	public int getId() {
 		return id;
 	}

@@ -32,18 +32,18 @@ public class OrdemServicoEntity implements Serializable {
 	@ManyToOne
 	@JoinColumn(name = "idCliente")
 	@NotNull
-	private List<ClienteEntity> cliente;
+	private ClienteEntity cliente;
 	
 	
 	@ManyToOne
 	@JoinColumn(name = "idUsuario")
 	@NotNull
-	private List<UsuarioEntity> usuario;
+	private UsuarioEntity usuario;
 	
 	@ManyToOne
 	@JoinColumn(name = "idTipoPagamento")
 	@NotNull
-	private List<TipoPagamentoEntity> tipoPagamento;
+	private TipoPagamentoEntity tipoPagamento;
 	
 	@ManyToOne
 	@JoinColumn(name = "idKit")
@@ -70,27 +70,37 @@ public class OrdemServicoEntity implements Serializable {
 		this.id = id;
 	}
 
-	public List<ClienteEntity> getCliente() {
+
+	
+	
+	
+
+	public ClienteEntity getCliente() {
 		return cliente;
 	}
 
-	public void setCliente(List<ClienteEntity> cliente) {
+	public void setCliente(ClienteEntity cliente) {
 		this.cliente = cliente;
 	}
 
-	public List<UsuarioEntity> getUsuario() {
+	
+
+	
+	
+
+	public UsuarioEntity getUsuario() {
 		return usuario;
 	}
 
-	public void setUsuario(List<UsuarioEntity> usuario) {
+	public void setUsuario(UsuarioEntity usuario) {
 		this.usuario = usuario;
 	}
 
-	public List<TipoPagamentoEntity> getTipoPagamento() {
+	public TipoPagamentoEntity getTipoPagamento() {
 		return tipoPagamento;
 	}
 
-	public void setTipoPagamento(List<TipoPagamentoEntity> tipoPagamento) {
+	public void setTipoPagamento(TipoPagamentoEntity tipoPagamento) {
 		this.tipoPagamento = tipoPagamento;
 	}
 

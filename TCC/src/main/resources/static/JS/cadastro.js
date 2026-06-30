@@ -4,6 +4,8 @@ const API_SALVAR_USUARIOS="http://localhost:8000/usuarios/salvar";
 //pega a opção usuario do switchTab e coloca ela como primeira, assim que o usuario entra na página a primeira opção é o usário   por foi esse parametro que eu coloquei 
 let opcao="usuario";
 
+let editandoId= null;
+
 //pega o parametro que o usuário clicou, seja ele usuário, fornecedor ou cliente
 function switchTab(type) {
   
@@ -44,19 +46,97 @@ async function salvar(event){
 // salvo o usuário puxando a roda de salvar 
 async function salvarUsu(){
 	
-	//valida
-	validaUsu();
 	
+	
+			
+			
+			if(!validaUsu()){
+				return;//não deixa salvar se a função validar usuário estiver errada 
+			}
+			
+			const inscricao = {
+			        nome: document.getElementById("nome").value,
+			        telefone: document.getElementById("telefone_usuario").value,
+			        email: document.getElementById("email_usuario").value,
+			        cpf: document.getElementById("cpf").value,
+			        cargo: document.getElementById("cargo").value,
+			        senha: document.getElementById("senha").value,
+			        
+			    };
+
+
+
+			        if (editandoId) {
+			            // update
+			            await fetch(`${API_SALVAR_USUARIOS}/${editandoId}`, {
+			                method: "PUT",
+			                headers: {
+			                    "Content-Type": "application/json"
+			                },
+			                body: JSON.stringify(inscricao)
+			            });
+			        } else {
+			            // CREATE 
+			            await fetch(API_SALVAR_USUARIOS, {
+			                method: "POST",
+			                headers: {
+			                    "Content-Type": "application/json"
+			                },
+			                body: JSON.stringify(inscricao)
+			            });
+						alert('Cadastro realizado com sucesso');	
+			        }
+
+				
+					
+					
 	
 }
 
 function validaUsu(){
 	
-	validaNome();
-	validaTelefone();
-	validarCPF();
 	
+	//pego a função válida nome 
+	const nomeValido=validaNome();
+
+	const telefoneValido= validaTelefone();
 	
+	const emailValido=validaEmail();
+	
+	const cpfValido=validarCPF();
+	
+	const senhaValido=validaSenha();
+	
+	// se estiver diferente da função válida nome não vai dexar salvar 
+	if(!nomeValido){
+		alert("Verifique se o campo nome está vazio,contém apenas números, se tem mais de 150 caracteres ou  menos de 3 caracteres  ")
+		return false;
+	}
+	
+	if(!telefoneValido){
+		alert("Verifique se o campo telefone esta vazio ou com menos de 11 números")
+		return false ;
+	}
+	
+	if(!cpfValido){
+		alert("Verifique o campo CPF e digite-o corretamente ")
+		
+	}
+	
+	if(!emailValido){
+		alert("Verifique o campo Email e digite-o corretamente")
+		return false 
+	}
+	
+	if(!senhaValido){
+		
+		alert("As senhas não são iguais")
+		return false;
+	}
+		
+	return true;
+	
+		
 }
 
 
@@ -71,18 +151,18 @@ function validaNome(){
 	const nomeCerto= nomeInput.value.trim();
 	
 	if(nomeCerto.length===0){
-		alert("Nome não pode ser vazio	")
+	
 		return false;
 	}
 	
 	
 	else if( nomeCerto.length<3){
-		alert("Nome muito pequeno, por favor digite um nome maior");
+		
 		return false  ;
 		
 	}
 	else if (nomeCerto.length>100){
-		alert("Nome muito grande, por favor digite um nome menor");
+		
 		return false  ;
 	} 
 	else {
@@ -97,7 +177,7 @@ function validaNome(){
 function validarNome(input) {
   // Impede que o valor seja digitado se contiver apenas números
   if (/^\d+$/.test(input.value)) {
-	alert("Você não pode digitar números")
+	
     input.value = ""; // Limpa o campo se for exclusivamente numérico
   }
 }
@@ -133,13 +213,13 @@ function validaTelefone(){
 
   // pega o valor do input e também tira os espaços vazios
   if (valorTelefone.length === 0){
-    alert("O número de telefone não pode estar vazio");
+   
     return false;
   }
 
-  // Celulares no Brasil com DDD possuem 11 dígitos (ex: 11 99999-9999)
+  // se for menor que 11 ou maior que 11 não deixa salvar
   if (valorTelefone.length < 11 || valorTelefone.length > 11){
-    alert("O número de telefone deve ter 1 dígitos (com o DDD)");
+  
     return false;
   }
   
@@ -147,25 +227,55 @@ function validaTelefone(){
 }
 
 
+function validaEmail(){
+	
+	const emailInput=document.getElementById("email_usuario");
+	
+	const emailcerto=emailInput.value.trim();
+	
+	
+	if(emailcerto>100){
+	return false;
+		
+	}
+	
+	return true;
+}
+
 	
 
-function validarCPF(cpf) {
-	
-	const cpfInput = document.getElementById("cpf");
-	    if (!cpfInput) return false;
+
+function aplicarMascaraCPF(evento) {
+    let input = evento.target;
+    let valor = input.value;
+
+    // Remove tudo o que não for número
+    valor = valor.replace(/\D/g, "");
+
+    // Aplica a formatação visual dinamicamente
+    valor = valor.replace(/(\d{3})(\d)/, "$1.$2");
+    valor = valor.replace(/(\d{3})(\d)/, "$1.$2");
+    valor = valor.replace(/(\d{3})(\d{1,2})$/, "$1-$2");
+
+    // Devolve o valor formatado para o campo
+    input.value = valor;
+}
+
+
+function validarCPF() {
+    const cpfInput = document.getElementById("cpf");
+    if (!cpfInput) return false;
+    
+    // Remove a máscara do cpf
+    let cpf = cpfInput.value.replace(/[^\d]/g, '');
 		
-	    // CORREÇÃO: Usamos o .value para pegar o texto e guardamos na variável 'cpf' que já existia
-	    cpf = cpfInput.value.replace(/[^\d]/g, '');
-		
-		
-    // Verifica se tem 11 dígitos ou se é uma sequência de números repetidos
+    // Verifica se tem 11 dígitos ou se é uma sequência repetida 
     if (cpf.length !== 11 || /^(\d)\1{10}$/.test(cpf)) {
-		alert("CPF inválido! Por favor, confira os números.");
-
-       
+        alert("CPF inválido! Por favor, confira os números.");
+        return false;
     }
 
-    // Validação do 1º dígito
+    // Validação do 1º dígito verificador
     let soma = 0;
     for (let i = 0; i < 9; i++) {
         soma += parseInt(cpf.charAt(i)) * (10 - i);
@@ -174,11 +284,11 @@ function validarCPF(cpf) {
     let digito1 = (resto === 10 || resto === 11) ? 0 : resto;
 
     if (digito1 !== parseInt(cpf.charAt(9))) {
-		alert("CPF inválido! Por favor, confira os números.");
-					        
+        alert("CPF inválido! Por favor, confira os números.");
+        return false;	        
     }
 
-    // Validação do 2º dígito
+    // Validação do 2º dígito verificador
     soma = 0;
     for (let i = 0; i < 10; i++) {
         soma += parseInt(cpf.charAt(i)) * (11 - i);
@@ -187,15 +297,32 @@ function validarCPF(cpf) {
     let digito2 = (resto === 10 || resto === 11) ? 0 : resto;
 
     if (digito2 !== parseInt(cpf.charAt(10))) {
-		alert("CPF inválido! Por favor, confira os números.");
-		return cpfInput.value="";
+        alert("CPF inválido! Por favor, confira os números.");
+        return false;
     }
 
-
+   
+    return true;
 }
 
+function validaSenha(){
+		
+		const senha= document.getElementById("senha").value.trim();
+		const confirmaSenha=document.getElementById("confirmaSenha").value.trim();
+		
+		// se o campo de senha e confirmar senha estiverem diferentes não deixa passar
+		if(senha!==confirmaSenha){
+			
+			return false;
+		}
+		
+	
+		return true;
+	}
 
 
+// pego o o id de da cadastro, ele pega a date de hoje com o new Date e depois eu formato para o formato brasileiro
+document.getElementById("dataCadastro").value = new Date().toLocaleDateString('pt-BR');
 
 
 

@@ -31,7 +31,7 @@ public class KitEntity implements Serializable{
 	
 	@ManyToOne
 	@JoinColumn(name = "idCliente")
-	private List<ClienteEntity> cliente;
+	private ClienteEntity cliente;
 	
 	//tem que fazer o código aleatorio e não poder deixar o ususario mexer 
 	private String codigo;
@@ -72,6 +72,21 @@ public class KitEntity implements Serializable{
 	}
 	public void setDataCadastro(LocalDate dataCadastro) {
 		this.dataCadastro = dataCadastro;
+	}
+	public PecaEntity getPeca() {
+		return peca;
+	}
+	public void setPeca(PecaEntity peca) {
+		this.peca = peca;
+	}
+	public ClienteEntity getCliente() {
+		return cliente;
+	}
+	public void setCliente(ClienteEntity cliente) {
+		this.cliente = cliente;
+	}
+	public static long getSerialversionuid() {
+		return serialVersionUID;
 	}
 	
 	
