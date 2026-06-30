@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.TCC.TCC.entity.ClienteEntity;
+import br.com.TCC.TCC.entity.FornecedorEntity;
 import br.com.TCC.TCC.repository.ClienteRepository;
 
 @RestController
@@ -37,7 +38,13 @@ public class ClienteController {
 		
 		return clienteRepository.findAll();
 		
-	}// fim do listar todos
+	}
+	
+	@GetMapping("/buscarPorNome/{razaoSocial}")
+	public List<ClienteEntity> buscarPorNome(@PathVariable String razaoSocial) {
+	    return clienteRepository.findByrazaoSocialContaining(razaoSocial);
+	}
+	// fim do listar todos
 	
 	//listar por ID
 	@GetMapping("/listarporid/{id}")

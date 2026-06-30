@@ -21,6 +21,7 @@ import br.com.TCC.TCC.entity.PecaEntity;
 import br.com.TCC.TCC.repository.PecaRepository;
 
 
+
 @RestController
 @RequestMapping("/pecas")
 @CrossOrigin("*")
@@ -37,7 +38,14 @@ public class PecaController {
 		
 		return PecaRepository.findAll();
 		
-	}// fim do listar todos
+	}
+	
+	 @GetMapping("/buscarPorNome/{nome}")
+	    public List<PecaEntity> buscarPorNome(@PathVariable String nome) {
+	        return PecaRepository.findByNomeContaining(nome);
+	    }
+	
+	// fim do listar todos
 	
 	//listar por ID
 	@GetMapping("/listarporid/{id}")

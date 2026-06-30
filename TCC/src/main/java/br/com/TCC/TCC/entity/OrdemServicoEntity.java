@@ -11,6 +11,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
@@ -30,10 +32,15 @@ public class OrdemServicoEntity implements Serializable {
 	private int id;
 	
 	@ManyToOne
+<<<<<<< HEAD
 	@JoinColumn(name = "idCliente")
 	@NotNull
 	private ClienteEntity cliente;
 	
+=======
+	@JoinColumn(name = "cliente_id")
+	private ClienteEntity cliente;
+>>>>>>> branch 'master' of https://github.com/PedroJose2008/TCC.git
 	
 	@ManyToOne
 	@JoinColumn(name = "idUsuario")
@@ -51,10 +58,13 @@ public class OrdemServicoEntity implements Serializable {
 	private KitEntity kit;
 	
 	
-	@ManyToOne
-	@JoinColumn(name = "idPeca")
-	@NotNull
-	private PecaEntity peca;
+	@ManyToMany
+	@JoinTable(
+	    name = "ordem_servico_pecas",
+	    joinColumns = @JoinColumn(name = "ordem_id"),
+	    inverseJoinColumns = @JoinColumn(name = "peca_id")
+	)
+	private List<PecaEntity> pecas;
 	
 	@NotNull
 	@Column(precision = 5, scale = 2)
@@ -70,9 +80,12 @@ public class OrdemServicoEntity implements Serializable {
 		this.id = id;
 	}
 
+<<<<<<< HEAD
 
 	
 	
+=======
+>>>>>>> branch 'master' of https://github.com/PedroJose2008/TCC.git
 	
 
 	public ClienteEntity getCliente() {
@@ -85,9 +98,12 @@ public class OrdemServicoEntity implements Serializable {
 
 	
 
+<<<<<<< HEAD
 	
 	
 
+=======
+>>>>>>> branch 'master' of https://github.com/PedroJose2008/TCC.git
 	public UsuarioEntity getUsuario() {
 		return usuario;
 	}
@@ -112,12 +128,14 @@ public class OrdemServicoEntity implements Serializable {
 		this.kit = kit;
 	}
 
-	public PecaEntity getPeca() {
-		return peca;
+	
+
+	public List<PecaEntity> getPecas() {
+		return pecas;
 	}
 
-	public void setPeca(PecaEntity peca) {
-		this.peca = peca;
+	public void setPecas(List<PecaEntity> pecas) {
+		this.pecas = pecas;
 	}
 
 	public BigDecimal getValor() {
