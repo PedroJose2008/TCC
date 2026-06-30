@@ -26,14 +26,11 @@ public class KitPecaEntity implements Serializable{
 	private int id;
 	
 	@ManyToOne
-<<<<<<< HEAD
 	@JoinColumn(name = "idKit")
 	private KitEntity kit;
 	
-=======
-	@JoinColumn(name = "kit_id") 
-	private KitEntity kit;
->>>>>>> branch 'master' of https://github.com/PedroJose2008/TCC.git
+
+	
 	@ManyToOne
 	@JoinColumn(name = "idPeca")
 	private PecaEntity peca;
@@ -74,12 +71,11 @@ public class KitPecaEntity implements Serializable{
 	public void setPeca(PecaEntity peca) {
 		this.peca = peca;
 	}
-<<<<<<< HEAD
+
 	public static long getSerialversionuid() {
 		return serialVersionUID;
 	}
-=======
->>>>>>> branch 'master' of https://github.com/PedroJose2008/TCC.git
+
 	
 	
 

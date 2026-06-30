@@ -30,16 +30,12 @@ public class ManutencaoEntity  implements Serializable{
 	private int id;
 	
 	
-<<<<<<< HEAD
+
 	@ManyToOne
 	@JoinColumn(name = "idPeca")
 	@NotNull
 	private PecaEntity peca;
-=======
-	// SE FOREM VÁRIAS PEÇAS:
-	@OneToMany(mappedBy = "manutencao") 
-	private List<PecaEntity> peca;
->>>>>>> branch 'master' of https://github.com/PedroJose2008/TCC.git
+
 	
 	@ManyToOne
 	@JoinColumn(name = "idKit")
@@ -58,11 +54,10 @@ public class ManutencaoEntity  implements Serializable{
 	@ManyToOne
 	@JoinColumn(name = "idMecanico")
 	private UsuarioEntity mecanico;
-<<<<<<< HEAD
-=======
+
+
 	
 	
->>>>>>> branch 'master' of https://github.com/PedroJose2008/TCC.git
 	
 	
 	
@@ -89,20 +84,19 @@ public class ManutencaoEntity  implements Serializable{
 		this.ordemServico = ordemServico;
 	}
 	
-<<<<<<< HEAD
-=======
+
+
 	
->>>>>>> branch 'master' of https://github.com/PedroJose2008/TCC.git
+
+
+	
+
 	public ClienteEntity getCliente() {
 		return cliente;
 	}
 	public void setCliente(ClienteEntity cliente) {
 		this.cliente = cliente;
 	}
-<<<<<<< HEAD
-	
-	
-=======
 	public UsuarioEntity getMecanico() {
 		return mecanico;
 	}
@@ -111,7 +105,12 @@ public class ManutencaoEntity  implements Serializable{
 	}
 
 
->>>>>>> branch 'master' of https://github.com/PedroJose2008/TCC.git
+
+
+
+
+
+
 	private String status;
 	private LocalDate dataFinalizacao;
 	
@@ -121,12 +120,7 @@ public class ManutencaoEntity  implements Serializable{
 	
 	
 
-	public UsuarioEntity getMecanico() {
-		return mecanico;
-	}
-	public void setMecanico(UsuarioEntity mecanico) {
-		this.mecanico = mecanico;
-	}
+	
 	public int getId() {
 		return id;
 	}

@@ -32,15 +32,13 @@ public class OrdemServicoEntity implements Serializable {
 	private int id;
 	
 	@ManyToOne
-<<<<<<< HEAD
+
 	@JoinColumn(name = "idCliente")
 	@NotNull
 	private ClienteEntity cliente;
 	
-=======
-	@JoinColumn(name = "cliente_id")
-	private ClienteEntity cliente;
->>>>>>> branch 'master' of https://github.com/PedroJose2008/TCC.git
+
+	
 	
 	@ManyToOne
 	@JoinColumn(name = "idUsuario")
@@ -80,12 +78,11 @@ public class OrdemServicoEntity implements Serializable {
 		this.id = id;
 	}
 
-<<<<<<< HEAD
+
 
 	
 	
-=======
->>>>>>> branch 'master' of https://github.com/PedroJose2008/TCC.git
+
 	
 
 	public ClienteEntity getCliente() {
@@ -98,12 +95,10 @@ public class OrdemServicoEntity implements Serializable {
 
 	
 
-<<<<<<< HEAD
 	
 	
 
-=======
->>>>>>> branch 'master' of https://github.com/PedroJose2008/TCC.git
+
 	public UsuarioEntity getUsuario() {
 		return usuario;
 	}
