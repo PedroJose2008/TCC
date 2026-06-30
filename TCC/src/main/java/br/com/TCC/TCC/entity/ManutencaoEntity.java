@@ -2,17 +2,16 @@ package br.com.TCC.TCC.entity;
 
 import java.io.Serializable;
 import java.time.LocalDate;
-import java.util.Date;
-import java.util.List;
+
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToMany;
+
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
+
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
@@ -32,9 +31,16 @@ public class ManutencaoEntity  implements Serializable{
 	
 
 
-	// SE FOREM VÁRIAS PEÇAS:
-	@OneToMany(mappedBy = "manutencao") 
-	private List<PecaEntity> peca;
+
+
+
+
+	@ManyToOne
+	@JoinColumn(name = "idPeca")
+	@NotNull
+	private PecaEntity peca;
+
+
 	
 	@ManyToOne
 	@JoinColumn(name = "idKit")
@@ -56,9 +62,6 @@ public class ManutencaoEntity  implements Serializable{
 
 	
 	
-	
-	
-	
 	public KitEntity getKit() {
 		return kit;
 	}
@@ -71,7 +74,7 @@ public class ManutencaoEntity  implements Serializable{
 	public void setOrdemServico(OrdemServicoEntity ordemServico) {
 		this.ordemServico = ordemServico;
 	}
-	
+
 	public ClienteEntity getCliente() {
 		return cliente;
 	}
@@ -90,22 +93,13 @@ public class ManutencaoEntity  implements Serializable{
 	private LocalDate dataFinalizacao;
 
 
-
-
-
-
 	public int getId() {
 		return id;
 	}
 	public void setId(int id) {
 		this.id = id;
 	}
-	public List<PecaEntity> getPeca() {
-		return peca;
-	}
-	public void setPeca(List<PecaEntity> peca) {
-		this.peca = peca;
-	}
+	
 	public String getStatus() {
 		return status;
 	}
