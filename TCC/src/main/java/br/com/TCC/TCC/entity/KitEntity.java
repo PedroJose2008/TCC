@@ -38,7 +38,9 @@ public class KitEntity implements Serializable{
 	@ManyToOne
 	@JoinColumn(name = "idCliente")
 	private ClienteEntity cliente;
+
 	private String prateleira;
+
 	private String codigo;
 	private String nome;
 	private String descricao;
@@ -60,12 +62,7 @@ public class KitEntity implements Serializable{
 	public void setPecas(List<PecaEntity> pecas) {
 		this.pecas = pecas;
 	}
-	public ClienteEntity getCliente() {
-		return cliente;
-	}
-	public void setCliente(ClienteEntity cliente) {
-		this.cliente = cliente;
-	}
+	
 	public String getCodigo() {
 		return codigo;
 	}
@@ -90,12 +87,25 @@ public class KitEntity implements Serializable{
 	public void setDataCadastro(LocalDate dataCadastro) {
 		this.dataCadastro = dataCadastro;
 	}
+
 	public String getPrateleira() {
 		return prateleira;
 	}
 	public void setPrateleira(String prateleira) {
 		this.prateleira = prateleira;
 	}
+	public ClienteEntity getCliente() {
+		return cliente;
+	}
+	public void setCliente(ClienteEntity cliente) {
+		this.cliente = cliente;
+	}
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+
+
+
 
 	
 	

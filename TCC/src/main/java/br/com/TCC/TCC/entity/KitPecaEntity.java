@@ -26,8 +26,9 @@ public class KitPecaEntity implements Serializable{
 	private int id;
 	
 	@ManyToOne
-	@JoinColumn(name = "kit_id") 
+	@JoinColumn(name = "idKit")
 	private KitEntity kit;
+	
 	@ManyToOne
 	@JoinColumn(name = "idPeca")
 	private PecaEntity peca;
@@ -68,6 +69,11 @@ public class KitPecaEntity implements Serializable{
 	public void setPeca(PecaEntity peca) {
 		this.peca = peca;
 	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+
 	
 	
 

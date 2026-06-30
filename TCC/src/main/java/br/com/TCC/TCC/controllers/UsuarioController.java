@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -60,9 +61,45 @@ public class UsuarioController {
 	@ResponseStatus(value = HttpStatus.CREATED)
 	
 	public UsuarioEntity salvar(@RequestBody UsuarioEntity usuario) {
+		
+		Optional<UsuarioEntity>emailExiste=usuarioRepository.findByEmail(usuario.getEmail());
+		Optional<UsuarioEntity>telefoneExiste=usuarioRepository.findByTelefone(usuario.getTelefone());
+		Optional<UsuarioEntity>cpfExiste=usuarioRepository.findByCpf(usuario.getCpf());
+
+		
+		if (emailExiste.isPresent()) {
+			return null;
+		}
+		
+		else if(telefoneExiste.isPresent()) {
+			return null;
+		}
+		
+		else if(cpfExiste.isPresent()) {
+			return null;
+		}
+		
 		usuario.setSenha(encoder.encode(usuario.getSenha()));
 		return usuarioRepository.save(usuario);
 	}//fim do salvar
+	
+	
+	@GetMapping("/cpf")
+	public ResponseEntity<Boolean> CpfValido(@RequestParam("cpf") String cpf){
+		
+		Optional<UsuarioEntity> cpfExiste= usuarioRepository.findByCpf(cpf);
+		
+		if(cpfExiste.isPresent()) {
+			return ResponseEntity.ok(true);
+		}
+		
+			return ResponseEntity.ok(false);
+ 
+	}// fim do verificar CPF
+	
+	
+	@GetMapping("/email")
+	
 	
 	// deletando por id
 	@DeleteMapping("/deletar/{id}")

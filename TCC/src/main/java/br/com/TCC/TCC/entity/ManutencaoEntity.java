@@ -30,6 +30,8 @@ public class ManutencaoEntity  implements Serializable{
 	private int id;
 	
 	
+
+
 	// SE FOREM VÁRIAS PEÇAS:
 	@OneToMany(mappedBy = "manutencao") 
 	private List<PecaEntity> peca;
@@ -51,20 +53,12 @@ public class ManutencaoEntity  implements Serializable{
 	@ManyToOne
 	@JoinColumn(name = "idMecanico")
 	private UsuarioEntity mecanico;
+
 	
 	
 	
 	
 	
-	
-	
-	
-	public List<PecaEntity> getPeca() {
-		return peca;
-	}
-	public void setPeca(List<PecaEntity> peca) {
-		this.peca = peca;
-	}
 	public KitEntity getKit() {
 		return kit;
 	}
@@ -78,13 +72,13 @@ public class ManutencaoEntity  implements Serializable{
 		this.ordemServico = ordemServico;
 	}
 	
-	
 	public ClienteEntity getCliente() {
 		return cliente;
 	}
 	public void setCliente(ClienteEntity cliente) {
 		this.cliente = cliente;
 	}
+
 	public UsuarioEntity getMecanico() {
 		return mecanico;
 	}
@@ -92,15 +86,13 @@ public class ManutencaoEntity  implements Serializable{
 		this.mecanico = mecanico;
 	}
 
-
 	private String status;
 	private LocalDate dataFinalizacao;
-	
-	
-	
-	
-	
-	
+
+
+
+
+
 
 	public int getId() {
 		return id;
@@ -108,32 +100,30 @@ public class ManutencaoEntity  implements Serializable{
 	public void setId(int id) {
 		this.id = id;
 	}
-	
-	
-	
-	
-	
-
+	public List<PecaEntity> getPeca() {
+		return peca;
+	}
+	public void setPeca(List<PecaEntity> peca) {
+		this.peca = peca;
+	}
 	public String getStatus() {
 		return status;
 	}
 	public void setStatus(String status) {
 		this.status = status;
 	}
-
-	
-	
-	
-
 	public LocalDate getDataFinalizacao() {
 		return dataFinalizacao;
 	}
 	public void setDataFinalizacao(LocalDate dataFinalizacao) {
 		this.dataFinalizacao = dataFinalizacao;
 	}
-	public static long getSerialversionuid() {
-		return serialVersionUID;
-	}
 	
+	
+	
+	
+	
+	
+
 	
 }
