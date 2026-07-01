@@ -39,6 +39,8 @@ public class KitEntity implements Serializable{
 	@JoinColumn(name = "idCliente")
 	private ClienteEntity cliente;
 
+	private String prateleira;
+
 	private String codigo;
 	private String nome;
 	private String descricao;
@@ -84,6 +86,13 @@ public class KitEntity implements Serializable{
 	}
 	public void setDataCadastro(LocalDate dataCadastro) {
 		this.dataCadastro = dataCadastro;
+	}
+
+	public String getPrateleira() {
+		return prateleira;
+	}
+	public void setPrateleira(String prateleira) {
+		this.prateleira = prateleira;
 	}
 	public ClienteEntity getCliente() {
 		return cliente;

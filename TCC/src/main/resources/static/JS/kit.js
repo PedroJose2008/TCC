@@ -35,7 +35,7 @@ async function listarKits() {
     tbody.innerHTML = "";
 
     if (kits.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="4" style="color:var(--text3); padding:20px;">Nenhum kit cadastrado.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="5" style="color:var(--text3); padding:20px;">Nenhum kit cadastrado.</td></tr>`;
         return;
     }
 
@@ -51,10 +51,15 @@ async function listarKits() {
             razaoSocialCliente = k.clienteNome;
         }
 
+        // PEGA A PRATELEIRA DO KIT
+        let prateleiraKit = k.prateleira || "Não Atribuído";
+
+        // Corrigido para preencher exatamente 5 colunas: Código, Nome, Prateleira, Cliente, Ações
         tbody.innerHTML += `
             <tr>
                 <td><strong>#${k.codigo}</strong></td>
                 <td id="kit-nome-${k.id}">${k.nome}</td>
+                <td><span class="badge-green">${prateleiraKit}</span></td>
                 <td>${razaoSocialCliente}</td>
                 <td>
                     <div class="actions-cell">
@@ -75,6 +80,7 @@ async function salvarKit() {
     const kit = {
         codigo: document.getElementById("kitCodigo").value,
         nome: document.getElementById("kitNome").value,
+        prateleira: document.getElementById("kitPrateleira").value, // Adicionado campo de prateleira no objeto enviado
         idCliente: idClienteSelecionado ? parseInt(idClienteSelecionado) : null,
         cliente: idClienteSelecionado ? { id: parseInt(idClienteSelecionado) } : null
     };
@@ -101,6 +107,7 @@ async function editarKit(id) {
     document.getElementById("formModalTitle").innerText = "Editar Estrutura do Kit";
     document.getElementById("kitCodigo").value = k.codigo || "";
     document.getElementById("kitNome").value = k.nome || "";
+    document.getElementById("kitPrateleira").value = k.prateleira || ""; // Resgata a prateleira ao editar
     document.getElementById("kitCliente").value = k.idCliente || "";
 
     document.getElementById("modalKitForm").classList.add("active");
@@ -132,9 +139,12 @@ async function carregarPecasNoSelect() {
     const pecas = await response.json();
     const select = document.getElementById("selectPecas");
     
-    select.innerHTML = '<option value="">-- Selecione uma Peça do Estoque --</option>';
+    // TEXTO ALTERADO AQUI:
+    select.innerHTML = '<option value="">-- Selecione Peças do Kit --</option>';
+    
     pecas.forEach(p => {
-        select.innerHTML += `<option value="${p.id}">${p.nome} (Cod: ${p.codigo})</option>`;
+        let localizacao = p.prateleira ? ` | Prat: ${p.prateleira}` : '';
+        select.innerHTML += `<option value="${p.id}">${p.nome} (Cod: ${p.codigo}${localizacao})</option>`;
     });
 }
 
@@ -182,21 +192,26 @@ async function renderizarPecasDoKit() {
     });
 }
 
-// Adiciona o vínculo entre kit e peça
+// Adiciona o vínculo entre kit e peça enviando a prateleira específica
 async function adicionarPecaAoKit() {
     const selectPecas = document.getElementById('selectPecas');
     const pecaId = selectPecas.value;
+    const prateleiraInformada = document.getElementById('pecaPrateleira').value;
 
     if (!pecaId) {
         alert("Por favor, selecione uma peça válida do estoque.");
         return;
     }
 
+    // Passa os parâmetros estruturados. Caso sua API receba prateleira no body ou query param, adapte o body:
     await fetch(`${API_KITS_VINCULAR}/${kitSelecionadoParaPecasId}/${pecaId}`, {
-        method: "POST"
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ prateleira: prateleiraInformada }) 
     });
 
     selectPecas.value = "";
+    document.getElementById('pecaPrateleira').value = ""; // Limpa o input após adicionar
     renderizarPecasDoKit();
 }
 
@@ -211,11 +226,9 @@ async function removerPecaDoKit(pecaId) {
 }
 
 // Função para buscar Kits por nome digitado
-// Função chamada ao clicar no botão "Buscar"
 async function buscarKitPorNome() {
     const nomeBusca = document.getElementById("buscaKitNome").value;
 
-    // Se o campo estiver vazio e a pessoa clicar em buscar, traz todos de volta
     if (!nomeBusca) {
         listarKits();
         return;
@@ -228,7 +241,7 @@ async function buscarKitPorNome() {
     tbody.innerHTML = "";
 
     if (kits.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="4" style="color:var(--text3); padding:20px;">Nenhum kit encontrado com este nome.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="5" style="color:var(--text3); padding:20px;">Nenhum kit encontrado com este nome.</td></tr>`;
         return;
     }
 
@@ -240,10 +253,13 @@ async function buscarKitPorNome() {
             razaoSocialCliente = k.cliente.razaoSocial;
         }
 
+        let prateleiraKit = k.prateleira || "Não Atribuído";
+
         tbody.innerHTML += `
             <tr>
                 <td><strong>#${k.codigo}</strong></td>
                 <td id="kit-nome-${k.id}">${k.nome}</td>
+                <td><span class="badge-green">${prateleiraKit}</span></td>
                 <td>${razaoSocialCliente}</td>
                 <td>
                     <div class="actions-cell">

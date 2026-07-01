@@ -28,9 +28,7 @@ public class KitPecaEntity implements Serializable{
 	@ManyToOne
 	@JoinColumn(name = "idKit")
 	private KitEntity kit;
-	
 
-	
 	@ManyToOne
 	@JoinColumn(name = "idPeca")
 	private PecaEntity peca;

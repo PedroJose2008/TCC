@@ -2,17 +2,16 @@ package br.com.TCC.TCC.entity;
 
 import java.io.Serializable;
 import java.time.LocalDate;
-import java.util.Date;
-import java.util.List;
+
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToMany;
+
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
+
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
@@ -31,10 +30,16 @@ public class ManutencaoEntity  implements Serializable{
 	
 	
 
+
+
+
+
+
 	@ManyToOne
 	@JoinColumn(name = "idPeca")
 	@NotNull
 	private PecaEntity peca;
+
 
 	
 	@ManyToOne
@@ -55,22 +60,8 @@ public class ManutencaoEntity  implements Serializable{
 	@JoinColumn(name = "idMecanico")
 	private UsuarioEntity mecanico;
 
-
 	
 	
-	
-	
-	
-	
-	
-	
-	
-	public PecaEntity getPeca() {
-		return peca;
-	}
-	public void setPeca(PecaEntity peca) {
-		this.peca = peca;
-	}
 	public KitEntity getKit() {
 		return kit;
 	}
@@ -83,13 +74,6 @@ public class ManutencaoEntity  implements Serializable{
 	public void setOrdemServico(OrdemServicoEntity ordemServico) {
 		this.ordemServico = ordemServico;
 	}
-	
-
-
-	
-
-
-	
 
 	public ClienteEntity getCliente() {
 		return cliente;
@@ -97,6 +81,7 @@ public class ManutencaoEntity  implements Serializable{
 	public void setCliente(ClienteEntity cliente) {
 		this.cliente = cliente;
 	}
+
 	public UsuarioEntity getMecanico() {
 		return mecanico;
 	}
@@ -104,23 +89,10 @@ public class ManutencaoEntity  implements Serializable{
 		this.mecanico = mecanico;
 	}
 
-
-
-
-
-
-
-
 	private String status;
 	private LocalDate dataFinalizacao;
-	
-	
-	
-	
-	
-	
 
-	
+
 	public int getId() {
 		return id;
 	}
@@ -128,31 +100,24 @@ public class ManutencaoEntity  implements Serializable{
 		this.id = id;
 	}
 	
-	
-	
-	
-	
-
 	public String getStatus() {
 		return status;
 	}
 	public void setStatus(String status) {
 		this.status = status;
 	}
-
-	
-	
-	
-
 	public LocalDate getDataFinalizacao() {
 		return dataFinalizacao;
 	}
 	public void setDataFinalizacao(LocalDate dataFinalizacao) {
 		this.dataFinalizacao = dataFinalizacao;
 	}
-	public static long getSerialversionuid() {
-		return serialVersionUID;
-	}
 	
+	
+	
+	
+	
+	
+
 	
 }

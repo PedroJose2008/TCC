@@ -28,7 +28,8 @@ public class ClienteEntity implements Serializable {
 	private String cep;
 	private String numero;
 	private String complemento;
-	private LocalDate datacadastro;
+	private LocalDate datacadastro;//
+	
 	public int getId() {
 		return id;
 	}

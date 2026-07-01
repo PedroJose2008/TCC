@@ -37,7 +37,6 @@
     .btn-accent:hover { background:var(--accent2); }
     
     .nav-label { font-size:10px; letter-spacing:1.8px; text-transform:uppercase; color:var(--text3); margin-bottom:8px; padding:0 8px; }
-    .badge-green { padding:3px 8px; border-radius:20px; font-size:11px; font-weight:600; background:rgba(34,197,94,.1); color:#16a34a; }
     .actions-cell { display: flex; gap: 6px; justify-content: center; }
 
     /* ESTILOS DO MODAL */
@@ -66,6 +65,7 @@
     .add-piece-row { display: flex; gap: 10px; margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px dashed var(--border); }
     .select-input { flex: 1; padding: 8px 12px; border-radius: 8px; border: 1px solid var(--border); background: var(--surface); color: var(--text); font-size: 13.5px; outline: none; height: 40px; }
     .select-input:focus { border-color: var(--accent); }
+    
     .mini-table { font-size: 13px; width: 100%; border-collapse: collapse; }
     .mini-table th { padding: 8px 10px; background: var(--surface2); color: var(--text3); font-size: 11px; text-transform: uppercase; }
     .mini-table td { padding: 8px 10px; border-bottom: 1px solid var(--border); }
@@ -109,7 +109,7 @@
           </div>
 
           <div style="display: flex; gap: 10px; margin-bottom: 25px; align-items: center;">
-            <input type="text" id="buscaKitNome" class="form-control" placeholder="🔍 Digite o nome do kit para pesquisar..." style="max-width: 350px; height: 38px; margin-bottom: 0;">
+            <input type="text" id="buscaKitNome" class="form-control" placeholder="🔍 Buscar por nome do kit ou por prateleira..." style="max-width: 350px; height: 38px; margin-bottom: 0;">
             <button class="btn btn-accent" style="height: 38px; padding: 0 20px;" onclick="buscarKitPorNome()">Buscar</button>
             <button class="btn btn-ghost" style="height: 38px; padding: 0 15px;" onclick="limparBuscaKit()">Limpar</button>
           </div>
@@ -119,12 +119,13 @@
               <tr>
                 <th>Código</th>
                 <th>Nome do Kit</th>
+                <th>Prateleira</th>
                 <th>Cliente Responsável (Razão Social)</th>
                 <th>Ações</th>
               </tr>
             </thead>
             <tbody id="tabelaKits">
-              </tbody>
+            </tbody>
           </table>
         </div>
       </div>
@@ -148,9 +149,13 @@
             <input type="text" id="kitNome" class="form-control" placeholder="Ex: Kit Revisão Suspensão" required>
           </div>
           <div class="form-group">
+            <label for="kitPrateleira">Prateleira do Kit</label>
+            <input type="text" id="kitPrateleira" class="form-control" placeholder="Ex: Prateleira B-4">
+          </div>
+          <div class="form-group">
             <label for="kitCliente">Vincular a qual Cliente?</label>
             <select id="kitCliente" class="select-input" style="width:100%;" required>
-              </select>
+            </select>
           </div>
         </div>
         <div class="modal-footer">
@@ -174,7 +179,7 @@
         
         <div class="add-piece-row">
           <select id="selectPecas" class="select-input">
-            </select>
+          </select>
           <button class="btn btn-success" onclick="adicionarPecaAoKit()">＋ Vincular</button>
         </div>
 
@@ -188,7 +193,7 @@
             </tr>
           </thead>
           <tbody id="listaPecasKit">
-            </tbody>
+          </tbody>
         </table>
 
       </div>
