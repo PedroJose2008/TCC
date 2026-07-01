@@ -1,5 +1,10 @@
 
 const API_SALVAR_USUARIOS="http://localhost:8000/usuarios/salvar";
+const API_VERIFICA_CPF="http://localhost:8000/usuarios/validaCpf";
+const API_VERIFICA_EMAIL="http://localhost:8000/usuarios/validaEmail";
+const API_VERIFICA_TELEFONE="http://localhost:8000/usuarios/validaTelefone";
+
+
 
 //pega a opção usuario do switchTab e coloca ela como primeira, assim que o usuario entra na página a primeira opção é o usário   por foi esse parametro que eu coloquei 
 let opcao="usuario";
@@ -36,7 +41,7 @@ async function salvar(event){
 	event.preventDefault();
 	
 	if(opcao==="usuario"){
-		//alert("salvando usuario");
+		alert("salvando usuario");
 		salvarUsu();
 	}
 	
@@ -54,6 +59,51 @@ async function salvarUsu(){
 				return;//não deixa salvar se a função validar usuário estiver errada 
 			}
 			
+			const cpfInput=document.getElementById("cpf");
+			const cpfSemEspaco = cpfInput.value.replace(/\D/g, '');
+			
+			const reposnse= await fetch (`${API_VERIFICA_CPF}/${cpfSemEspaco}`)
+			const cpfExiste= await reposnse.json();
+			
+			console.log(cpfExiste);
+			
+			if(cpfExiste){
+				
+				alert("O CPF digitado já existe ")
+				return cpfInput.value="";
+			}
+			
+			console.log("verificou o cpf")
+			
+			const emailInput=document.getElementById("email_usuario");
+			const emailSemEspaco= emailInput.value.trim();
+			
+			const reposnseEmail= await fetch (`${API_VERIFICA_EMAIL}/${emailSemEspaco}`)
+			const emailExiste= await reposnseEmail.json();
+			
+			console.log(emailExiste)
+			
+			if(emailExiste){
+				alert("O email digitado já existe")
+				return emailInput.value="";
+			}
+			console.log("verificou o email ")
+			
+			const telefoneInput=document.getElementById("telefone_usuario");
+			const telefoneSemEspaco=telefoneInput.value.replace(/\D/g, '');
+			
+			const reposnseTelefone= await fetch (`${API_VERIFICA_TELEFONE}/${telefoneSemEspaco}`)
+			const TelefoneExiste= await reposnseTelefone.json();
+			
+			console.log(TelefoneExiste);
+			
+			if(TelefoneExiste){
+				alert("O telefone digitado já existe")
+				return telefoneInput.value="";
+			}
+			
+			console.log("Verificou o telefone");
+			
 			const inscricao = {
 			        nome: document.getElementById("nome").value,
 			        telefone: document.getElementById("telefone_usuario").value,
@@ -61,7 +111,8 @@ async function salvarUsu(){
 			        cpf: document.getElementById("cpf").value,
 			        cargo: document.getElementById("cargo").value,
 			        senha: document.getElementById("senha").value,
-			        
+				 dataCadastro: document.getElementById("dataCadastro").value
+
 			    };
 
 
@@ -104,7 +155,7 @@ function validaUsu(){
 	const emailValido=validaEmail();
 	
 	const cpfValido=validarCPF();
-	
+	console.log(cpfValido);
 	const senhaValido=validaSenha();
 	
 	// se estiver diferente da função válida nome não vai dexar salvar 
@@ -119,8 +170,8 @@ function validaUsu(){
 	}
 	
 	if(!cpfValido){
-		alert("Verifique o campo CPF e digite-o corretamente ")
-		
+		alert("O CPF digitado é inválido")
+		return false;
 	}
 	
 	if(!emailValido){
@@ -167,7 +218,8 @@ function validaNome(){
 	} 
 	else {
 		//pega a função de validar nome
-		validarNome(nome);
+		validarNome(nomeInput);
+		return true;
 	}
 	
 
@@ -178,7 +230,7 @@ function validarNome(input) {
   // Impede que o valor seja digitado se contiver apenas números
   if (/^\d+$/.test(input.value)) {
 	
-    input.value = ""; // Limpa o campo se for exclusivamente numérico
+    input.value = ""; // Limpa se o usário digitar somente números 
   }
 }
 
@@ -234,77 +286,101 @@ function validaEmail(){
 	const emailcerto=emailInput.value.trim();
 	
 	
-	if(emailcerto>100){
+	if(emailcerto.length>100){
 	return false;
 		
 	}
 	
 	return true;
 }
-
+// email
 	
-
-
 function aplicarMascaraCPF(evento) {
     let input = evento.target;
     let valor = input.value;
 
-    // Remove tudo o que não for número
+    // 1. Remove tudo o que não for número
     valor = valor.replace(/\D/g, "");
 
-    // Aplica a formatação visual dinamicamente
-    valor = valor.replace(/(\d{3})(\d)/, "$1.$2");
-    valor = valor.replace(/(\d{3})(\d)/, "$1.$2");
-    valor = valor.replace(/(\d{3})(\d{1,2})$/, "$1-$2");
+    // 2. Aplica a formatação correta de forma progressiva conforme digita
+    if (valor.length > 3) {
+        valor = valor.substring(0, 3) + '.' + valor.substring(3);
+    }
+    if (valor.length > 7) {
+        valor = valor.substring(0, 7) + '.' + valor.substring(7);
+    }
+    if (valor.length > 11) {
+        valor = valor.substring(0, 11) + '-' + valor.substring(11, 13);
+    }
 
-    // Devolve o valor formatado para o campo
+    // 3. Devolve o valor formatado de volta para o campo
     input.value = valor;
 }
 
+function validarCPF(cpf) {
 
-function validarCPF() {
-    const cpfInput = document.getElementById("cpf");
-    if (!cpfInput) return false;
-    
-    // Remove a máscara do cpf
-    let cpf = cpfInput.value.replace(/[^\d]/g, '');
-		
-    // Verifica se tem 11 dígitos ou se é uma sequência repetida 
-    if (cpf.length !== 11 || /^(\d)\1{10}$/.test(cpf)) {
-        alert("CPF inválido! Por favor, confira os números.");
-        return false;
-    }
+	
+	
+	
+	  var Soma = 0
+	  var Resto
+		console.log(document.getElementById("cpf").value);
+	  
+	  const cpfInput = document.getElementById("cpf").value;
+	      if (!cpfInput) return false;
+	  
+	  var strCPF = String(cpfInput).replace(/[^\d]/g, '')
+	  
+	  if (strCPF.length !== 11)
+	     return false
+	  
+	  if ([
+	    '00000000000',
+	    '11111111111',
+	    '22222222222',
+	    '33333333333',
+	    '44444444444',
+	    '55555555555',
+	    '66666666666',
+	    '77777777777',
+	    '88888888888',
+	    '99999999999',
+	    ].indexOf(strCPF) !== -1)
+	    return false
 
-    // Validação do 1º dígito verificador
-    let soma = 0;
-    for (let i = 0; i < 9; i++) {
-        soma += parseInt(cpf.charAt(i)) * (10 - i);
-    }
-    let resto = 11 - (soma % 11);
-    let digito1 = (resto === 10 || resto === 11) ? 0 : resto;
+	  for (i=1; i<=9; i++)
+	    Soma = Soma + parseInt(strCPF.substring(i-1, i)) * (11 - i);
 
-    if (digito1 !== parseInt(cpf.charAt(9))) {
-        alert("CPF inválido! Por favor, confira os números.");
-        return false;	        
-    }
+	  Resto = (Soma * 10) % 11
 
-    // Validação do 2º dígito verificador
-    soma = 0;
-    for (let i = 0; i < 10; i++) {
-        soma += parseInt(cpf.charAt(i)) * (11 - i);
-    }
-    resto = 11 - (soma % 11);
-    let digito2 = (resto === 10 || resto === 11) ? 0 : resto;
+	  if ((Resto == 10) || (Resto == 11)) 
+	    Resto = 0
 
-    if (digito2 !== parseInt(cpf.charAt(10))) {
-        alert("CPF inválido! Por favor, confira os números.");
-        return false;
-    }
+	  if (Resto != parseInt(strCPF.substring(9, 10)) )
+	    return false
 
-   
-    return true;
-}
+	  Soma = 0
 
+	  for (i = 1; i <= 10; i++)
+	    Soma = Soma + parseInt(strCPF.substring(i-1, i)) * (12 - i)
+
+	  Resto = (Soma * 10) % 11
+
+	  
+	
+	  if ((Resto == 10) || (Resto == 11)) 
+	    Resto = 0
+
+	  if (Resto != parseInt(strCPF.substring(10, 11) ) )
+	    return false
+
+	  return true
+	}
+
+
+
+
+//valida senha
 function validaSenha(){
 		
 		const senha= document.getElementById("senha").value.trim();

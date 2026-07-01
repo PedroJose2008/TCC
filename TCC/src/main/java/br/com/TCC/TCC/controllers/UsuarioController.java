@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.TCC.TCC.entity.ReposicaoEntity;
 import br.com.TCC.TCC.entity.UsuarioEntity;
 import br.com.TCC.TCC.repository.UsuarioRepository;
 
@@ -84,8 +85,9 @@ public class UsuarioController {
 	}//fim do salvar
 	
 	
-	@GetMapping("/cpf")
-	public ResponseEntity<Boolean> CpfValido(@RequestParam("cpf") String cpf){
+	@GetMapping("/validaCpf/{cpf}")
+	@ResponseStatus(value = HttpStatus.OK)
+	public ResponseEntity<Boolean> cpfValido(@PathVariable String cpf){
 		
 		Optional<UsuarioEntity> cpfExiste= usuarioRepository.findByCpf(cpf);
 		
@@ -98,7 +100,34 @@ public class UsuarioController {
 	}// fim do verificar CPF
 	
 	
-	@GetMapping("/email")
+	@GetMapping("/validaEmail/{email}")
+	@ResponseStatus(value = HttpStatus.OK)
+
+	public ResponseEntity<Boolean> emailValido(@PathVariable String email){
+		
+		Optional<UsuarioEntity> emailExiste=usuarioRepository.findByEmail(email);
+		
+		if (emailExiste.isPresent()) {
+			return ResponseEntity.ok(true);
+		}
+		
+		return ResponseEntity.ok(false);
+		
+	}// fim do verificar email
+	
+	
+	@GetMapping("/validaTelefone/{telefone}")
+	@ResponseStatus(value = HttpStatus.OK)
+
+	public ResponseEntity<Boolean> telefoneValido(@PathVariable String telefone ){
+		
+		Optional<UsuarioEntity> telefoneExiste=usuarioRepository.findByTelefone(telefone);
+		
+		if (telefoneExiste.isPresent()) {
+			return ResponseEntity.ok(true);
+		}
+		return ResponseEntity.ok(false);
+	}//fim do verificar telefone
 	
 	
 	// deletando por id
