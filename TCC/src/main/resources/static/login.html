@@ -51,11 +51,14 @@
           <div class="login-welcome">Bem vindo de volta!</div>
           <div class="login-subtitle">Faça login para acessar sua conta.</div>
           <div>
-            <label class="login-field-label">Usuário:</label>
-            <input type="text" class="login-field" placeholder="Digite seu usuário">
+          <form action="">
+            <label class="login-field-label">Email:</label>
+            <input type="text" class="login-field" placeholder="Digite seu email" id="email" required="required">
+            
             <label class="login-field-label">Senha:</label>
-            <input type="password" class="login-field" placeholder="Sua senha">
-            <a href="dashboard.html" style="text-decoration:none;"><button class="btn-login">Entrar no Sistema</button></a>
+            <input type="password" class="login-field" placeholder="Sua senha" id="senha" required="required">
+            </form>
+            <button class="btn-login" onclick="login();">Entrar no Sistema</button>
             <div class="login-divider">OU</div>
             <div class="login-links">
               <a href="esqueceu-senha.html" class="login-link">Esqueceu sua senha?</a>
@@ -76,5 +79,8 @@
       </div>
     </div>
   </div>
+  
+  <script type="text/javascript" src="JS/login.js"></script>
+  
 </body>
 </html>

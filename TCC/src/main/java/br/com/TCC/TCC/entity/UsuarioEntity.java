@@ -9,6 +9,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 @Entity
 @Table(name = "Usuario")
 public class UsuarioEntity implements Serializable {
@@ -28,6 +30,8 @@ public class UsuarioEntity implements Serializable {
 	private String cpf;
 	private String cargo;
 	private String senha;
+	
+	@JsonFormat(pattern = "dd/MM/yyyy")// formata para o padrão brasileiro
 	private LocalDate dataCadastro;
 	
 	public int getId() {
