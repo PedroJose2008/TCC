@@ -24,7 +24,7 @@ import br.com.TCC.TCC.repository.PecaRepository;
 
 @RestController
 @RequestMapping("/pecas")
-@CrossOrigin("*")
+@CrossOrigin(origins = "*")
 public class PecaController {
 
 	

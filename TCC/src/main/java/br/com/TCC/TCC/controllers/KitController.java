@@ -35,7 +35,7 @@ public class KitController {
 	@Autowired
     private PecaRepository pecaRepository;
 
-	// 1. LISTAR PEÇAS DO KIT
+	
     @GetMapping("/listarpecas/{idKit}")
     public List<PecaEntity> listarPecasDoKit(@PathVariable Integer idKit) {
         KitEntity kit = KitRepository.findById(idKit).get();

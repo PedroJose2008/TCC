@@ -22,7 +22,7 @@ import br.com.TCC.TCC.repository.FornecedorRepository;
 
 @RestController
 @RequestMapping("/fornecedores")
-@CrossOrigin("*")
+@CrossOrigin(origins = "*")
 public class FornecedorController {
 
 	@Autowired

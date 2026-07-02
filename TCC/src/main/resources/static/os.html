@@ -76,7 +76,7 @@
 <body>
   <div id="app">
     <aside id="sidebar">
-      <div class="logo-area"><div class="logo-icon">⚙️</div><div><div style="font-family:'Syne',sans-serif;font-weight:800;font-size:15px;">ACOA PEÇAS</div></div></div>
+      <div class="logo-area"><div class="logo-icon">⚙️</div><div><div style="font-family:'Syne',sans-serif;font-weight:800;font-size:15px;">SISCAP</div></div></div>
       <nav>
         <div class="nav-label">Principal</div>
         <a href="dashboard.html" class="nav-item">📊 Dashboard</a>
@@ -189,21 +189,12 @@
       <div class="modal-body" id="corpoRelatorio" style="font-size: 14px; line-height: 1.6; text-align: left;">
         </div>
       <div class="modal-footer">
-        <button class="btn btn-accent" onclick="window.print()">🖨️ Imprimir</button>
+        
         <button class="btn btn-ghost" onclick="fecharModalRelatorio()">Fechar</button>
       </div>
     </div>
   </div>
 
   <script type="text/javascript" src="JS/ordemServico.js"></script>
-  <script>
-    // Funções auxiliares para fechar os modais pelas ações do layout
-    function fecharModalNovaOS() {
-      document.getElementById('modalNovaOS').classList.remove('active');
-    }
-    function fecharModalRelatorio() {
-      document.getElementById('modalRelatorioOS').classList.remove('active');
-    }
-  </script>
 </body>
 </html>
