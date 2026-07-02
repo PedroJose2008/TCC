@@ -140,7 +140,7 @@ async function salvarNovaOS() {
 
     fecharModalNovaOS();
     listarOrdensServico();
-}
+}    
 
 async function verRelatorioOS(idOS) {
     const resOS = await fetch(API_OS_LISTAR);
