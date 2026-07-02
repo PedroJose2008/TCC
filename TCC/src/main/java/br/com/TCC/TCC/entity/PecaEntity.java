@@ -42,7 +42,7 @@ public class PecaEntity implements Serializable{
 	private int quantidadeEstoque;
 	private Float preco;
 	private String codigo;
-	private LocalDate dataCadastro;
+	private LocalDate dataCadastro = LocalDate.now();
 	
 	public int getId() {
 		return id;
@@ -94,17 +94,18 @@ public class PecaEntity implements Serializable{
 	public void setCodigo(String codigo) {
 		this.codigo = codigo;
 	}
-	public LocalDate getDataCadastro() {
-		return dataCadastro;
-	}
-	public void setDataCadastro(LocalDate dataCadastro) {
-		this.dataCadastro = dataCadastro;
-	}
+	
 	public Float getPreco() {
 		return preco;
 	}
 	public void setPreco(Float preco) {
 		this.preco = preco;
+	}
+	public LocalDate getDataCadastro() {
+		return dataCadastro;
+	}
+	public void setDataCadastro(LocalDate dataCadastro) {
+		this.dataCadastro = dataCadastro;
 	}
 
 	

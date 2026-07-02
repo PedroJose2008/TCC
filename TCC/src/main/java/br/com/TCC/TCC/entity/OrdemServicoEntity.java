@@ -67,7 +67,7 @@ public class OrdemServicoEntity implements Serializable {
 	@Column(precision = 5, scale = 2)
 	private BigDecimal valor;
 	
-	private LocalDate dataAbertura;
+	private LocalDate dataCadastro = LocalDate.now();
 
 	public int getId() {
 		return id;
@@ -125,13 +125,7 @@ public class OrdemServicoEntity implements Serializable {
 		this.valor = valor;
 	}
 
-	public LocalDate getDataAbertura() {
-		return dataAbertura;
-	}
-
-	public void setDataAbertura(LocalDate dataAbertura) {
-		this.dataAbertura = dataAbertura;
-	}
+	
 
 	public static long getSerialversionuid() {
 		return serialVersionUID;
@@ -143,6 +137,14 @@ public class OrdemServicoEntity implements Serializable {
 
 	public void setPagamento(String pagamento) {
 		this.pagamento = pagamento;
+	}
+
+	public LocalDate getDataCadastro() {
+		return dataCadastro;
+	}
+
+	public void setDataCadastro(LocalDate dataCadastro) {
+		this.dataCadastro = dataCadastro;
 	}
 	
 	

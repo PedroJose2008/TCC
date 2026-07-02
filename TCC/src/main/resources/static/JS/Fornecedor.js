@@ -3,11 +3,12 @@ const API_BUSCAR_ID = 'http://localhost:8000/fornecedores/listarporid';
 const API_GRAVAR = 'http://localhost:8000/fornecedores/atualizar';
 const API_SALVAR = 'http://localhost:8000/fornecedores/salvar';
 const API_DELETAR = 'http://localhost:8000/fornecedores/deletar';
-const API_BUSCAR_NOME = 'http://localhost:8000/fornecedores/buscarPorNome'; // Ajuste se buscar por razaoSocial na API
+const API_BUSCAR_NOME = 'http://localhost:8000/fornecedores/buscarPorNome';
 
 let editandoId = null;
 
 async function listarFornecedores() {
+
     const response = await fetch(API_BUSCAR_TODOS);
     const fornecedores = await response.json();
 
@@ -15,53 +16,37 @@ async function listarFornecedores() {
     tbody.innerHTML = "";
 
     fornecedores.forEach(forn => {
-        tbody.innerHTML += `
-            <tr>
-                <td>${forn.razaoSocial}</td>
-                <td>${forn.cnpj}</td>
-                <td>${forn.telefone}</td>
-                <td>${forn.email}</td>
-                <td>
-                    <button class="btn btn-ghost btn-sm" onclick="editar(${forn.id})">Editar</button>
-                    <button class="btn btn-danger btn-sm" onclick="deletar(${forn.id})">Excluir</button>
-                </td>
-            </tr>
+
+        const tr = document.createElement("tr");
+
+        tr.innerHTML = `
+            <td>${forn.razaoSocial}</td>
+            <td>${forn.cnpj}</td>
+            <td>${forn.telefone}</td>
+            <td>${forn.email}</td>
+            <td>
+                <button class="btn btn-ghost btn-sm" onclick="editar(${forn.id})">Editar</button>
+                <button class="btn btn-danger btn-sm" onclick="deletar(${forn.id})">Excluir</button>
+            </td>
         `;
+
+        tbody.appendChild(tr);
     });
 }
 
-async function salvarFornecedor() {
-    const fornecedor = {
-        razaoSocial: document.getElementById("razaoSocial").value,
-        telefone: document.getElementById("telefone").value,
-        email: document.getElementById("email").value,
-        cnpj: document.getElementById("cnpj").value,
-        cep: document.getElementById("cep").value,
-        complemento: document.getElementById("complemento").value
-    };
+function abrirModal() {
 
-    // Se tem editandoId, significa que estamos EDITANDO (Inverteu para as APIs certas)
-    if (editandoId) {
-        await fetch(`${API_GRAVAR}/${editandoId}`, { // ➔ Corrigido: Usa API_GRAVAR (/atualizar)
-            method: "PUT",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(fornecedor)
-        });
-    } else {
-        // Se NÃO tem editandoId, significa que é um NOVO cadastro
-        await fetch(API_SALVAR, { // ➔ Corrigido: Usa API_SALVAR (/salvar)
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(fornecedor)
-        });
-    }
+    document.getElementById("fornecedorModal").classList.add("active");
+}
 
-    fecharModal();
-    listarFornecedores();
+function fecharModal() {
+
+    document.getElementById("fornecedorModal").classList.remove("active");
     limparFormulario();
 }
 
 function limparFormulario() {
+
     document.getElementById("razaoSocial").value = "";
     document.getElementById("telefone").value = "";
     document.getElementById("email").value = "";
@@ -71,27 +56,19 @@ function limparFormulario() {
     editandoId = null;
 }
 
-function abrirModal() {
-    const modal = new bootstrap.Modal(document.getElementById("fornecedorModal"));
-    modal.show();
-}
-
-function fecharModal() {
-    const modalEl = document.getElementById("fornecedorModal");
-    const modal = bootstrap.Modal.getInstance(modalEl);
-    if(modal) {
-        modal.hide();
-    }
-}
-
 async function deletar(id) {
+
+    if (!confirm("Deseja realmente excluir?")) return;
+
     await fetch(`${API_DELETAR}/${id}`, {
         method: "DELETE"
     });
+
     listarFornecedores();
 }
 
 async function editar(id) {
+
     const response = await fetch(`${API_BUSCAR_ID}/${id}`);
     const forn = await response.json();
 
@@ -107,10 +84,47 @@ async function editar(id) {
     abrirModal();
 }
 
+async function salvarFornecedor() {
+
+    const fornecedor = {
+        razaoSocial: document.getElementById("razaoSocial").value,
+        telefone: document.getElementById("telefone").value,
+        email: document.getElementById("email").value,
+        cnpj: document.getElementById("cnpj").value,
+        cep: document.getElementById("cep").value,
+        complemento: document.getElementById("complemento").value
+    };
+
+    if (editandoId) {
+
+        await fetch(`${API_GRAVAR}/${editandoId}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(fornecedor)
+        });
+
+    } else {
+
+        await fetch(API_SALVAR, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(fornecedor)
+        });
+    }
+
+    fecharModal();
+    await listarFornecedores();
+}
+
 async function buscarFornecedor() {
+
     const razaoSocial = document.getElementById("filtroNome").value;
     
-    if(!razaoSocial) {
+    if (!razaoSocial) {
         listarFornecedores();
         return;
     }
@@ -122,17 +136,21 @@ async function buscarFornecedor() {
     tbody.innerHTML = "";
 
     fornecedores.forEach(forn => {
-        tbody.innerHTML += `
-            <tr>
-                <td>${forn.razaoSocial}</td>
-                <td>${forn.cnpj}</td>
-                <td>${forn.telefone}</td>
-                <td>${forn.email}</td>
-                <td>
-                    <button class="btn btn-ghost btn-sm" onclick="editar(${forn.id})">Editar</button>
-                    <button class="btn btn-danger btn-sm" onclick="deletar(${forn.id})">Excluir</button>
-                </td>
-            </tr>`;
+
+        const tr = document.createElement("tr");
+
+        tr.innerHTML = `
+            <td>${forn.razaoSocial}</td>
+            <td>${forn.cnpj}</td>
+            <td>${forn.telefone}</td>
+            <td>${forn.email}</td>
+            <td>
+                <button class="btn btn-ghost btn-sm" onclick="editar(${forn.id})">Editar</button>
+                <button class="btn btn-danger btn-sm" onclick="deletar(${forn.id})">Excluir</button>
+            </td>
+        `;
+
+        tbody.appendChild(tr);
     });
 }
 
