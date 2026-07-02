@@ -33,6 +33,10 @@ function switchTab(type) {
 }
 
 
+function redirecionarLogin(){
+    console.log("Redirecionando para o login");
+    window.location.href = "login.html";
+}
 
 //pega a opção que o usuário selecionou e chama a função de salvar , valida e com a API funcionando 
 async function salvar(event){
@@ -40,9 +44,10 @@ async function salvar(event){
 	// so deixa o formulário regarregar na hora certa 
 	event.preventDefault();
 	
-	if(opcao==="usuario"){
+	if(opcao==="usuario" || salvarUsu===true){
 		alert("salvando usuario");
 		salvarUsu();
+		
 	}
 	
 }
@@ -60,9 +65,10 @@ async function salvarUsu(){
 			}
 			
 			const cpfInput=document.getElementById("cpf");
-			const cpfSemEspaco = cpfInput.value.replace(/\D/g, '');
+			const cpfValor= cpfInput.value;//pego o valor do input
 			
-			const reposnse= await fetch (`${API_VERIFICA_CPF}/${cpfSemEspaco}`)
+			
+			const reposnse= await fetch (`${API_VERIFICA_CPF}/${cpfValor}`)
 			const cpfExiste= await reposnse.json();
 			
 			console.log(cpfExiste);
@@ -104,6 +110,10 @@ async function salvarUsu(){
 			
 			console.log("Verificou o telefone");
 			
+			
+	
+			
+			console.log("Começo de salvar")
 			const inscricao = {
 			        nome: document.getElementById("nome").value,
 			        telefone: document.getElementById("telefone_usuario").value,
@@ -115,7 +125,7 @@ async function salvarUsu(){
 
 			    };
 
-
+				console.log("Passou pelos campos do input e entity")
 
 			        if (editandoId) {
 			            // update
@@ -138,8 +148,8 @@ async function salvarUsu(){
 						alert('Cadastro realizado com sucesso');	
 			        }
 
-				
-					
+				console.log("Salvou o usuário");
+				redirecionarLogin();	
 					
 	
 }
@@ -155,7 +165,7 @@ function validaUsu(){
 	const emailValido=validaEmail();
 	
 	const cpfValido=validarCPF();
-	console.log(cpfValido);
+	
 	const senhaValido=validaSenha();
 	
 	// se estiver diferente da função válida nome não vai dexar salvar 
