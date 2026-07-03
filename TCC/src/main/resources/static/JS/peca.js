@@ -65,10 +65,11 @@ async function listarPecas() {
             <td><span class="badge">${p.codigo || 'AUT'}</span></td>
             <td>${p.nome}</td>
             <td>${p.prateleira || '-'}</td>
+			<td>${p.numeroPratelira || '-'}</td>
             <td>${p.tipo}</td>
             <td>${p.fornecedor ? p.fornecedor.razaoSocial : '-'}</td>
             <td>${precoFormatado}</td>
-            <td>${p.quantidadeEstoque} pcs</td>
+            <td>${p.quantidadeEstoque} </td>
             <td>${dataFormatada}</td>        
             <td>
                 <button class="btn btn-warning btn-sm" onclick="editar(${p.id})">Editar</button>
@@ -163,6 +164,11 @@ async function salvarPeca() {
 		return false;
 	}
 	
+	// se for um número não deixa passar
+	else if(!isNaN(pecaSemEspaco)){
+		alert("A peça não pode conter somente números")
+		return false;
+	}
 	
 	
 	
@@ -170,6 +176,7 @@ async function salvarPeca() {
         codigo: document.getElementById("codigo").value,
         nome: document.getElementById("nome").value,
         prateleira: document.getElementById("prateleira").value,
+		numeroPratelira: document.getElementById("numero").value, 
         tipo: document.getElementById("tipo").value,
         fornecedor: {
             id: document.getElementById("idFornecedor").value
@@ -230,7 +237,7 @@ async function buscarPorNome() {
             <td>${p.tipo}</td>
             <td>${p.idFornecedor || '-'}</td>
             <td>${precoFormatated}</td>
-            <td>${p.quantidadeEstoque} pcs</td>
+            <td>${p.quantidadeEstoque}</td>
             <td>${dataFormatada}</td>        
             <td>
                 <button class="btn btn-warning btn-sm" onclick="editar(${p.id})">Editar</button>

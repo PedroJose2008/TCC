@@ -1,9 +1,10 @@
 package br.com.TCC.TCC.entity;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
-
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -38,9 +39,13 @@ public class PecaEntity implements Serializable{
 	}
 	private String nome;
 	private String prateleira;
+	private String numeroPratelira;
+
 	private String tipo;
 	private int quantidadeEstoque;
-	private Float preco;
+	
+	@Column(precision = 9999,scale = 2)
+	private BigDecimal preco;
 	private String codigo;
 	private LocalDate dataCadastro = LocalDate.now();
 	
@@ -95,10 +100,13 @@ public class PecaEntity implements Serializable{
 		this.codigo = codigo;
 	}
 	
-	public Float getPreco() {
+	
+	
+			
+	public BigDecimal getPreco() {
 		return preco;
 	}
-	public void setPreco(Float preco) {
+	public void setPreco(BigDecimal preco) {
 		this.preco = preco;
 	}
 	public LocalDate getDataCadastro() {
@@ -107,7 +115,14 @@ public class PecaEntity implements Serializable{
 	public void setDataCadastro(LocalDate dataCadastro) {
 		this.dataCadastro = dataCadastro;
 	}
+	public String getNumeroPratelira() {
+		return numeroPratelira;
+	}
+	public void setNumeroPratelira(String numeroPratelira) {
+		this.numeroPratelira = numeroPratelira;
+	}
 
+	
 	
 	
 }
