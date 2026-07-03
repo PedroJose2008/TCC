@@ -2,105 +2,67 @@ const API_OS_LISTAR = 'http://localhost:8000/ordens/listartodos';
 const API_OS_ATUALIZAR = 'http://localhost:8000/ordens/atualizar';
 
 document.addEventListener("DOMContentLoaded", () => {
-    listarOrdensParaRetirada();
+    listarCadastro();
 });
 
-// 1. LISTAR AS ORDENS QUE VEM DO BACKEND
-async function listarOrdensParaRetirada() {
-    try {
-        const response = await fetch(API_OS_LISTAR);
-        const ordens = await response.json();
+async function listarCadastro() {
+    const response = await fetch(API_OS_LISTAR);
+    const dados = await response.json();
 
-        const tbody = document.getElementById("listaRetiradas");
-        if (!tbody) return;
-        tbody.innerHTML = "";
+    const tbody = document.getElementById("listaRetiradas");
+    if (!tbody) return;
+    tbody.innerHTML = "";
 
-        // Pega do navegador a lista de IDs de ordens que já foram finalizadas localmente
-        const osFinalizadasLocais = JSON.parse(localStorage.getItem("os_finalizadas")) || [];
+    dados.forEach(Cadastro => {
+        // BLINDAGEM CRÍTICA: Só entra se o status existir E for exatamente "AGUARDANDO_RETIRADA"
+        if (Cadastro.status && Cadastro.status === "AGUARDANDO_RETIRADA") {
+            const tr = document.createElement("tr");
 
-        // Filtra para esconder as OSs que já clicamos em concluir
-        const ordensPendentes = ordens.filter(os => !osFinalizadasLocais.includes(os.id));
+            const dataFormatada = Cadastro.dataCadastro ? Cadastro.dataCadastro.split('-').reverse().join('/') : "-";
+            const nomeCliente = Cadastro.cliente ? (Cadastro.cliente.razaoSocial || Cadastro.cliente.nome) : "-";
+            const nomeMecanico = Cadastro.usuario ? Cadastro.usuario.nome : "-";
+            const nomeKit = Cadastro.kit ? Cadastro.kit.nome : "-";
+            const formaPagamento = Cadastro.pagamento || "A combinar";
+            
+            const valorCalculado = Cadastro.valor ? parseFloat(Cadastro.valor) : 0;
+            const valorFormatado = valorCalculado.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 
-        if (ordensPendentes.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; color:var(--text3); padding:20px;">Nenhuma ordem pendente de retirada.</td></tr>`;
-            return;
-        }
-
-        ordensPendentes.forEach(os => {
-            const nomeCliente = os.cliente ? (os.cliente.razaoSocial || os.cliente.nome) : "Não Informado";
-            const nomeMecanico = os.usuario ? os.usuario.nome : "Não Informado";
-            const nomeKit = os.kit ? os.kit.nome : "Nenhum Kit";
-            const formaPagamento = os.pagamento || "A combinar";
-
-            const valorCalculado = os.valor ? parseFloat(os.valor) : 0;
-            const valorFormatado = `R$ ${valorCalculado.toFixed(2).replace('.', ',')}`;
-
-            tbody.innerHTML += `
-                <tr>
-                    <td><strong>#OS-${os.id}</strong></td>
-                    <td>${nomeCliente}</td>
-                    <td>${nomeMecanico}</td>
-                    <td>${nomeKit}</td>
-                    <td>${formaPagamento}</td>
-                    <td><strong style="color: var(--text);">${valorFormatado}</strong></td>
-                    <td><span class="badge-yellow">Aguardando Pagamento</span></td>
-                    <td>
-                        <button class="btn-success" onclick="concluirRetirada(${os.id})">Concluir Retirada</button>
-                    </td>
-                </tr>
+            tr.innerHTML = `
+                <td><strong>#OS-${Cadastro.id}</strong></td>
+                <td>${nomeCliente}</td>
+                <td>${nomeMecanico}</td>
+                <td>${nomeKit}</td>
+                <td>${formaPagamento}</td>
+                <td><strong style="color: var(--success);">${valorFormatado}</strong></td>
+                <td><span class="badge-yellow">Aguardando Retirada</span></td>        
+                <td>
+                    <button class="btn btn-success btn-sm" onclick="concluirRetirada(${Cadastro.id})">Concluir Retirada</button>
+                </td>
             `;
-        });
-    } catch (error) {
-        console.error("Erro ao listar ordens para retirada:", error);
+
+            tbody.appendChild(tr);
+        }
+    });
+
+    // Se após passar por todas as ordens o tbody continuar vazio, exibe a mensagem de lista vazia
+    if (tbody.innerHTML === "") {
+        tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; color:var(--text3); padding:20px;">Nenhuma ordem pendente de retirada.</td></tr>`;
     }
 }
 
-// 2. CONCLUIR RETIRADA E SUMIR COM A LINHA AGORA
 async function concluirRetirada(idOS) {
-    if (!confirm(`Deseja confirmar o pagamento e concluir a retirada da #OS-${idOS}?`)) return;
+    if (!confirm("Confirmar que o cliente efetuou o pagamento e retirou o equipamento?")) return;
 
-    try {
-        const ordensResponse = await fetch(API_OS_LISTAR);
-        const ordens = await ordensResponse.json();
-        const osAtual = ordens.find(o => o.id === idOS);
+    const os = {
+        status: "FINALIZADA"
+    };
 
-        if (!osAtual) {
-            alert("Ordem de serviço não localizada.");
-            return;
-        }
+    await fetch(`${API_OS_ATUALIZAR}/${idOS}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(os)
+    });
 
-        const payload = {
-            id: osAtual.id,
-            cliente: osAtual.cliente ? { id: osAtual.cliente.id } : null,
-            usuario: osAtual.usuario ? { id: osAtual.usuario.id } : null,
-            kit: osAtual.kit ? { id: osAtual.kit.id } : null,
-            pagamento: osAtual.pagamento,
-            dataAbertura: osAtual.dataAbertura,
-            valor: osAtual.valor, 
-            observacao: "Ordem finalizada" // Deixamos enviando pro back por segurança
-        };
-
-        // Envia para o Spring Boot atualizar
-        await fetch(`${API_OS_ATUALIZAR}/${idOS}`, {
-            method: "PUT",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload)
-        });
-
-        // SALVA LOCALMENTE QUE ESTA OS SUMIU: Independente do Java salvar o texto, a linha some!
-        const osFinalizadasLocais = JSON.parse(localStorage.getItem("os_finalizadas")) || [];
-        osFinalizadasLocais.push(idOS);
-        localStorage.setItem("os_finalizadas", JSON.stringify(osFinalizadasLocais));
-
-        alert(`Retirada da #OS-${idOS} concluída com sucesso!`);
-        listarOrdensParaRetirada(); // Atualiza a tela e a linha some na hora!
-
-    } catch (error) {
-        console.error("Erro na requisição de retirada:", error);
-        // Garante o sumiço mesmo se houver erro de rede local
-        const osFinalizadasLocais = JSON.parse(localStorage.getItem("os_finalizadas")) || [];
-        osFinalizadasLocais.push(idOS);
-        localStorage.setItem("os_finalizadas", JSON.stringify(osFinalizadasLocais));
-        listarOrdensParaRetirada();
-    }
+    // Recarrega a lista da retirada
+    listarCadastro(); 
 }

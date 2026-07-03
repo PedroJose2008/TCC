@@ -1,155 +1,189 @@
 const API_OS_LISTAR = 'http://localhost:8000/ordens/listartodos';
 const API_OS_LISTAR_PECAS = 'http://localhost:8000/ordens/listarpecas';
+const API_OS_SALVAR = 'http://localhost:8000/ordens/salvar';
+const API_OS_ATUALIZAR = 'http://localhost:8000/ordens/atualizar';
+
+const API_PECAS_LISTAR = 'http://localhost:8000/pecas/listartodos';
+
+const API_OS_VINCULAR = 'http://localhost:8000/ordens/vincularpeca'; 
+const API_OS_DESVINCULAR = 'http://localhost:8000/ordens/desvincularpeca'; 
+
+let osSelecionadaParaPecasId = null;
 
 document.addEventListener("DOMContentLoaded", () => {
-    listarOrdensServico();
+    listarOrdensManutencao();
 });
 
-// ==========================================
-// CONTROLE DOS MODAIS
-// ==========================================
-function abrirModalNovaOS() {
-    const campoData = document.getElementById('osData');
-    if (campoData) {
-        campoData.value = new Date().toISOString().split('T')[0];
-    }
-    document.getElementById('modalNovaOS').classList.add('active');
+async function carregarPecasNoSelect() {
+    const response = await fetch(API_PECAS_LISTAR);
+    const pecas = await response.json();
+    const select = document.getElementById("selectPecas");
+    if (!select) return;
+    
+    select.innerHTML = '<option value="" disabled selected>-- Selecione Peças do Kit --</option>';
+    pecas.forEach(p => {
+        const option = document.createElement("option");
+        option.value = p.id;
+        let localizacao = p.prateleira ? ` | Prat: ${p.prateleira}` : '';
+        option.text = `${p.nome} (Cod: ${p.codigo}${localizacao})`;
+        select.appendChild(option);
+    });
 }
 
-function fecharModalNovaOS() {
-    document.getElementById('modalNovaOS').classList.remove('active');
-}
+async function listarOrdensManutencao() {
+    const response = await fetch(API_OS_LISTAR);
+    const ordens = await response.json();
+    
+    const tbody = document.getElementById("listaOrdensServico");
+    if (!tbody) return;
+    tbody.innerHTML = "";
 
-function fecharModalRelatorio() {
-    document.getElementById('modalRelatorioOS').classList.remove('active');
-}
-
-// ==========================================
-// 1. LISTAR ORDENS (Mantendo as rotas e regras locais)
-// ==========================================
-async function listarOrdensServico() {
-    try {
-        const response = await fetch(API_OS_LISTAR);
-        const ordens = await response.json();
-
-        const tbody = document.getElementById("listaOrdensServico");
-        if (!tbody) return;
-        tbody.innerHTML = "";
-
-        if (ordens.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; color:var(--text3); padding:20px;">Nenhuma Ordem de Serviço ativa.</td></tr>`;
-            return;
-        }
-
-        const manutencoesConcluidas = JSON.parse(localStorage.getItem("manutencoes_concluidas")) || [];
-        const osFinalizadasRetirada = JSON.parse(localStorage.getItem("os_finalizadas")) || [];
-
-        ordens.forEach(os => {
-            const dataFormatada = os.dataAbertura ? os.dataAbertura.split('-').reverse().join('/') : "-";
-            const nomeCliente = os.cliente ? (os.cliente.razaoSocial || os.cliente.nome) : "Não Informado";
-            const nomeMecanico = os.usuario ? os.usuario.nome : "Não Informado";
-            const nomeKit = os.kit ? os.kit.nome : "Nenhum Kit";
-
-            let statusHTML = `<span class="badge" style="padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; background-color: #ffeeba; color: #856404;">Em Aberto</span>`;
+    ordens.forEach(os => {
+        // Padrão do Professor Ajustado: Filtra apenas quem realmente deve estar na manutenção
+        if (os.status === "ABERTA" || os.status === "EM_MANUTENCAO") {
+            const tr = document.createElement("tr");
+            const dataFormatada = os.dataCadastro ? os.dataCadastro.split('-').reverse().join('/') : "-";
+            const nomeCliente = os.cliente ? (os.cliente.razaoSocial || os.cliente.nome) : "-";
+            const nomeMecanico = os.usuario ? os.usuario.nome : "-";
+            const nomeKit = os.kit ? os.kit.nome : "-";
             
-            if (osFinalizadasRetirada.includes(os.id)) {
-                statusHTML = `<span class="badge" style="padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; background-color: rgba(34,197,94,.1); color: #16a34a;">Finalizada</span>`;
-            } else if (manutencoesConcluidas.includes(os.id)) {
-                statusHTML = `<span class="badge" style="padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; background-color: rgba(245,158,11,.1); color: #d97706;">Aguardando Retirada</span>`;
-            } else if (os.observacao && os.observacao.includes("Manutenção")) {
-                statusHTML = `<span class="badge" style="padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; background-color: rgba(59,111,245,.1); color: var(--accent);">Em Manutenção</span>`;
-            }
+            // Define o texto da tag dinamicamente dependendo do status real do banco
+            const textoStatus = os.status === "ABERTA" ? "Aberta" : "Em Manutenção";
+            const classeBadge = os.status === "ABERTA" ? "badge-gray" : "badge-blue"; // ajuste as classes se necessário
 
-            tbody.innerHTML += `
-                <tr>
-                    <td><strong>#OS-${os.id}</strong></td>
-                    <td>${nomeCliente}</td>
-                    <td>${nomeMecanico}</td>
-                    <td>${nomeKit}</td>
-                    <td>${dataFormatada}</td>
-                    <td>${statusHTML}</td>
-                    <td>
-                        <button class="btn btn-ghost" style="padding: 4px 8px; font-size: 11px;" onclick="verRelatorioOS(${os.id})">📋 Ver Resumo</button>
-                    </td>
-                </tr>
+            tr.innerHTML = `
+                <td><strong>#OS-${os.id}</strong></td>
+                <td id="os-cliente-${os.id}">${nomeCliente}</td>
+                <td>${nomeMecanico}</td>
+                <td>${nomeKit}</td>
+                <td>${dataFormatada}</td>
+                <td><span class="${classeBadge}">${textoStatus}</span></td>
+                <td>
+                    <div class="actions-cell">
+                        <button class="btn-pecas-os" onclick="abrirModalPecas(${os.id})">🧩 Peças da OS</button> 
+                        <button class="btn-success" onclick="concluirManutencao(${os.id})">Concluir Manutenção</button>
+                    </div>
+                </td>
             `;
-        });
-    } catch (error) {
-        console.error("Erro ao listar OS:", error);
-    }
-}
-
-// ==========================================
-// 2. BUSCAR DADOS E EXIBIR O RELATÓRIO AJUSTADO
-// ==========================================
-async function verRelatorioOS(idOS) {
-    try {
-        const resOS = await fetch(API_OS_LISTAR);
-        const ordens = await resOS.json();
-        const os = ordens.find(o => o.id === idOS);
-
-        const resPecas = await fetch(`${API_OS_LISTAR_PECAS}/${idOS}`);
-        const pecasUtilizadas = await resPecas.json();
-
-        if (!os) return alert("Erro ao carregar dados da ordem.");
-
-        const nomeCliente = os.cliente ? (os.cliente.razaoSocial || os.cliente.nome) : "Não Informado";
-        const nomeMecanico = os.usuario ? os.usuario.nome : "Não Informado";
-        const nomeKit = os.kit ? os.kit.nome : "Nenhum Kit";
-        const valorCalculado = os.valor ? parseFloat(os.valor) : 0;
-        
-        // Formata a data de abertura/fechamento para o layout
-        const dataFechamentoFormatada = os.dataAbertura ? os.dataAbertura.split('-').reverse().join('/') : "-";
-
-        // Cria a listagem de peças injetando os nós HTML corretamente
-        let listaPecasHTML = "";
-        if (pecasUtilizadas && pecasUtilizadas.length > 0) {
-            pecasUtilizadas.forEach(p => {
-                const precoPeca = p.valor ? `R$ ${parseFloat(p.valor).toFixed(2).replace('.',',')}` : "R$ 0,00";
-                listaPecasHTML += `<li>${p.nome} (${precoPeca})</li>`;
-            });
-        } else {
-            listaPecasHTML = `<span style="color:var(--text3);">Nenhuma peça aplicada.</span>`;
+            tbody.appendChild(tr);
         }
+    });
 
-        const containerRelatorio = document.getElementById("corpoRelatorio");
-        containerRelatorio.innerHTML = `
-            <div style="border-bottom: 2px dashed var(--border); padding-bottom: 12px; margin-bottom: 12px; text-align: center;">
-                <h4 style="font-family:'Syne',sans-serif; font-size: 16px; margin: 0;">ORDEM DE SERVIÇO #OS-${os.id}</h4>
-                <small style="color: var(--text3);">Acoa Peças Ltda</small>
-            </div>
-            <p style="margin-bottom: 6px;"><strong>Cliente:</strong> ${nomeCliente}</p>
-            <p style="margin-bottom: 6px;"><strong>Mecânico Responsável:</strong> ${nomeMecanico}</p>
-            <p style="margin-bottom: 6px;"><strong>Kit Base Vinculado:</strong> ${nomeKit}</p>
-            <p style="margin-bottom: 6px;"><strong>Forma de Pagamento:</strong> ${os.pagamento || "A combinar"}</p>
-            
-            <div style="margin-top: 14px; padding: 10px; background: var(--surface2); border-radius: 8px;">
-                <strong style="font-size: 12px; text-transform: uppercase; color: var(--text2); display:block; margin-bottom: 4px;">Peças e Componentes Trocados:</strong>
-                <ul style="padding-left: 16px; margin: 0; font-size: 13px;">
-                    ${listaPecasHTML}
-                </ul>
-            </div>
-
-            <div style="margin-top: 16px; text-align: right; font-size: 16px;">
-                <strong>Valor Total do Serviço:</strong> 
-                <span style="color: var(--success); font-weight: 800; margin-left: 6px;">
-                    R$ ${valorCalculado.toFixed(2).replace('.', ',')}
-                </span>
-            </div>
-            <div style="text-align: right; font-size: 14px; margin-top: 4px; color: var(--text2);">
-                <strong>Data de Fechamento:</strong> ${dataFechamentoFormatada}
-            </div>
-        `;
-
-        // Abre o modal removendo qualquer dependência externa
-        document.getElementById('modalRelatorioOS').classList.add('active');
-
-    } catch (error) {
-        console.error("Erro ao gerar relatório:", error);
-        alert("Não foi possível montar o relatório dessa OS.");
+    // Se a tabela ficar vazia, adiciona uma mensagem amigável para o usuário
+    if (tbody.innerHTML === "") {
+        tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; color:gray; padding:20px;">Nenhuma ordem de serviço em manutenção no momento.</td></tr>`;
     }
 }
 
-function salvarNovaOS() {
-    alert("Salvar Ordem clicado!");
+async function concluirManutencao(idOS) {
+    if (!confirm("Deseja realmente concluir a manutenção desta OS?")) return;
+
+    // Padrão do professor: monta um objeto simples com o novo status em texto
+    const os = {
+        status: "AGUARDANDO_RETIRADA"
+    };
+
+    // Faz o PUT para o controller
+    await fetch(`${API_OS_ATUALIZAR}/${idOS}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(os)
+    });
+
+    // Recarrega a lista (a OS com status novo vai sumir por causa do IF do filtro)
+    listarOrdensManutencao();
+}
+async function abrirModalPecas(idOS) {
+    osSelecionadaParaPecasId = idOS;
+    const nomeCliente = document.getElementById(`os-cliente-${idOS}`).innerText;
+    document.getElementById('modalTitle').innerText = `Componentes da OS #OS-${idOS}`;
+    document.getElementById('modalSubtitle').innerText = `Cliente: ${nomeCliente}`;
+    
+    await carregarPecasNoSelect();
+    await renderizarPecasDaOS();
+    
+    document.getElementById('modalPecas').classList.add('active');
+}
+
+function fecharModalPecas() {
+    document.getElementById('modalPecas').classList.remove('active');
+    osSelecionadaParaPecasId = null;
+}
+
+// Nova função auxiliar para somar preços e atualizar o campo 'valor' no Banco
+async function atualizarValorTotalOS() {
+    const responsePecas = await fetch(`${API_OS_LISTAR_PECAS}/${osSelecionadaParaPecasId}`);
+    const pecasDaOS = await responsePecas.json();
+
+    let valorTotal = 0;
+    pecasDaOS.forEach(peca => {
+        valorTotal += peca.preco ? parseFloat(peca.preco) : 0;
+    });
+
+    const responseOS = await fetch(API_OS_LISTAR);
+    const ordens = await responseOS.json();
+    const os = ordens.find(o => o.id === osSelecionadaParaPecasId);
+
+    os.valor = valorTotal;
+
+    await fetch(`${API_OS_ATUALIZAR}/${osSelecionadaParaPecasId}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(os)
+    });
+}
+
+async function renderizarPecasDaOS() {
+    const listaTbody = document.getElementById('listaPecasKit');
+    if (!listaTbody) return;
+    listaTbody.innerHTML = '';
+
+    const response = await fetch(`${API_OS_LISTAR_PECAS}/${osSelecionadaParaPecasId}`);
+    const pecasDaOS = await response.json();
+
+    pecasDaOS.forEach(peca => {
+        const tr = document.createElement("tr");
+        const precoFormatado = peca.preco ? parseFloat(peca.preco).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) : "R$ 0,00";
+        
+        tr.innerHTML = `
+            <td style="font-family: monospace; font-weight: 600;">${peca.codigo}</td>
+            <td style="text-align:left;">${peca.nome} <small style="color: var(--success); font-weight:bold;">(${precoFormatado})</small></td>
+            <td style="text-align: right;">
+              <button class="btn btn-danger btn-sm" onclick="removerPecaDaOS(${peca.id})">Remover</button>
+            </td>
+        `;
+        listaTbody.appendChild(tr);
+    });
+}
+
+async function adicionarPecaAoKit() {
+    const selectPecas = document.getElementById('selectPecas');
+    const pecaId = selectPecas.value;
+
+    if (!pecaId) {
+        alert("Por favor, selecione uma peça válida do estoque.");
+        return;
+    }
+
+    await fetch(`${API_OS_VINCULAR}/${osSelecionadaParaPecasId}/${pecaId}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({}) 
+    });
+
+    selectPecas.value = "";
+    
+    await atualizarValorTotalOS();
+    renderizarPecasDaOS();
+}
+
+async function removerPecaDaOS(pecaId) {
+    if (!confirm("Deseja desvincular este componente da OS?")) return;
+    
+    await fetch(`${API_OS_DESVINCULAR}/${osSelecionadaParaPecasId}/${pecaId}`, {
+        method: "DELETE"
+    });
+    
+    await atualizarValorTotalOS();
+    renderizarPecasDaOS();
 }

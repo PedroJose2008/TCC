@@ -13,9 +13,6 @@ document.addEventListener("DOMContentLoaded", () => {
 function abrirModalNovaOS() {
     document.getElementById("osForm")?.reset();
     
-    const campoData = document.getElementById('osData');
-    campoData.value = new Date().toISOString().split('T')[0];
-
     carregarClientesSelect();
     carregarKitsSelect();
     carregarMecanicosSelect();
@@ -91,7 +88,7 @@ async function listarOrdensServico() {
     const osFinalizadasRetirada = JSON.parse(localStorage.getItem("os_finalizadas")) || [];
 
     ordens.forEach(os => {
-        const dataFormatada = os.dataAbertura ? os.dataAbertura.split('-').reverse().join('/') : "-";
+        const dataFormatada = os.dataCadastro ? os.dataCadastro.split('-').reverse().join('/') : "-";
         const nomeCliente = os.cliente ? (os.cliente.razaoSocial || os.cliente.nome) : "Não Informado";
         const nomeMecanico = os.usuario ? os.usuario.nome : "Não Informado";
         const nomeKit = os.kit ? os.kit.nome : "Nenhum Kit";
@@ -128,7 +125,7 @@ async function salvarNovaOS() {
         usuario: { id: document.getElementById("osUsuario").value },
         kit: { id: document.getElementById("osKit").value },
         pagamento: document.getElementById("osPagamento").value,
-        observacao: "Em Aberto",
+        observacao: "Manutenção",
         valor: 0.00
     };
 
@@ -140,7 +137,7 @@ async function salvarNovaOS() {
 
     fecharModalNovaOS();
     listarOrdensServico();
-}    
+}
 
 async function verRelatorioOS(idOS) {
     const resOS = await fetch(API_OS_LISTAR);
@@ -154,7 +151,7 @@ async function verRelatorioOS(idOS) {
     const nomeMecanico = os.usuario ? os.usuario.nome : "Não Informado";
     const nomeKit = os.kit ? os.kit.nome : "Nenhum Kit";
     const valorCalculado = os.valor ? parseFloat(os.valor) : 0;
-    const dataFechamentoFormatada = os.dataAbertura ? os.dataAbertura.split('-').reverse().join('/') : "-";
+    const dataFechamentoFormatada = os.dataCadastro ? os.dataCadastro.split('-').reverse().join('/') : "-";
 
     let listaPecasHTML = `<span style="color:var(--text3);">Nenhuma peça aplicada.</span>`;
     
@@ -191,7 +188,7 @@ async function verRelatorioOS(idOS) {
             </span>
         </div>
         <div style="text-align: right; font-size: 14px; margin-top: 4px; color: var(--text2);">
-            <strong>Data de Fechamento:</strong> ${dataFechamentoFormatada}
+            <strong>Data de Cadastro:</strong> ${dataFechamentoFormatada}
         </div>
     `;
 

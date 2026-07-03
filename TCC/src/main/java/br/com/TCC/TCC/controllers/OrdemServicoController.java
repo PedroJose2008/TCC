@@ -51,6 +51,7 @@ public class OrdemServicoController {
 	@PostMapping("/salvar")
 	@ResponseStatus(value = HttpStatus.CREATED)
 	public OrdemServicoEntity salvar(@RequestBody OrdemServicoEntity ordem) {
+		ordem.setStatus("ABERTA");
 		return ordemRepository.save(ordem);
 	}
 	
@@ -66,15 +67,22 @@ public class OrdemServicoController {
 		}
 	}
 	
-	// atualizando por ID
 	@PutMapping("/atualizar/{id}")
-	public ResponseEntity<OrdemServicoEntity> atualizar(@RequestBody OrdemServicoEntity ordem, @PathVariable Integer id) {
-		if (ordemRepository.existsById(id)) {
-			ordem.setId(id);
-			OrdemServicoEntity ordemAtualizada = ordemRepository.save(ordem);
-			return ResponseEntity.ok(ordemAtualizada);
-		} 
-		return ResponseEntity.notFound().build();
+	@ResponseStatus(value = HttpStatus.OK)
+	public OrdemServicoEntity atualizar(@PathVariable Integer id, @RequestBody OrdemServicoEntity ordemAtualizada) {
+		// 1. Busca a ordem original do banco pelo ID (tipo int/Integer)
+		OrdemServicoEntity ordemOriginal = ordemRepository.findById(id).get();
+		
+		// 2. Atualiza o status com o texto que veio do JS ("AGUARDANDO_RETIRADA" ou "FINALIZADA")
+		ordemOriginal.setStatus(ordemAtualizada.getStatus());
+		
+		// 3. Se o JS também mandar valor em alguma tela, ele atualiza, se não, mantém o que estava
+		if (ordemAtualizada.getValor() != null) {
+			ordemOriginal.setValor(ordemAtualizada.getValor());
+		}
+		
+		// 4. Salva no banco de dados
+		return ordemRepository.save(ordemOriginal);
 	}
 	
 	// --- ROTAS DO MODAL DE PEÇAS ---

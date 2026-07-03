@@ -68,6 +68,8 @@ public class OrdemServicoEntity implements Serializable {
 	private BigDecimal valor;
 	
 	private LocalDate dataCadastro = LocalDate.now();
+	
+	private String status;
 
 	public int getId() {
 		return id;
@@ -146,6 +148,19 @@ public class OrdemServicoEntity implements Serializable {
 	public void setDataCadastro(LocalDate dataCadastro) {
 		this.dataCadastro = dataCadastro;
 	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	
+	
+
+
 	
 	
 	
