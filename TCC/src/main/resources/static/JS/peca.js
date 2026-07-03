@@ -5,6 +5,7 @@ const API_SALVAR = 'http://localhost:8000/pecas/salvar';
 const API_DELETAR = 'http://localhost:8000/pecas/deletar';
 const API_BUSCAR_NOME = 'http://localhost:8000/pecas/buscarPorNome';
 const API_FORNECEDORES = 'http://localhost:8000/fornecedores/listartodos';
+const API_CODIGO = 'http://localhost:8000/pecas/cogigoPeca';
 
 let editandoId = null;
 
@@ -88,6 +89,16 @@ async function abrirModalCadastro() {
     await popularSelectTipos();
     await BuscarFornecedor();
 
+	const codigoInput = document.getElementById('codigo');
+	    if (codigoInput) {
+	    
+			gerarCodigo();
+			
+	    }
+	
+	
+	
+	
     const modal = new bootstrap.Modal(document.getElementById("modalPeca"));
     modal.show();
 }
@@ -139,6 +150,22 @@ async function editar(id) {
 
 async function salvarPeca() {
 
+	const pecaInput= document.getElementById('nome');
+	const pecaSemEspaco= pecaInput.value.trim();
+	
+	if(pecaSemEspaco.length<3){
+		alert("A quantidade mínima de caracteres é 3")
+		return false;
+	}
+	
+	else if(pecaSemEspaco.length>100){
+		alert("A quantidade máxima de caracteres é 100")
+		return false;
+	}
+	
+	
+	
+	
     const peca = {
         codigo: document.getElementById("codigo").value,
         nome: document.getElementById("nome").value,
@@ -221,3 +248,16 @@ function limparFiltro() {
 
 popularSelectTipos();
 listarPecas();
+
+//gera o código da peça
+ 	async function gerarCodigo (){
+	
+	const codigoInput= document.getElementById('codigo');
+	
+	if(codigoInput){
+	const response= await fetch(API_CODIGO);
+	const codigo= await response.text();
+	console.log(codigo);
+	codigoInput.value=codigo;
+	}
+}

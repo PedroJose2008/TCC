@@ -35,7 +35,7 @@ public class KitPecaEntity implements Serializable{
 	
 	
 	private int quantidade;
-	private LocalDate dataCadastro;
+	private LocalDate dataCadastro= LocalDate.now(); //pega a data de hoje
 	
 	public int getId() {
 		return id;

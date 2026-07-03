@@ -2,6 +2,7 @@ package br.com.TCC.TCC.controllers;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.ThreadLocalRandom;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -98,5 +99,18 @@ public class PecaController {
 
 	} //fim do atualizar
 	
+	@GetMapping("/cogigoPeca")
+	public String  gerarCodigo() {
+		
+		String codigo;
+	    
+	    do {
+	        codigo = String.valueOf(
+	            ThreadLocalRandom.current().nextInt(100000, 999999)
+	        );
+	    } while(PecaRepository.existsByCodigo(codigo)); 
+	    
+	    return codigo; 
+	}
 	
 }

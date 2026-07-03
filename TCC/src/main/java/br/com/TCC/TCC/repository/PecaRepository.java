@@ -8,5 +8,7 @@ import br.com.TCC.TCC.entity.PecaEntity;
 
 public interface PecaRepository extends JpaRepository<PecaEntity, Integer>{
 
+	Boolean existsByCodigo(String codigo);	
+	
 	List<PecaEntity> findByNomeContaining(String nome);
 }
