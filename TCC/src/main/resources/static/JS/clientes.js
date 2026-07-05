@@ -1,9 +1,9 @@
-const API_BUSCAR_TODOS = 'http://localhost:8000/clientes/listartodos';
-const API_BUSCAR_ID = 'http://localhost:8000/clientes/listarporid';
-const API_GRAVAR = 'http://localhost:8000/clientes/atualizar';
-const API_SALVAR = 'http://localhost:8000/clientes/salvar';
-const API_DELETAR = 'http://localhost:8000/clientes/deletar';
-const API_BUSCAR_NOME = 'http://localhost:8000/clientes/buscarPorNome';
+const API_BUSCAR_TODOS = 'http://localhost:8001/clientes/listartodos';
+const API_BUSCAR_ID = 'http://localhost:8001/clientes/listarporid';
+const API_GRAVAR = 'http://localhost:8001/clientes/atualizar';
+const API_SALVAR = 'http://localhost:8001/clientes/salvar';
+const API_DELETAR = 'http://localhost:8001/clientes/deletar';
+const API_BUSCAR_NOME = 'http://localhost:8001/clientes/buscarPorNome';
 
 let editandoId = null;
 

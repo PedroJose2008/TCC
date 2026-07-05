@@ -1,12 +1,12 @@
-const API_OS_LISTAR = 'http://localhost:8000/ordens/listartodos';
-const API_OS_LISTAR_PECAS = 'http://localhost:8000/ordens/listarpecas';
-const API_OS_SALVAR = 'http://localhost:8000/ordens/salvar';
-const API_OS_ATUALIZAR = 'http://localhost:8000/ordens/atualizar';
+const API_OS_LISTAR = 'http://localhost:8001/ordens/listartodos';
+const API_OS_LISTAR_PECAS = 'http://localhost:8001/ordens/listarpecas';
+const API_OS_SALVAR = 'http://localhost:8001/ordens/salvar';
+const API_OS_ATUALIZAR = 'http://localhost:8001/ordens/atualizar';
 
-const API_PECAS_LISTAR = 'http://localhost:8000/pecas/listartodos';
+const API_PECAS_LISTAR = 'http://localhost:8001/pecas/listartodos';
 
-const API_OS_VINCULAR = 'http://localhost:8000/ordens/vincularpeca'; 
-const API_OS_DESVINCULAR = 'http://localhost:8000/ordens/desvincularpeca'; 
+const API_OS_VINCULAR = 'http://localhost:8001/ordens/vincularpeca'; 
+const API_OS_DESVINCULAR = 'http://localhost:8001/ordens/desvincularpeca'; 
 
 let osSelecionadaParaPecasId = null;
 

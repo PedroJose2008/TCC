@@ -1,11 +1,11 @@
-const API_BUSCAR_TODOS = 'http://localhost:8000/pecas/listartodos';
-const API_BUSCAR_ID = 'http://localhost:8000/pecas/listarporid';
-const API_GRAVAR = 'http://localhost:8000/pecas/atualizar';
-const API_SALVAR = 'http://localhost:8000/pecas/salvar';
-const API_DELETAR = 'http://localhost:8000/pecas/deletar';
-const API_BUSCAR_NOME = 'http://localhost:8000/pecas/buscarPorNome';
-const API_FORNECEDORES = 'http://localhost:8000/fornecedores/listartodos';
-const API_CODIGO = 'http://localhost:8000/pecas/cogigoPeca';
+const API_BUSCAR_TODOS = 'http://localhost:8001/pecas/listartodos';
+const API_BUSCAR_ID = 'http://localhost:8001/pecas/listarporid';
+const API_GRAVAR = 'http://localhost:8001/pecas/atualizar';
+const API_SALVAR = 'http://localhost:8001/pecas/salvar';
+const API_DELETAR = 'http://localhost:8001/pecas/deletar';
+const API_BUSCAR_NOME = 'http://localhost:8001/pecas/buscarPorNome';
+const API_FORNECEDORES = 'http://localhost:8001/fornecedores/listartodos';
+const API_CODIGO = 'http://localhost:8001/pecas/cogigoPeca';
 
 let editandoId = null;
 

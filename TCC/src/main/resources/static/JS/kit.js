@@ -1,16 +1,16 @@
-const API_KITS_LISTAR = 'http://localhost:8000/kits/listartodos';
-const API_KITS_BUSCAR_ID = 'http://localhost:8000/kits/listarporid';
-const API_KITS_SALVAR = 'http://localhost:8000/kits/salvar';
-const API_KITS_ATUALIZAR = 'http://localhost:8000/kits/atualizar';
-const API_KITS_DELETAR = 'http://localhost:8000/kits/deletar';
-const API_KITS_BUSCAR_NOME = 'http://localhost:8000/kits/buscarpornome';
+const API_KITS_LISTAR = 'http://localhost:8001/kits/listartodos';
+const API_KITS_BUSCAR_ID = 'http://localhost:8001/kits/listarporid';
+const API_KITS_SALVAR = 'http://localhost:8001/kits/salvar';
+const API_KITS_ATUALIZAR = 'http://localhost:8001/kits/atualizar';
+const API_KITS_DELETAR = 'http://localhost:8001/kits/deletar';
+const API_KITS_BUSCAR_NOME = 'http://localhost:8001/kits/buscarpornome';
 
-const API_CLIENTES_LISTAR = 'http://localhost:8000/clientes/listartodos';
-const API_PECAS_LISTAR = 'http://localhost:8000/pecas/listartodos';
+const API_CLIENTES_LISTAR = 'http://localhost:8001/clientes/listartodos';
+const API_PECAS_LISTAR = 'http://localhost:8001/pecas/listartodos';
 
-const API_KITS_LISTAR_PECAS = 'http://localhost:8000/kits/listarpecas'; 
-const API_KITS_VINCULAR = 'http://localhost:8000/kits/vincularpeca'; 
-const API_KITS_DESVINCULAR = 'http://localhost:8000/kits/desvincularpeca'; 
+const API_KITS_LISTAR_PECAS = 'http://localhost:8001/kits/listarpecas'; 
+const API_KITS_VINCULAR = 'http://localhost:8001/kits/vincularpeca'; 
+const API_KITS_DESVINCULAR = 'http://localhost:8001/kits/desvincularpeca'; 
 
 let editandoKitId = null;
 let kitSelecionadoParaPecasId = null;

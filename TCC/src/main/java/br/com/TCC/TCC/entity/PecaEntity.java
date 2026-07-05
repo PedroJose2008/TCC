@@ -44,7 +44,7 @@ public class PecaEntity implements Serializable{
 	private String tipo;
 	private int quantidadeEstoque;
 	
-	@Column(precision = 9999,scale = 2)
+	@Column(precision = 5,scale = 2)
 	private BigDecimal preco;
 	private String codigo;
 	private LocalDate dataCadastro = LocalDate.now();

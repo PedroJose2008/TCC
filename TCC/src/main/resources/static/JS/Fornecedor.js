@@ -1,9 +1,9 @@
-const API_BUSCAR_TODOS = 'http://localhost:8000/fornecedores/listartodos';
-const API_BUSCAR_ID = 'http://localhost:8000/fornecedores/listarporid';
-const API_GRAVAR = 'http://localhost:8000/fornecedores/atualizar';
-const API_SALVAR = 'http://localhost:8000/fornecedores/salvar';
-const API_DELETAR = 'http://localhost:8000/fornecedores/deletar';
-const API_BUSCAR_NOME = 'http://localhost:8000/fornecedores/buscarPorNome';
+const API_BUSCAR_TODOS = 'http://localhost:8001/fornecedores/listartodos';
+const API_BUSCAR_ID = 'http://localhost:8001/fornecedores/listarporid';
+const API_GRAVAR = 'http://localhost:8001/fornecedores/atualizar';
+const API_SALVAR = 'http://localhost:8001/fornecedores/salvar';
+const API_DELETAR = 'http://localhost:8001/fornecedores/deletar';
+const API_BUSCAR_NOME = 'http://localhost:8001/fornecedores/buscarPorNome';
 
 let editandoId = null;
 

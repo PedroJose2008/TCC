@@ -1,10 +1,10 @@
-const API_OS_LISTAR = 'http://localhost:8000/ordens/listartodos';
-const API_OS_LISTAR_PECAS = 'http://localhost:8000/ordens/listarpecas';
-const API_OS_SALVAR = 'http://localhost:8000/ordens/salvar';
+const API_OS_LISTAR = 'http://localhost:8001/ordens/listartodos';
+const API_OS_LISTAR_PECAS = 'http://localhost:8001/ordens/listarpecas';
+const API_OS_SALVAR = 'http://localhost:8001/ordens/salvar';
 
-const API_CLIENTES_LISTAR = 'http://localhost:8000/clientes/listartodos';
-const API_KITS_LISTAR = 'http://localhost:8000/kits/listartodos';
-const API_MECANICOS_LISTAR = 'http://localhost:8000/usuarios/listartodos';
+const API_CLIENTES_LISTAR = 'http://localhost:8001/clientes/listartodos';
+const API_KITS_LISTAR = 'http://localhost:8001/kits/listartodos';
+const API_MECANICOS_LISTAR = 'http://localhost:8001/usuarios/listartodos';
 
 document.addEventListener("DOMContentLoaded", () => {
     listarOrdensServico();

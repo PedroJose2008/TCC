@@ -1,5 +1,5 @@
-const API_OS_LISTAR = 'http://localhost:8000/ordens/listartodos';
-const API_OS_ATUALIZAR = 'http://localhost:8000/ordens/atualizar';
+const API_OS_LISTAR = 'http://localhost:8001/ordens/listartodos';
+const API_OS_ATUALIZAR = 'http://localhost:8001/ordens/atualizar';
 
 document.addEventListener("DOMContentLoaded", () => {
     listarCadastro();

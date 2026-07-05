@@ -1,8 +1,8 @@
 
-const API_SALVAR_USUARIOS="http://localhost:8000/usuarios/salvar";
-const API_VERIFICA_CPF="http://localhost:8000/usuarios/validaCpf";
-const API_VERIFICA_EMAIL="http://localhost:8000/usuarios/validaEmail";
-const API_VERIFICA_TELEFONE="http://localhost:8000/usuarios/validaTelefone";
+const API_SALVAR_USUARIOS="http://localhost:8001/usuarios/salvar";
+const API_VERIFICA_CPF="http://localhost:8001/usuarios/validaCpf";
+const API_VERIFICA_EMAIL="http://localhost:8001/usuarios/validaEmail";
+const API_VERIFICA_TELEFONE="http://localhost:8001/usuarios/validaTelefone";
 
 
 
@@ -46,7 +46,7 @@ async function salvar(event){
 	
 	if(opcao==="usuario" || salvarUsu===true){
 		alert("salvando usuario");
-		salvarUsu();
+		await salvarUsu();
 		
 	}
 	
@@ -96,14 +96,14 @@ async function salvarUsu(){
 			console.log("verificou o email ")
 			
 			const telefoneInput=document.getElementById("telefone_usuario");
-			const telefoneSemEspaco=telefoneInput.value.replace(/\D/g, '');
+			const telefoneSemEspaco=telefoneInput.value;
 			
 			const reposnseTelefone= await fetch (`${API_VERIFICA_TELEFONE}/${telefoneSemEspaco}`)
 			const TelefoneExiste= await reposnseTelefone.json();
 			
 			console.log(TelefoneExiste);
 			
-			if(TelefoneExiste){
+			if(TelefoneExiste ||String(TelefoneExiste).trim() === "true"){
 				alert("O telefone digitado já existe")
 				return telefoneInput.value="";
 			}
@@ -157,29 +157,38 @@ async function salvarUsu(){
 function validaUsu(){
 	
 	
-	//pego a função válida nome 
-	const nomeValido=validaNome();
+	
 
 	const telefoneValido= validaTelefone();
 	
+	const DDDvalido=DDDTelefone();
+	
+	const NumerosTelefoneValidos=validaNumerosTelefone();
+	
 	const emailValido=validaEmail();
-	
-	const cpfValido=validarCPF();
-	
+		
 	const senhaValido=validaSenha();
 	
+	
+	
 	// se estiver diferente da função válida nome não vai dexar salvar 
-	if(!nomeValido){
-		alert("Verifique se o campo nome está vazio,contém apenas números, se tem mais de 150 caracteres ou  menos de 3 caracteres  ")
-		return false;
-	}
+
 	
 	if(!telefoneValido){
-		alert("Verifique se o campo telefone esta vazio ou com menos de 11 números")
+		alert("O campo telefone está com menos de 11 números")
 		return false ;
 	}
 	
-	if(!cpfValido){
+	if(!DDDvalido){
+		alert("O DDD digitado não é válido! Por favor, corrija.")
+		return false;
+	}
+	
+	if(!NumerosTelefoneValidos){	
+		return false;
+	}
+	
+	if(!validarCPF()){
 		alert("O CPF digitado é inválido")
 		return false;
 	}
@@ -190,8 +199,6 @@ function validaUsu(){
 	}
 	
 	if(!senhaValido){
-		
-		alert("As senhas não são iguais")
 		return false;
 	}
 		
@@ -212,37 +219,33 @@ function validaNome(){
 	const nomeCerto= nomeInput.value.trim();
 	
 	if(nomeCerto.length===0){
-	
+		alert("O nome não pode estar vazio")
 		return false;
 	}
 	
 	
 	else if( nomeCerto.length<3){
-		
+		alert("A quantidade mínima de caracteres é 3")
 		return false  ;
 		
 	}
 	else if (nomeCerto.length>100){
-		
+		alert("A quantidade máxima de caracteres é 100")
+
 		return false  ;
 	} 
+	
+	else if(!isNaN(nomeCerto)){
+			alert("O nome  não pode conter somente números")
+			return false;
+		}
+
 	else {
-		//pega a função de validar nome
-		validarNome(nomeInput);
 		return true;
 	}
-	
-
-
 }
 
-function validarNome(input) {
-  // Impede que o valor seja digitado se contiver apenas números
-  if (/^\d+$/.test(input.value)) {
-	
-    input.value = ""; // Limpa se o usário digitar somente números 
-  }
-}
+
 
 
 function mascaraTelefone(input) {
@@ -285,8 +288,12 @@ function validaTelefone(){
     return false;
   }
   
+
   return true;
 }
+
+	
+
 
 
 function validaEmail(){
@@ -398,11 +405,58 @@ function validaSenha(){
 		
 		// se o campo de senha e confirmar senha estiverem diferentes não deixa passar
 		if(senha!==confirmaSenha){
-			
+			alert("As senhas não são iguais")
 			return false;
 		}
 		
-	
+		
+		if(senha.length<6){
+					alert("A senha não pode ter menos de 6 caracteres")
+					return false;
+				}
+				
+				if(confirmaSenha.length<6){
+							alert("A senha não pode ter menos de 6 caracteres")
+							return false;
+						}
+		
+		
+		//lista de senhas que são inválidas 
+		    const senhasProibidas = [
+		        "123456", 
+		        "123456789", 
+		        "654321", 
+		        "111111",
+				"222222", 
+				"333333",  
+				"444444", 
+				"555555",
+				"666666", 
+				"777777",    
+				"888888",  
+				"999999",  
+				"101010",                          
+		        "000000", 
+		        "password123", 
+				"password123456", 
+				"senha123456", 
+		        "senha123"
+		    ];
+
+		   // se estiver dentro da lista o que o usuário digitou eu barro
+			if (senhasProibidas.includes(senha)) {
+			        alert("Esta senha é muito fraca ! Por favor, digite outra.");
+			        return false;
+			    }
+		
+		
+		else if(senhasProibidas.includes(confirmaSenha)){
+					        return false;
+		}
+		
+		
+				
+				
 		return true;
 	}
 
@@ -411,10 +465,73 @@ function validaSenha(){
 document.getElementById("dataCadastro").value = new Date().toLocaleDateString('pt-BR');
 
 
+function ValidaDDD(telefone) {
+    // busco o que esta escrito no parenteses e retorno o que esta escrito dentro deles
+    const ddd = telefone.match(/\(([^)]+)\)/)?.[1];
+    
+    /// Se não encontrou os parênteses ou o DDD veio vazio, não deixa passar
+    if (!ddd) {
+        return false;
+    }
+    
+    // Lista com todos os DDDs válidos 
+    const dddsValidos = [
+        "11","12","13","14","15","16","17","18","19",
+        "21","22","24","27","28",
+        "31","32","33","34","35","37","38",
+        "41","42","43","44","45","46","47","48","49",
+        "51","53","54","55",
+        "61","62","63","64","65","66","67","68","69",
+        "71","73","74","75","77","79",
+        "81","82","83","84","85","86","87","88","89",
+        "91","92","93","94","95","96","97","98","99"
+    ];
 
+	//pego todos os DDDs se são válidos deixa passar 
+    return dddsValidos.includes(ddd);
+}
 
+	function DDDTelefone(){
+		const telefoneInput = document.getElementById("telefone_usuario");
+		const valorTelefone = telefoneInput.value;
+		
+		
+		// se o telefone digitado não tiver um DDD válido não deixa passar
+				if (ValidaDDD(valorTelefone) === false) {
+				    return false; 
+				}
+		
+		
+		
+		
+		return true;
+	}
+ 
 
+	function validaNumerosTelefone(){
+		
+		const telefoneInput = document.getElementById("telefone_usuario");
+				const valorTelefone = telefoneInput.value;
+				
+				
+		//removo tudo que não for número
+				const TelefonePuro=valorTelefone.replace(/\D/g,"")		
+				
+				//pego os números depois do parenteses 
+				const TelefoneNumeros=TelefonePuro.substring(2)
+				
+				//verifico se os números digitados são iguais
+				const TelefoneRepetido=/^(\d)\1{8}$/.test(TelefoneNumeros);
+				
+				if(TelefoneRepetido){
+					alert("Esté número de telefone é inválido!Não é permitido números números iguais")
+					return false;
+				}
+				
+				return true;
+	}
 
+ 
 
 
 
