@@ -420,6 +420,16 @@ function validaSenha(){
 							return false;
 						}
 		
+						
+	else if(senha.length>50){
+		alert("A senha não pode ter mais de 50 caracteres")
+							return false;
+	}
+	
+	else if(confirmaSenha.length>50){
+			alert("A senha não pode ter mais de 50 caracteres")
+								return false;
+		}
 		
 		//lista de senhas que são inválidas 
 		    const senhasProibidas = [

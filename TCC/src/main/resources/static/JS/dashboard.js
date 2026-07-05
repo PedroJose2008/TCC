@@ -1,4 +1,5 @@
 // carrega os dados assim que a tela carrega 
+//js dashboard
 document.addEventListener('DOMContentLoaded', function()  {
   const avatarBtn = document.getElementById('user-menu-btn');
   const userModal = document.getElementById('user-modal');
@@ -51,7 +52,7 @@ function carregarDados(){
 	    // vou colocar o nome da pessoa 
 	    if (nomePessoa && usuarioJson.nome) {
 	    	//transformo o modal do nome para o nome do uusário 
-	      nomePessoa.textContent = "Bem vindo, " + usuarioJson.nome+" - ";
+	      nomePessoa.textContent = "Bem vindo, " + usuarioJson.nome;
 	    }
 
 	    // pego o cargo do meu usuário
