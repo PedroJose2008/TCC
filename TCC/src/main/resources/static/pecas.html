@@ -17,7 +17,7 @@
     body { font-family:'DM Sans', sans-serif; background:var(--bg); color:var(--text); height:100vh; overflow:hidden; }
     #app { display: flex; height: 100%; }
 
-    /* ---------- SIDEBAR (padrão do Dashboard/Kits) ---------- */
+    /* ---------- SIDEBAR ---------- */
     #sidebar {
       width:var(--sidebar-w); min-width:var(--sidebar-w);
       background:linear-gradient(190deg,var(--sidebar-bg),var(--sidebar-bg2) 85%);
@@ -51,7 +51,10 @@
       background:linear-gradient(180deg,var(--accent),var(--accent2));box-shadow:0 0 10px rgba(91,138,248,.8);}
     .nav-item.active svg{stroke:var(--accent2);}
 
-    /* ---------- MAIN (mantido) ---------- */
+    /* Regra herdada de Equipamentos que padroniza a cor apagada das labels */
+    .nav-label { font-size:10px; letter-spacing:1.8px; text-transform:uppercase; color:var(--text3); margin-bottom:8px; padding:0 8px; }
+
+    /* ---------- MAIN ---------- */
     #main { flex:1; display:flex; flex-direction:column; overflow:hidden; }
     .topbar-base { height:64px; background:var(--surface); border-bottom:1px solid var(--border); display:flex; align-items:center; padding:0 28px; box-shadow: 0 2px 8px rgba(59,111,245,.05); }
     #content { flex:1; overflow-y:auto; padding:28px; }
@@ -157,7 +160,7 @@
                 <th>Código</th>
                 <th>Nome</th>
                 <th>Prateleira</th>
-			 <th>Número Prateleira</th>
+                <th>Número Prateleira</th>
                 <th>Tipo</th>
                 <th>Fornecedor</th>
                 <th>Preço</th>
@@ -193,75 +196,79 @@
             </div>
             <div class="form-group">
               <label for="prateleira">Prateleira</label>
-				 <select id="prateleira" class="form-control" required="required">
-				
-				<option value="" disabled selected>Selecione uma letra (A-Z)...</option>
-  <option value="A">A</option>
-  <option value="B">B</option>
-  <option value="C">C</option>
-  <option value="D">D</option>
-  <option value="E">E</option>
-  <option value="F">F</option>
-  <option value="G">G</option>
-  <option value="H">H</option>
-  <option value="I">I</option>
-  <option value="J">J</option>
-  <option value="K">K</option>
-  <option value="L">L</option>
-  <option value="M">M</option>
-  <option value="N">N</option>
-  <option value="O">O</option>
-  <option value="P">P</option>
-  <option value="Q">Q</option>
-  <option value="R">R</option>
-  <option value="S">S</option>
-  <option value="T">T</option>
-  <option value="U">U</option>
-  <option value="V">V</option>
-  <option value="W">W</option>
-  <option value="X">X</option>
-  <option value="Y">Y</option>
-  <option value="Z">Z</option>
-				
-				
+              <select id="prateleira" class="form-control" required="required">
+                <option value="" disabled selected>Selecione uma letra (A-Z)...</option>
+                <option value="A">A</option>
+                <option value="B">B</option>
+                <option value="C">C</option>
+                <option value="D">D</option>
+                <option value="E">E</option>
+                <option value="F">F</option>
+                <option value="G">G</option>
+                <option value="H">H</option>
+                <option value="I">I</option>
+                <option value="J">J</option>
+                <option value="K">K</option>
+                <option value="L">L</option>
+                <option value="M">M</option>
+                <option value="N">N</option>
+                <option value="O">O</option>
+                <option value="P">P</option>
+                <option value="Q">Q</option>
+                <option value="R">R</option>
+                <option value="S">S</option>
+                <option value="T">T</option>
+                <option value="U">U</option>
+                <option value="V">V</option>
+                <option value="W">W</option>
+                <option value="X">X</option>
+                <option value="Y">Y</option>
+                <option value="Z">Z</option>
               </select>              
             </div>
             
-             <div class="form-group">
-              <label for="prateleira">Número da Pratelira</label>
-				 <select id="numero" class="form-control" required="required">
-				 
-				 <option value="" disabled selected>Selecione um número (1-20)...</option>
-  <option value="1">1</option>
-  <option value="2">2</option>
-  <option value="3">3</option>
-  <option value="4">4</option>
-  <option value="5">5</option>
-  <option value="6">6</option>
-  <option value="7">7</option>
-  <option value="8">8</option>
-  <option value="9">9</option>
-  <option value="10">10</option>
-  <option value="11">11</option>
-  <option value="12">12</option>
-  <option value="13">13</option>
-  <option value="14">14</option>
-  <option value="15">15</option>
-  <option value="16">16</option>
-  <option value="17">17</option>
-  <option value="18">18</option>
-  <option value="19">19</option>
-  <option value="20">20</option>
-				 
-				 
+            <div class="form-group">
+              <label for="numero">Número da Prateleira</label>
+              <select id="numero" class="form-control" required="required">
+                <option value="" disabled selected>Selecione um número (1-20)...</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
+                <option value="8">8</option>
+                <option value="9">9</option>
+                <option value="10">10</option>
+                <option value="11">11</option>
+                <option value="12">12</option>
+                <option value="13">13</option>
+                <option value="14">14</option>
+                <option value="15">15</option>
+                <option value="16">16</option>
+                <option value="17">17</option>
+                <option value="18">18</option>
+                <option value="19">19</option>
+                <option value="20">20</option>
               </select>              
             </div>
             
             <div class="form-group">
               <label for="tipo">Tipo / Categoria</label>
               <select id="tipo" class="form-control" required="required">
+                <option value="" disabled selected hidden>Selecione o tipo...</option>
+                <option value="Motor">Motor</option>
+                <option value="Suspensão">Suspensão</option>
+                <option value="Freios">Freios</option>
+                <option value="Elétrica">Elétrica</option>
+                <option value="Transmissão">Transmissão</option>
+                <option value="Filtros">Filtros</option>
+                <option value="Carroceria">Carroceria</option>
+                <option value="Outros">Outros</option>
               </select>
             </div>
+
             <div class="form-group">
               <label for="idFornecedor">Fornecedor</label>
               <select id="idFornecedor" class="form-control" required="required">
@@ -273,11 +280,11 @@
             </div>
             <div class="form-group">
               <label for="quantidadeEstoque">Quantidade em Estoque</label>
-              <input  id="quantidadeEstoque" class="form-control" min="0" placeholder="0" required="required">
+              <input id="quantidadeEstoque" class="form-control" min="0" placeholder="0" required="required">
             </div>
           </div>
           
-          
+          <input type="hidden" id="dataCadastro">
           
           <div class="modal-footer" style="background: var(--surface2); padding: 16px 24px;">
             <button type="button" class="btn btn-ghost" onclick="fecharModal()">Cancelar</button>

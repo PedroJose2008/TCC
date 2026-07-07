@@ -3,22 +3,21 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Manutenção - Acoa Peças</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <title>Manutenções - SISCAP</title>
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
     :root {
       --bg: #eef2f8; --surface: #ffffff; --surface2: #f0f4fb; --border: #d6dff0;
       --accent: #3b6ff5; --accent2: #5b8af8; --accent-light: #dce8ff;
       --success: #22c55e; --danger: #ef4444; --text: #1a2340; --text2: #4a6080; --text3: #8fa0b8; --sidebar-w: 246px;
       --sidebar-bg:#0d1326; --sidebar-bg2:#141b34; --sidebar-line:#232b48;
-      --btn-blue: #3b82f6; --btn-blue-hover: #2563eb;
     }
     * { margin:0; padding:0; box-sizing:border-box; }
     body { font-family:'DM Sans', sans-serif; background:var(--bg); color:var(--text); height:100vh; overflow:hidden; }
     #app { display: flex; height: 100%; }
 
-    /* ---------- SIDEBAR (padrão do Dashboard/Kits) ---------- */
+    /* ---------- SIDEBAR ---------- */
     #sidebar {
       width:var(--sidebar-w); min-width:var(--sidebar-w);
       background:linear-gradient(190deg,var(--sidebar-bg),var(--sidebar-bg2) 85%);
@@ -37,7 +36,7 @@
     nav{padding:18px 12px;flex:1;overflow-y:auto;}
     nav::-webkit-scrollbar{width:5px;}
     nav::-webkit-scrollbar-thumb{background:var(--sidebar-line);border-radius:6px;}
-    .nav-label{font-size:10px;letter-spacing:1.8px;text-transform:uppercase;color:#4d5a80;margin:14px 8px 8px;font-weight:600;}
+    .nav-label{font-size:10px;letter-spacing:1.8px;text-transform:uppercase;color:var(--text3);margin:14px 8px 8px;font-weight:600;padding:0 8px;}
     .nav-label:first-child{margin-top:2px;}
     .nav-item{
       display:flex;align-items:center;gap:11px;padding:10px 12px;border-radius:10px;cursor:pointer;
@@ -52,44 +51,36 @@
       background:linear-gradient(180deg,var(--accent),var(--accent2));box-shadow:0 0 10px rgba(91,138,248,.8);}
     .nav-item.active svg{stroke:var(--accent2);}
 
-    /* ---------- MAIN (mantido) ---------- */
+    /* ---------- MAIN ---------- */
     #main { flex:1; display:flex; flex-direction:column; overflow:hidden; }
     .topbar-base { height:64px; background:var(--surface); border-bottom:1px solid var(--border); display:flex; align-items:center; padding:0 28px; box-shadow: 0 2px 8px rgba(59,111,245,.05); }
     #content { flex:1; overflow-y:auto; padding:28px; }
     .card { background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:20px; box-shadow: 0 2px 10px rgba(59,111,245,.06); }
-    .card-title { font-family:'Syne',sans-serif; font-weight:700; font-size:14px; margin-bottom:16px; }
+    .card-title { font-family:'Syne',sans-serif; font-weight:700; font-size:14px; margin-bottom:16px; display:flex; justify-content:space-between; align-items:center; }
+    
+    .table-toolbar { display: flex; gap: 8px; margin-bottom: 24px; width: 100%; align-items: center; }
+    .search-input { padding: 10px 14px; border: 1px solid var(--border); border-radius: 8px; font-family: inherit; font-size: 13px; color: var(--text); background: var(--surface2); outline: none; transition: all 0.2s; height: 38px; width: 100%; max-width: 250px; }
+    .search-input:focus { border-color: var(--accent); background: var(--surface); }
 
-    table { width:100%; border-collapse:collapse; font-size:13.5px; margin-bottom: 16px; }
-    thead th { text-align:center; padding:10px 14px; font-size:11px; text-transform:uppercase; color:var(--text3); border-bottom:1px solid var(--border); background:var(--surface2); }
-    tbody td { text-align:center; padding:12px 14px; color:var(--text2); border-bottom:1px solid var(--border); vertical-align: middle; }
-
-    .btn-success { padding:6px 12px; border-radius:8px; border:none; cursor:pointer; font-size:12px; font-weight:500; background:var(--success); color:#fff; transition: background 0.2s; }
-    .btn-success:hover { background: #16a34a; }
-
-    .btn-pecas-os { padding:6px 12px; border-radius:8px; border:none; cursor:pointer; font-size:12px; font-weight:500; background:var(--btn-blue); color:#fff; display: inline-flex; align-items: center; gap: 4px; transition: background 0.2s; }
-    .btn-pecas-os:hover { background: var(--btn-blue-hover); }
-
-    .btn-ghost { background:var(--surface2); color:var(--text2); border:1px solid var(--border); padding:6px 12px; border-radius:8px; font-size:12px; cursor:pointer; }
-    .btn-ghost:hover { background: var(--border); }
-
-    .badge-blue { padding:3px 8px; border-radius:20px; font-size:11px; font-weight:600; background:rgba(59,111,245,.1); color:var(--accent); }
-    .actions-cell { display: flex; gap: 6px; align-items: center; justify-content: center; }
-
-    /* MODAL CUSTOMIZADO */
-    .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(26, 35, 64, 0.4); backdrop-filter: blur(2px); display: flex; align-items: center; justify-content: center; z-index: 1000; display: none; }
-    .modal-overlay.active { display: flex; }
-    .modal-container { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; width: 90%; max-width: 750px; max-height: 90vh; box-shadow: 0 10px 30px rgba(26, 35, 64, 0.15); display: flex; flex-direction: column; }
-    .modal-header { padding: 20px 24px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
-    .modal-header h3 { font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 700; }
-    .modal-close { background: none; border: none; font-size: 22px; color: var(--text3); cursor: pointer; }
-    .modal-body { padding: 24px; overflow-y: auto; display: flex; flex-direction: column; gap: 20px; }
-    .modal-footer { padding: 16px 24px; border-top: 1px solid var(--border); background: var(--surface2); display: flex; justify-content: flex-end; gap: 10px; border-bottom-left-radius: 16px; border-bottom-right-radius: 16px; }
-
-    .section-title { font-family: 'Syne', sans-serif; font-size: 12px; font-weight: 700; text-transform: uppercase; color: var(--text2); margin-bottom: 8px; letter-spacing: 0.5px; }
-    .form-group { display: flex; flex-direction: column; gap: 4px; width: 100%; margin-bottom: 12px; }
-    .form-group label { font-size: 11px; font-weight: 600; color: var(--text2); text-transform: uppercase; }
-    .form-input { padding: 10px 12px; border-radius: 8px; border: 1px solid var(--border); background: var(--surface2); color: var(--text); font-size: 13.5px; outline: none; width: 100%; }
-    .form-input:focus { border-color: var(--accent); background: var(--surface); }
+    table { width:100%; border-collapse:collapse; font-size:13.5px; }
+    thead th { text-align: center; padding:10px 14px; font-size:11px; text-transform:uppercase; color:var(--text3); border-bottom:1px solid var(--border); background:var(--surface2); }
+    tbody td { text-align: center; padding:12px 14px; color:var(--text2); border-bottom:1px solid var(--border); vertical-align: middle; }
+    
+    .btn { padding:6px 12px; border-radius:8px; border:none; cursor:pointer; font-size:12px; font-weight:500; transition: all 0.2s; height: 38px; display: inline-flex; align-items: center; justify-content: center; gap: 4px; }
+    .btn-primary { background:var(--accent); color:#fff; padding: 0 20px; }
+    .btn-primary:hover { background:var(--accent2); }
+    .btn-success { background:var(--success); color:#fff; height: 36px; padding: 0 16px; font-size: 13px; font-weight: 600; border-radius: 10px; }
+    .btn-ghost { background:var(--surface2); color:var(--text2); border:1px solid var(--border); padding: 0 20px; }
+    .btn-ghost:hover { background:var(--border); }
+    .btn-danger { background:rgba(239,68,68,.1); color:var(--danger); height: auto; padding: 6px 12px; }
+    .btn-danger:hover { background:rgba(239,68,68,.2); }
+    .badge-blue { padding:3px 8px; border-radius:20px; font-size:11px; font-weight:600; background:rgba(59,111,245,.1); color:var(--accent); display: inline-block; }
+    
+    .form-group { display: flex; flex-direction: column; gap: 6px; text-align: left; width: 100%; margin-bottom: 14px; }
+    .form-group label { font-size: 12px; font-weight: 600; color: var(--text2); text-transform: uppercase; }
+    .form-control { padding: 10px 12px; border: 1px solid var(--border); border-radius: 8px; font-family: inherit; font-size: 13.5px; color: var(--text); background: var(--surface2); outline: none; width: 100%; height: 40px; }
+    .form-control:focus { border-color: var(--accent); background: var(--surface); }
+    .section-title { font-family: 'Syne', sans-serif; font-size: 12px; font-weight: 700; text-transform: uppercase; color: var(--text2); margin-bottom: 12px; letter-spacing: 0.5px; }
   </style>
 </head>
 <body>
@@ -163,50 +154,52 @@
               </tr>
             </thead>
             <tbody id="listaOrdensServico">
-            </tbody>
+              </tbody>
           </table>
         </div>
       </div>
     </main>
   </div>
 
-  <div class="modal-overlay" id="modalPecas">
-    <div class="modal-container">
-      <div class="modal-header">
-        <div>
-          <h3 id="modalTitle">Componentes da OS</h3>
-          <small id="modalSubtitle" style="color: var(--text3);"></small>
-        </div>
-        <button class="modal-close" onclick="fecharModalPecas()">&times;</button>
-      </div>
-      <div class="modal-body">
-
-        <div class="form-group">
-          <label>Selecione uma peça para vincular</label>
-          <div style="display: flex; gap: 10px;">
-            <select id="selectPecas" class="form-input"></select>
-            <button class="btn-pecas-os" onclick="adicionarPecaAoKit()">Adicionar</button>
+  <div class="modal fade" id="modalPecas" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" style="max-width: 750px;">
+      <div class="modal-content" style="border-radius: 16px; border: 1px solid var(--border);">
+        <div class="modal-header" style="padding: 20px 24px;">
+          <div>
+            <h5 class="modal-title" id="modalTitle" style="font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 700;">Componentes da OS</h5>
+            <small id="modalSubtitle" style="color: var(--text3); display: block; margin-top: 2px;"></small>
           </div>
+          <button type="button" class="btn-close" onclick="fecharModalPecas()"></button>
         </div>
+        <div class="modal-body" style="padding: 24px;">
+          
+          <div class="form-group">
+            <label for="selectPecas">Selecione uma peça para vincular</label>
+            <div style="display: flex; gap: 10px;">
+              <select id="selectPecas" class="form-control"></select>
+              <button class="btn btn-primary" style="height: 40px; white-space: nowrap;" onclick="adicionarPecaAoKit()">Adicionar</button>
+            </div>
+          </div>
 
-        <div>
-          <div class="section-title">Peças Utilizadas nesta Manutenção</div>
-          <table>
-            <thead>
-              <tr>
-                <th>Código</th>
-                <th>Nome da Peça</th>
-                <th>Ação</th>
-              </tr>
-            </thead>
-            <tbody id="listaPecasKit">
-            </tbody>
-          </table>
+          <div style="margin-top: 24px;">
+            <div class="section-title">Peças Utilizadas nesta Manutenção</div>
+            <table>
+              <thead>
+                <tr>
+                  <th>Código</th>
+                  <th>Nome da Peça</th>
+                  <th>Ação</th>
+                </tr>
+              </thead>
+              <tbody id="listaPecasKit">
+                </tbody>
+            </table>
+          </div>
+
         </div>
-
-      </div>
-      <div class="modal-footer">
-        <button class="btn-ghost" onclick="fecharModalPecas()">Fechar</button>
+        <div class="modal-footer" style="background: var(--surface2); padding: 16px 24px;">
+          <button type="button" class="btn btn-ghost" onclick="fecharModalPecas()">Fechar</button>
+        </div>
       </div>
     </div>
   </div>

@@ -40,7 +40,7 @@ public class KitEntity implements Serializable{
 	private ClienteEntity cliente;
 
 	private String prateleira;
-
+	private String numeroPratelira;
 	private String codigo;
 	private String nome;
 	private String descricao;
@@ -56,6 +56,12 @@ public class KitEntity implements Serializable{
 	
 	
 	
+	public String getNumeroPratelira() {
+		return numeroPratelira;
+	}
+	public void setNumeroPratelira(String numeroPratelira) {
+		this.numeroPratelira = numeroPratelira;
+	}
 	public List<PecaEntity> getPecas() {
 		return pecas;
 	}

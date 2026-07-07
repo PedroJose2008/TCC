@@ -39,7 +39,7 @@ async function listarOrdensManutencao() {
     tbody.innerHTML = "";
 
     ordens.forEach(os => {
-        // Padrão do Professor Ajustado: Filtra apenas quem realmente deve estar na manutenção
+        // Aceita os dois status vindos do banco de dados
         if (os.status === "ABERTA" || os.status === "EM_MANUTENCAO") {
             const tr = document.createElement("tr");
             const dataFormatada = os.dataCadastro ? os.dataCadastro.split('-').reverse().join('/') : "-";
@@ -47,9 +47,14 @@ async function listarOrdensManutencao() {
             const nomeMecanico = os.usuario ? os.usuario.nome : "-";
             const nomeKit = os.kit ? os.kit.nome : "-";
             
-            // Define o texto da tag dinamicamente dependendo do status real do banco
-            const textoStatus = os.status === "ABERTA" ? "Aberta" : "Em Manutenção";
-            const classeBadge = os.status === "ABERTA" ? "badge-gray" : "badge-blue"; // ajuste as classes se necessário
+            // Tratamento dinâmico e exato do status vindo do banco de dados
+            let textoStatus = "Em Manutenção";
+            let classeBadge = "badge-blue"; // Valor padrão para EM_MANUTENCAO
+
+            if (os.status === "ABERTA") {
+                textoStatus = "Aberta";
+                classeBadge = "badge-gray";
+            }
 
             tr.innerHTML = `
                 <td><strong>#OS-${os.id}</strong></td>
@@ -69,7 +74,6 @@ async function listarOrdensManutencao() {
         }
     });
 
-    // Se a tabela ficar vazia, adiciona uma mensagem amigável para o usuário
     if (tbody.innerHTML === "") {
         tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; color:gray; padding:20px;">Nenhuma ordem de serviço em manutenção no momento.</td></tr>`;
     }

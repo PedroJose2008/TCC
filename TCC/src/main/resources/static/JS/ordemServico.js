@@ -2,6 +2,8 @@ const API_OS_LISTAR = 'http://localhost:8001/ordens/listartodos';
 const API_OS_LISTAR_PECAS = 'http://localhost:8001/ordens/listarpecas';
 const API_OS_SALVAR = 'http://localhost:8001/ordens/salvar';
 
+const API_OS_ATUALIZAR = 'http://localhost:8001/ordens/atualizar';
+
 const API_CLIENTES_LISTAR = 'http://localhost:8001/clientes/listartodos';
 const API_KITS_LISTAR = 'http://localhost:8001/kits/listartodos';
 const API_MECANICOS_LISTAR = 'http://localhost:8001/usuarios/listartodos';
@@ -73,35 +75,72 @@ async function carregarMecanicosSelect() {
     });
 }
 
+
+function atualizarStatusParaManutencao(idOS) {
+    fetch(`${API_OS_ATUALIZAR}/${idOS}`, {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            status: "EM_MANUTENCAO"
+        })
+    });
+}
+
 async function listarOrdensServico() {
     const response = await fetch(API_OS_LISTAR);
     const ordens = await response.json();
     const tbody = document.getElementById("listaOrdensServico");
     
-    tbody.innerHTML = ordens.length === 0 
-        ? `<tr><td colspan="7" style="text-align:center; color:var(--text3); padding:20px;">Nenhuma Ordem de Serviço ativa.</td></tr>`
-        : "";
+    if (ordens.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; color:var(--text3); padding:20px;">Nenhuma Ordem de Serviço ativa.</td></tr>`;
+        return;
+    }
 
-    if (ordens.length === 0) return;
-
-    const manutencoesConcluidas = JSON.parse(localStorage.getItem("manutencoes_concluidas")) || [];
-    const osFinalizadasRetirada = JSON.parse(localStorage.getItem("os_finalizadas")) || [];
+    tbody.innerHTML = "";
 
     ordens.forEach(os => {
+       
+        if (os.status === "ABERTA") {
+            atualizarStatusParaManutencao(os.id);
+            os.status = "EM_MANUTENCAO";
+        }
+
         const dataFormatada = os.dataCadastro ? os.dataCadastro.split('-').reverse().join('/') : "-";
         const nomeCliente = os.cliente ? (os.cliente.razaoSocial || os.cliente.nome) : "Não Informado";
         const nomeMecanico = os.usuario ? os.usuario.nome : "Não Informado";
         const nomeKit = os.kit ? os.kit.nome : "Nenhum Kit";
 
-        let statusHTML = `<span class="badge" style="padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; background-color: #ffeeba; color: #856404;">Em Aberto</span>`;
+        let statusHTML = "";
+
         
-        statusHTML = osFinalizadasRetirada.includes(os.id) 
-            ? `<span class="badge" style="padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; background-color: rgba(34,197,94,.1); color: #16a34a;">Finalizada</span>`
-            : manutencoesConcluidas.includes(os.id)
-            ? `<span class="badge" style="padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; background-color: rgba(245,158,11,.1); color: #d97706;">Aguardando Retirada</span>`
-            : (os.observacao && os.observacao.includes("Manutenção"))
-            ? `<span class="badge" style="padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; background-color: rgba(59,111,245,.1); color: var(--accent);">Em Manutenção</span>`
-            : statusHTML;
+        if (os.status === "ABERTA") {
+            statusHTML = `
+                <span class="badge" style="padding:4px 10px;border-radius:20px;font-size:11px;font-weight:600;background:#ffeeba;color:#856404;">
+                    Em Aberto
+                </span>`;
+        } else if (os.status === "EM_MANUTENCAO") {
+            statusHTML = `
+                <span class="badge" style="padding:4px 10px;border-radius:20px;font-size:11px;font-weight:600;background:rgba(59,111,245,.1);color:#3b6ff5;">
+                    Em Manutenção
+                </span>`;
+        } else if (os.status === "AGUARDANDO_RETIRADA") {
+            statusHTML = `
+                <span class="badge" style="padding:4px 10px;border-radius:20px;font-size:11px;font-weight:600;background:rgba(245,158,11,.1);color:#d97706;">
+                    Aguardando Retirada
+                </span>`;
+        } else if (os.status === "FINALIZADA") {
+            statusHTML = `
+                <span class="badge" style="padding:4px 10px;border-radius:20px;font-size:11px;font-weight:600;background:rgba(34,197,94,.1);color:#16a34a;">
+                    Finalizada
+                </span>`;
+        } else {
+            statusHTML = `
+                <span class="badge bg-secondary">
+                    ${os.status || 'Sem Status'}
+                </span>`;
+        }
 
         tbody.innerHTML += `
             <tr>
@@ -125,8 +164,9 @@ async function salvarNovaOS() {
         usuario: { id: document.getElementById("osUsuario").value },
         kit: { id: document.getElementById("osKit").value },
         pagamento: document.getElementById("osPagamento").value,
-        observacao: "Manutenção",
-        valor: 0.00
+        valor: 0.00,
+        // Força a OS a nascer diretamente no status correto
+        status: "EM_MANUTENCAO"
     };
 
     await fetch(API_OS_SALVAR, {
@@ -157,8 +197,13 @@ async function verRelatorioOS(idOS) {
     
     if (pecasUtilizadas && pecasUtilizadas.length > 0) {
         listaPecasHTML = "";
+        
+        // Seu laço corrigido aplicando p.preco para puxar o valor real de cada item
         pecasUtilizadas.forEach(p => {
-            const precoPeca = p.valor ? `R$ ${parseFloat(p.valor).toFixed(2).replace('.',',')}` : "R$ 0,00";
+            const precoPeca = p.preco
+                ? `R$ ${parseFloat(p.preco).toFixed(2).replace('.', ',')}`
+                : "R$ 0,00";
+
             listaPecasHTML += `<li>${p.nome} (${precoPeca})</li>`;
         });
     }

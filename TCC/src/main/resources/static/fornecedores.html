@@ -3,11 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Fornecedores - Acoa Peças</title>
-  
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <title>Fornecedores - SISCAP</title>
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
     :root {
       --bg: #eef2f8; --surface: #ffffff; --surface2: #f0f4fb; --border: #d6dff0;
@@ -20,7 +18,7 @@
     a { text-decoration: none; }
     #app { display: flex; height: 100%; }
 
-    /* ---------- SIDEBAR (padrão do Dashboard) ---------- */
+    /* ---------- SIDEBAR ---------- */
     #sidebar {
       width:var(--sidebar-w); min-width:var(--sidebar-w);
       background:linear-gradient(190deg,var(--sidebar-bg),var(--sidebar-bg2) 85%);
@@ -39,7 +37,7 @@
     nav{padding:18px 12px;flex:1;overflow-y:auto;}
     nav::-webkit-scrollbar{width:5px;}
     nav::-webkit-scrollbar-thumb{background:var(--sidebar-line);border-radius:6px;}
-    .nav-label{font-size:10px;letter-spacing:1.8px;text-transform:uppercase;color:#4d5a80;margin:14px 8px 8px;font-weight:600;}
+    .nav-label{font-size:10px;letter-spacing:1.8px;text-transform:uppercase;color:var(--text3);margin:14px 8px 8px;font-weight:600;padding:0 8px;}
     .nav-label:first-child{margin-top:2px;}
     .nav-item{
       display:flex;align-items:center;gap:11px;padding:10px 12px;border-radius:10px;cursor:pointer;
@@ -54,19 +52,16 @@
       background:linear-gradient(180deg,var(--accent),var(--accent2));box-shadow:0 0 10px rgba(91,138,248,.8);}
     .nav-item.active svg{stroke:var(--accent2);}
 
-    /* ---------- MAIN (mantido) ---------- */
+    /* ---------- MAIN ---------- */
     #main { flex:1; display:flex; flex-direction:column; overflow:hidden; }
     .topbar-base { height:64px; background:var(--surface); border-bottom:1px solid var(--border); display:flex; align-items:center; padding:0 28px; box-shadow: 0 2px 8px rgba(59,111,245,.05); }
     #content { flex:1; overflow-y:auto; padding:28px; }
     
     .card { background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:20px; box-shadow: 0 2px 10px rgba(59,111,245,.06); }
-    
-    /* Novo layout do cabeçalho do Cartão */
     .card-header-custom { display: flex; flex-direction: column; gap: 12px; margin-bottom: 24px; }
     .card-title-row { display: flex; justify-content: space-between; align-items: center; }
     .card-title { font-family:'Syne',sans-serif; font-weight:700; font-size:14px; margin: 0; }
     
-    /* Barra de busca reduzida exatamente como no modelo */
     .search-box { display: flex; gap: 8px; align-items: center; }
     .search-box input { padding: 8px 14px; border: 1px solid var(--border); border-radius: 8px; font-size: 13px; outline: none; width: 100%; max-width: 250px; background: var(--surface2); height: 38px; }
     .search-box input:focus { border-color: var(--accent); background: var(--surface); }
@@ -75,12 +70,19 @@
     thead th { text-align:center; padding:10px 14px; font-size:11px; text-transform:uppercase; color:var(--text3); border-bottom:1px solid var(--border); background:var(--surface2); }
     tbody td { text-align:center; padding:12px 14px; color:var(--text2); border-bottom:1px solid var(--border); vertical-align: middle; }
     
-    .btn-primary { padding:0 16px; border-radius:8px; border:none; cursor:pointer; font-size:12px; font-weight:500; background:var(--accent); color:#fff; height: 38px; display: inline-flex; align-items: center; }
-    .btn-success { background:var(--success); color:#fff; padding: 0 16px; font-size: 13px; font-weight: 600; border-radius: 10px; border: none; height: 36px; display: inline-flex; align-items: center; }
-    .btn-ghost { background:var(--surface2); color:var(--text2); border:1px solid var(--border); padding:0 16px; border-radius:8px; font-size:12px; font-weight: 500; height: 38px; display: inline-flex; align-items: center; }
+    .btn { padding:6px 16px; border-radius:8px; border:none; cursor:pointer; font-size:12px; font-weight:500; transition: all 0.2s; height: 38px; display: inline-flex; align-items: center; justify-content: center; gap: 4px; }
+    .btn-primary { background:var(--accent); color:#fff; }
+    .btn-primary:hover { background:var(--accent2); }
+    .btn-success { background:var(--success); color:#fff; padding: 0 16px; font-size: 13px; font-weight: 600; border-radius: 10px; height: 36px; }
+    .btn-ghost { background:var(--surface2); color:var(--text2); border:1px solid var(--border); }
     .btn-ghost:hover { background: var(--border); }
-    .btn-danger { background:rgba(239,68,68,.1); color:var(--danger); padding:6px 12px; border-radius:8px; border:none; cursor:pointer; font-size:12px; font-weight: 500;}
+    .btn-danger { background:rgba(239,68,68,.1); color:var(--danger); height: auto; padding: 6px 12px; }
     .btn-danger:hover { background:rgba(239,68,68,.2); }
+
+    .form-group { display: flex; flex-direction: column; gap: 6px; text-align: left; width: 100%; margin-bottom: 14px; }
+    .form-group label { font-size: 12px; font-weight: 600; color: var(--text2); text-transform: uppercase; }
+    .form-control { padding: 10px 12px; border: 1px solid var(--border); border-radius: 8px; font-family: inherit; font-size: 13.5px; color: var(--text); background: var(--surface2); outline: none; width: 100%; height: 40px; }
+    .form-control:focus { border-color: var(--accent); background: var(--surface); }
   </style>
 </head>
 <body>
@@ -116,7 +118,7 @@
           Abrir Ordem de Serviço
         </a>
         <a href="manutencao.html" class="nav-item">
-          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.87l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.7 1.7 0 0 0-1.87-.34 1.7 1.7 0 0 0-1.04 1.56V21a2 2 0 1 1-4 0v-.09A1.7 1.7 0 0 0 9 19.35a1.7 1.7 0 0 0-1.87.34l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.7 1.7 0 0 0 4.64 15a1.7 1.7 0 0 0-1.56-1.04H3a2 2 0 1 1 0-4h.09A1.7 1.7 0 0 0 4.65 9a1.7 1.7 0 0 0-.34-1.87l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.7 1.7 0 0 0 1.87.34H9A1.7 1.7 0 0 0 10.04 3.6V3a2 2 0 1 1 4 0v.09A1.7 1.7 0 0 0 15 4.65c.6.25 1.3.13 1.87-.34l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.7 1.7 0 0 0 19.35 9c.25.6.83 1 1.56 1H21a2 2 0 1 1 0 4h-.09A1.7 1.7 0 0 0 19.4 15Z"/></svg>
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.87l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.7 1.7 0 0 0-1.87-.34 1.7 1.7 0 0 0-1.04 1.56V21a2 2 0 1 1-4 0v-.09A1.7 1.7 0 0 0 9 19.35a1.7 1.7 0 0 0-1.87.34l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.7 1.7 0 0 0 4.64 15a1.7 1.7 0 0 0-1.56-1.04H3a2 2 0 1 1 0-4h.09A1.7 1.7 0 0 0 4.65 9a1.7 1.7 0 0 0-.34-1.87l-.06-.06a2 2 0 1 1-2.83-2.83l.06.06a1.7 1.7 0 0 0 1.87.34H9A1.7 1.7 0 0 0 10.04 3.6V3a2 2 0 1 1 4 0v.09A1.7 1.7 0 0 0 15 4.65c.6.25 1.3.13 1.87-.34l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.7 1.7 0 0 0 19.35 9c.25.6.83 1 1.56 1H21a2 2 0 1 1 0 4h-.09A1.7 1.7 0 0 0 19.4 15Z"/></svg>
           Manutenções
         </a>
         <a href="retirada.html" class="nav-item">
@@ -143,17 +145,16 @@
       
       <div id="content">
         <div class="card">
-          
           <div class="card-header-custom">
             <div class="card-title-row">
               <h2 class="card-title">Lista de Fornecedores</h2>
-              <button class="btn-success" onclick="abrirModal()">⚡ Criar Fornecedor</button>
+              <button class="btn btn-success" onclick="abrirModal()">⚡ Criar Fornecedor</button>
             </div>
             
             <div class="search-box">
                 <input type="text" id="filtroNome" placeholder="🔍 Digite para pesquisar...">
-                <button class="btn-primary" onclick="buscarFornecedor()">Buscar</button>
-                <button class="btn-ghost" onclick="document.getElementById('filtroNome').value=''; buscarFornecedor();">Limpar</button>
+                <button class="btn btn-primary" onclick="buscarFornecedor()">Buscar</button>
+                <button class="btn btn-ghost" onclick="document.getElementById('filtroNome').value=''; buscarFornecedor();">Limpar</button>
             </div>
           </div>
           <table>
@@ -175,47 +176,47 @@
   </div>
 
   <div class="modal fade" id="fornecedorModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" style="font-family:'Syne',sans-serif; font-weight:700;">Salvar Fornecedor</h5>
+    <div class="modal-dialog modal-dialog-centered" style="max-width: 800px;">
+      <div class="modal-content" style="border-radius: 16px; border: 1px solid var(--border);">
+        <div class="modal-header" style="padding: 20px 24px;">
+          <h5 class="modal-title" style="font-family:'Syne',sans-serif; font-weight:700; margin:0; font-size: 16px;">Salvar Fornecedor</h5>
           <button type="button" class="btn-close" onclick="fecharModal()"></button>
         </div>
-        <div class="modal-body">
-            <div class="row">
-                <div class="col-md-6 mb-3">
-                    <label for="razaoSocial" class="form-label">Razão Social</label>
-                    <input type="text" class="form-control" id="razaoSocial" placeholder="Ex: Auto Peças Oliveira LTDA">
-                </div>
-                <div class="col-md-6 mb-3">
-                    <label for="cnpj" class="form-label">CNPJ</label>
-                    <input type="text" class="form-control" id="cnpj" placeholder="00.000.000/0000-00">
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-6 mb-3">
-                    <label for="telefone" class="form-label">Telefone</label>
-                    <input type="text" class="form-control" id="telefone" placeholder="(00) 0000-0000">
-                </div>
-                <div class="col-md-6 mb-3">
-                    <label for="email" class="form-label">E-mail</label>
-                    <input type="email" class="form-control" id="email" placeholder="contato@empresa.com.br">
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-6 mb-3">
-                    <label for="cep" class="form-label">CEP</label>
-                    <input type="text" class="form-control" id="cep" placeholder="00000-000">
-                </div>
-                <div class="col-md-6 mb-3">
-                    <label for="complemento" class="form-label">Complemento</label>
-                    <input type="text" class="form-control" id="complemento" placeholder="Sala, Galpão, etc.">
-                </div>
-            </div>
+        <div class="modal-body" style="padding: 24px;">
+          <div class="row">
+              <div class="col-md-6 form-group">
+                  <label for="razaoSocial">Razão Social</label>
+                  <input type="text" class="form-control" id="razaoSocial" placeholder="Ex: Auto Peças Oliveira LTDA">
+              </div>
+              <div class="col-md-6 form-group">
+                  <label for="cnpj">CNPJ</label>
+                  <input type="text" class="form-control" id="cnpj" maxlength="14" oninput="this.value = this.value.replace(/\D/g, '')" placeholder="00.000.000/0000-00">
+              </div>
+          </div>
+          <div class="row mt-2">
+              <div class="col-md-6 form-group">
+                  <label for="telefone">Telefone</label>
+                  <input type="text" class="form-control" id="telefone" maxlength="11" oninput="this.value = this.value.replace(/\D/g, '')" placeholder="(00) 0000-0000">
+              </div>
+              <div class="col-md-6 form-group">
+                  <label for="email">E-mail</label>
+                  <input type="email" class="form-control" id="email" placeholder="contato@empresa.com.br">
+              </div>
+          </div>
+          <div class="row mt-2">
+              <div class="col-md-6 form-group">
+                  <label for="cep">CEP</label>
+                  <input type="text" class="form-control" id="cep" maxlength="8" oninput="this.value = this.value.replace(/\D/g, '')" placeholder="00000-000">
+              </div>
+              <div class="col-md-6 form-group">
+                  <label for="complemento">Complemento</label>
+                  <input type="text" class="form-control" id="complemento" placeholder="Sala, Galpão, etc.">
+              </div>
+          </div>
         </div>
-        <div class="modal-footer">
-          <button type="button" class="btn-ghost" onclick="fecharModal()">Cancelar</button>
-          <button type="button" class="btn-primary" onclick="salvarFornecedor()">Salvar</button>
+        <div class="modal-footer" style="background: var(--surface2); padding: 16px 24px; border-top: 1px solid var(--border);">
+          <button type="button" class="btn btn-ghost" onclick="fecharModal()">Cancelar</button>
+          <button type="button" class="btn btn-primary" onclick="salvarFornecedor()">Salvar</button>
         </div>
       </div>
     </div>

@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Retirada - Acoa Peças</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <title>Ordens de Retirada - SISCAP</title>
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
     :root {
       --bg: #eef2f8; --surface: #ffffff; --surface2: #f0f4fb; --border: #d6dff0;
@@ -17,7 +17,7 @@
     body { font-family:'DM Sans', sans-serif; background:var(--bg); color:var(--text); height:100vh; overflow:hidden; }
     #app { display: flex; height: 100%; }
 
-    /* ---------- SIDEBAR (padrão do Dashboard/Kits) ---------- */
+    /* ---------- SIDEBAR ---------- */
     #sidebar {
       width:var(--sidebar-w); min-width:var(--sidebar-w);
       background:linear-gradient(190deg,var(--sidebar-bg),var(--sidebar-bg2) 85%);
@@ -36,7 +36,7 @@
     nav{padding:18px 12px;flex:1;overflow-y:auto;}
     nav::-webkit-scrollbar{width:5px;}
     nav::-webkit-scrollbar-thumb{background:var(--sidebar-line);border-radius:6px;}
-    .nav-label{font-size:10px;letter-spacing:1.8px;text-transform:uppercase;color:#4d5a80;margin:14px 8px 8px;font-weight:600;}
+    .nav-label{font-size:10px;letter-spacing:1.8px;text-transform:uppercase;color:var(--text3);margin:14px 8px 8px;font-weight:600;padding:0 8px;}
     .nav-label:first-child{margin-top:2px;}
     .nav-item{
       display:flex;align-items:center;gap:11px;padding:10px 12px;border-radius:10px;cursor:pointer;
@@ -51,7 +51,7 @@
       background:linear-gradient(180deg,var(--accent),var(--accent2));box-shadow:0 0 10px rgba(91,138,248,.8);}
     .nav-item.active svg{stroke:var(--accent2);}
 
-    /* ---------- MAIN (mantido) ---------- */
+    /* ---------- MAIN ---------- */
     #main { flex:1; display:flex; flex-direction:column; overflow:hidden; }
     .topbar-base { height:64px; background:var(--surface); border-bottom:1px solid var(--border); display:flex; align-items:center; padding:0 28px; box-shadow: 0 2px 8px rgba(59,111,245,.05); }
     #content { flex:1; overflow-y:auto; padding:28px; }
@@ -63,10 +63,10 @@
     thead th { text-align:center; padding:10px 14px; font-size:11px; text-transform:uppercase; color:var(--text3); border-bottom:1px solid var(--border); background:var(--surface2); }
     tbody td { text-align:center; padding:12px 14px; color:var(--text2); border-bottom:1px solid var(--border); vertical-align: middle; }
     
-    .btn-success { padding:6px 14px; border-radius:8px; border:none; cursor:pointer; font-size:12px; font-weight:500; background:var(--success); color:#fff; transition: background 0.2s; }
+    .btn-success { padding:6px 14px; border-radius:8px; border:none; cursor:pointer; font-size:12px; font-weight:600; background:var(--success); color:#fff; transition: background 0.2s; display: inline-flex; align-items: center; justify-content: center; height: 32px; }
     .btn-success:hover { background: #16a34a; }
     
-    .badge-yellow { padding:3px 8px; border-radius:20px; font-size:11px; font-weight:600; background:rgba(245,158,11,.1); color:#d97706; }
+    .badge-yellow { padding:4px 10px; border-radius:20px; font-size:11px; font-weight:600; background:rgba(245,158,11,.1); color:#d97706; display: inline-block; }
   </style>
 </head>
 <body>
@@ -135,7 +135,7 @@
                 <th>Mecânico Responsável</th>
                 <th>Kit</th>
                 <th>Forma de Pagamento</th>
-                <th>Valor (R$)</th>
+                <th>Valor</th>
                 <th>Status</th>
                 <th>Ação</th>
               </tr>
