@@ -60,6 +60,8 @@ async function listarKits() {
             <td><strong>#${k.codigo}</strong></td>
             <td id="kit-nome-${k.id}">${k.nome}</td>
             <td><span style="color:#1a2340; font-weight:600;">${k.prateleira || '-'}</span></td>
+			<td>${k.numero}</td>
+
             <td>${k.cliente ? k.cliente.razaoSocial : '-'}</td>
             <td>
                 <button class="btn btn-accent btn-sm" onclick="abrirModalPecas(${k.id}, '${k.codigo}')">🧩 Peças do Kit</button> 
