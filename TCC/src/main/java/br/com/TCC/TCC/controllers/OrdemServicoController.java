@@ -55,6 +55,7 @@ public class OrdemServicoController {
 		return ordemRepository.save(ordem);
 	}
 	
+	
 	// deletando por id
 	@DeleteMapping("/deletar/{id}")
 	@ResponseStatus(value = HttpStatus.NO_CONTENT)
@@ -85,7 +86,7 @@ public class OrdemServicoController {
 		return ordemRepository.save(ordemOriginal);
 	}
 	
-	// --- ROTAS DO MODAL DE PEÇAS ---
+	//rotas pro modal
 	
 	@GetMapping("/listarpecas/{idOS}")
 	@ResponseStatus(HttpStatus.OK)

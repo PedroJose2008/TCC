@@ -167,7 +167,7 @@
             </div>
             
              <div class="form-group">
-              <label for="prateleira">Número da Pratelira</label>
+              <label for="numero">Número da Prateleira</label>
 				 <select id="numero" class="form-control" required="required">
 				 
 				 <option value="" disabled selected>Selecione um número (1-20)...</option>
@@ -199,8 +199,18 @@
             <div class="form-group">
               <label for="tipo">Tipo / Categoria</label>
               <select id="tipo" class="form-control" required="required">
+                <option value="" disabled selected hidden>Selecione o tipo...</option>
+                <option value="Motor">Motor</option>
+                <option value="Suspensão">Suspensão</option>
+                <option value="Freios">Freios</option>
+                <option value="Elétrica">Elétrica</option>
+                <option value="Transmissão">Transmissão</option>
+                <option value="Filtros">Filtros</option>
+                <option value="Carroceria">Carroceria</option>
+                <option value="Outros">Outros</option>
               </select>
             </div>
+
             <div class="form-group">
               <label for="idFornecedor">Fornecedor</label>
               <select id="idFornecedor" class="form-control" required="required">
@@ -216,8 +226,7 @@
             </div>
           </div>
           
-                        <input  id="dataCadastro" class="form-control" min="0" placeholder="0" required="required" hidden="false">
-          
+          <input type="hidden" id="dataCadastro">
           
           <div class="modal-footer" style="background: var(--surface2); padding: 16px 24px;">
             <button type="button" class="btn btn-ghost" onclick="fecharModal()">Cancelar</button>

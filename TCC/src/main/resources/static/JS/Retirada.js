@@ -14,7 +14,6 @@ async function listarCadastro() {
     tbody.innerHTML = "";
 
     dados.forEach(Cadastro => {
-        // BLINDAGEM CRÍTICA: Só entra se o status existir E for exatamente "AGUARDANDO_RETIRADA"
         if (Cadastro.status && Cadastro.status === "AGUARDANDO_RETIRADA") {
             const tr = document.createElement("tr");
 

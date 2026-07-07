@@ -1,270 +1,224 @@
-const API_BUSCAR_TODOS = 'http://localhost:8001/pecas/listartodos';
-const API_BUSCAR_ID = 'http://localhost:8001/pecas/listarporid';
-const API_GRAVAR = 'http://localhost:8001/pecas/atualizar';
+//CHAMADAS DAS APIS
+const API_BUSCAR_TODOS = 'http://localhost:8001/pecas/listar';
+const API_BUSCAR_ID = 'http://localhost:8001/pecas/buscarid'; // Caso use busca por ID, se não tiver deixe a de listar
 const API_SALVAR = 'http://localhost:8001/pecas/salvar';
-const API_DELETAR = 'http://localhost:8001/pecas/deletar';
-const API_BUSCAR_NOME = 'http://localhost:8001/pecas/buscarPorNome';
-const API_FORNECEDORES = 'http://localhost:8001/fornecedores/listartodos';
-const API_CODIGO = 'http://localhost:8001/pecas/cogigoPeca';
+const API_ATUALIZAR = 'http://localhost:8001/pecas/atualizar';
+const API_DELETAR = 'http://localhost:8001/pecas/excluir';
+const API_FORNECEDORES = 'http://localhost:8001/fornecedores/listar';
 
+//VARIÁVEL DE CONTROLE
 let editandoId = null;
 
-const TIPOS_PECAS = ["Motor", "Suspensão", "Freios", "Elétrica", "Transmissão", "Filtros", "Carroceria", "Outros"];
-
-async function popularSelectTipos() {
-    let selectTipo = document.getElementById('tipo');
-    if (!selectTipo) return;
-    selectTipo.innerHTML = '<option value="" disabled selected>Selecione o tipo...</option>';
-       
-    TIPOS_PECAS.forEach(tipo => {
-        const option = document.createElement("option");
-        option.value = tipo;
-        option.text = tipo;
-        selectTipo.appendChild(option);
-    });
-}
-
-async function BuscarFornecedor() {
-
-    let res = await fetch(API_FORNECEDORES);
-
-    let dados = await res.json();
-
-    console.log(dados);
-
-    let select = document.getElementById("idFornecedor");
-
-    select.innerHTML = "";
-
-    dados.forEach(dado => {
-
-        const option = document.createElement("option");
-
-        option.value = dado.id;
-        option.text = dado.razaoSocial;
-
-        select.appendChild(option);
-
-    });
-
-}
-
-async function listarPecas() {
-    const response = await fetch(API_BUSCAR_TODOS);
-    const pecas = await response.json();
-
-    const tbody = document.getElementById("tabelaPecas");
-    tbody.innerHTML = "";
-
-    pecas.forEach(p => {
-        const tr = document.createElement("tr");
-        const dataFormatada = p.dataCadastro ? new Date(p.dataCadastro).toLocaleDateString('pt-BR') : '-';
-        const precoFormatado = p.preco ? p.preco.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) : 'R$ 0,00';
-
-        tr.innerHTML = `
-            <td><span class="badge">${p.codigo || 'AUT'}</span></td>
-            <td>${p.nome}</td>
-            <td>${p.prateleira || '-'}</td>
-			<td>${p.numeroPratelira || '-'}</td>
-            <td>${p.tipo}</td>
-            <td>${p.fornecedor ? p.fornecedor.razaoSocial : '-'}</td>
-            <td>${precoFormatado}</td>
-            <td>${p.quantidadeEstoque} </td>
-            <td>${dataFormatada}</td>        
-            <td>
-                <button class="btn btn-warning btn-sm" onclick="editar(${p.id})">Editar</button>
-                <button class="btn btn-danger btn-sm" onclick="deletar(${p.id})">Deletar</button>
-            </td>
-        `;
-        tbody.appendChild(tr);
-    });
-}
-
-async function abrirModalCadastro() {
-
-    editandoId = null;
-
-    document.getElementById("pecaForm").reset();
-    document.getElementById("modalTitle").innerText = "Cadastrar Nova Peça";
-
-    await popularSelectTipos();
-    await BuscarFornecedor();
-
-	const codigoInput = document.getElementById('codigo');
-	    if (codigoInput) {
-	    
-			gerarCodigo();
-			
-	    }
+async function listarPecas(){
 	
+	const response = await fetch(API_BUSCAR_TODOS);
+	const pecas = await response.json();
 	
+	const tbody = document.getElementById('tabelaPecas');
+	tbody.innerHTML = '';
 	
+	pecas.forEach(peca => {
+		const tr = document.createElement("tr");
+		
+		const dataFormatada = peca.dataCadastro ? peca.dataCadastro.split('-').reverse().join('/') : "-";
+		const nomeFornecedor = peca.fornecedor ? (peca.fornecedor.razaoSocial || peca.fornecedor.nome) : "Sem Fornecedor";
+		const precoFormatado = peca.preco ? `R$ ${parseFloat(peca.preco).toFixed(2).replace('.', ',')}` : "R$ 0,00";
+		
+		tr.innerHTML = `
+			<td><strong>#${peca.id}</strong></td>
+			<td>${peca.nome}</td>
+			<td><span class="badge" style="background:var(--surface2); color:var(--text); border:1px solid var(--border);">${peca.prateleira || '-'}</span></td>
+			<td>${peca.numero || '-'}</td>
+			<td><span class="badge">${peca.tipo}</span></td>
+			<td>${nomeFornecedor}</td>
+			<td style="font-weight:600; color:var(--text);">${precoFormatado}</td>
+			<td style="font-weight:600; color:${peca.quantidadeEstoque <= 3 ? 'var(--danger)' : 'var(--text2)'}">${peca.quantidadeEstoque} un</td>
+			<td>${dataFormatada}</td>
+			<td>
+				<button class="btn btn-ghost" style="height:30px; padding:0 10px; font-size:11px;" onclick="editar(${peca.id})">
+				✏️ Editar
+				</button>
+				<button class="btn btn-danger" style="height:30px; padding:0 10px; font-size:11px;" onclick="deletar(${peca.id})">
+				🗑️ Deletar
+				</button>
+			</td>
+		`;
+		tbody.appendChild(tr);
+	});
+}
+
+// ADICIONAL PARA CARREGAR OS FORNECEDORES NO SELECT
+async function popularSelectFornecedores() {
+	const response = await fetch(API_FORNECEDORES);
+	const fornecedores = await response.json();
+	const select = document.getElementById("idFornecedor");
 	
-    const modal = new bootstrap.Modal(document.getElementById("modalPeca"));
-    modal.show();
+	if (!select) return;
+	select.innerHTML = '<option value="" disabled selected hidden>Selecione um fornecedor...</option>';
+
+	fornecedores.forEach(f => {
+		const option = document.createElement("option");
+		option.value = f.id;
+		option.text = f.razaoSocial || f.nome;
+		select.appendChild(option);
+	});
 }
 
-function abrirModalEdicao() {
-
-    document.getElementById("modalTitle").innerText = "Editar Peça";
-
-    const modal = new bootstrap.Modal(document.getElementById("modalPeca"));
-    modal.show();
-}
-
-function fecharModal() {
-
-    const modal = bootstrap.Modal.getInstance(document.getElementById("modalPeca"));
-    modal.hide();
-}
-
-async function deletar(id) {
-    if (!confirm("Deseja realmente excluir?")) return;
-
-    await fetch(`${API_DELETAR}/${id}`, {
-        method: "DELETE"
-    });
-
-    listarPecas();
-}
-
-async function editar(id) {
-
-    await popularSelectTipos();
-    await BuscarFornecedor();
-
-    const response = await fetch(`${API_BUSCAR_ID}/${id}`);
-    const peca = await response.json();
-
-    editandoId = id;
-
-    document.getElementById("codigo").value = peca.codigo;
-    document.getElementById("nome").value = peca.nome;
-    document.getElementById("prateleira").value = peca.prateleira;
-    document.getElementById("tipo").value = peca.tipo;
-    document.getElementById("idFornecedor").value = peca.fornecedor.id;
-    document.getElementById("preco").value = peca.preco;
-    document.getElementById("quantidadeEstoque").value = peca.quantidadeEstoque;
-
-    abrirModalEdicao();
-}
-
-async function salvarPeca() {
-
-	const pecaInput= document.getElementById('nome');
-	const pecaSemEspaco= pecaInput.value.trim();
+document.addEventListener("DOMContentLoaded", () => {
 	
-	if(pecaSemEspaco.length<3){
-		alert("A quantidade mínima de caracteres é 3")
-		return false;
+	listarPecas();
+	popularSelectFornecedores();
+});
+
+async function salvar(){
+	
+	//RECUPERANDO OS VALORES DOS INPUTS
+	const peca = {
+		nome: document.getElementById('nome').value,
+		prateleira: document.getElementById('prateleira').value,
+		numero: parseInt(document.getElementById('numero').value),
+		tipo: document.getElementById('tipo').value,
+		fornecedor: { id: parseInt(document.getElementById('idFornecedor').value) },
+		preco: parseFloat(document.getElementById('preco').value),
+		quantidadeEstoque: parseInt(document.getElementById('quantidadeEstoque').value),
+		dataCadastro: document.getElementById('dataCadastro').value || null
+	};
+	
+	//METODO
+	//CABEÇALHO
+	//MEU OBJETO
+	
+	if(editandoId){
+		
+		await fetch(`${API_ATUALIZAR}/${editandoId}`, {
+			method : 'PUT', //METODO DA MINHA API
+			headers : {//CABEÇALHO INDICANDO O FORMATO QUE IREI PASSAR OS DADOS
+				
+				'Content-Type': 'application/json' //SERÁ UM PADRÃO NOSSO
+			},
+			body : JSON.stringify(peca) //CONVERTE EM FORMATO JSON
+		});
+		
+	} else {
+		
+		await fetch(API_SALVAR, {
+			method : 'POST', //METODO DA MINHA API
+			headers : {//CABEÇALHO INDICANDO O FORMATO QUE IREI PASSAR OS DADOS
+				
+				'Content-Type': 'application/json' //SERÁ UM PADRÃO NOSSO
+			},
+			body : JSON.stringify(peca) //CONVERTE EM FORMATO JSON
+		});
 	}
 	
-	else if(pecaSemEspaco.length>100){
-		alert("A quantidade máxima de caracteres é 100")
-		return false;
-	}
-	
-	// se for um número não deixa passar
-	else if(!isNaN(pecaSemEspaco)){
-		alert("A peça não pode conter somente números")
-		return false;
-	}
-	
-	
-	
-    const peca = {
-        codigo: document.getElementById("codigo").value,
-        nome: document.getElementById("nome").value,
-        prateleira: document.getElementById("prateleira").value,
-		numeroPratelira: document.getElementById("numero").value, 
-        tipo: document.getElementById("tipo").value,
-        fornecedor: {
-            id: document.getElementById("idFornecedor").value
-        },
-        preco: document.getElementById("preco").value,
-        quantidadeEstoque: document.getElementById("quantidadeEstoque").value
-    };
-
-    if (editandoId) {
-
-        await fetch(`${API_GRAVAR}/${editandoId}`, {
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(peca)
-        });
-
-    } else {
-
-        await fetch(API_SALVAR, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(peca)
-        });
-
-    }
-
-    fecharModal();
-    listarPecas();
+	await listarPecas();
+	limparFormulario();
+	fecharModal();
 }
 
+function limparFormulario(){
+	
+	document.getElementById('codigo').value = 'Gerado Automaticamente';
+	document.getElementById('nome').value = '';
+	document.getElementById('prateleira').selectedIndex = 0;	
+	document.getElementById('numero').selectedIndex = 0;
+	document.getElementById('tipo').selectedIndex = 0;
+	document.getElementById('idFornecedor').selectedIndex = 0;
+	document.getElementById('preco').value = '';
+	document.getElementById('quantidadeEstoque').value = '';
+	document.getElementById('dataCadastro').value = '';
+	
+	editandoId = null;
+}
+
+async function deletar(id){
+	
+	if (!confirm('Deseja realmente excluir?')) return;
+	
+	await fetch(`${API_DELETAR}/${id}`, {
+		
+		method: 'DELETE'
+	});
+	
+	await listarPecas();
+}
+
+function fecharModal(){
+	const modalElement = document.getElementById('modalPeca');
+	const modal = bootstrap.Modal.getInstance(modalElement);
+	if (modal) modal.hide();
+}
+
+function abrirModal(){
+	const modal = new bootstrap.Modal(document.getElementById('modalPeca'));
+	modal.show();
+}
+
+function abrirModalCadastro() {
+	limparFormulario();
+	document.getElementById("modalTitle").innerText = "Cadastrar Nova Peça";
+	abrirModal();
+}
+
+async function editar(id){
+	
+	document.getElementById("modalTitle").innerText = "Editar Peça";
+	abrirModal();
+	
+	// Buscando a lista atual para filtrar o ID selecionado (evita quebra se não houver rota buscarid/{id})
+	const response = await fetch(API_BUSCAR_TODOS);
+	const pecas = await response.json();
+	const peca = pecas.find(p => p.id === id);
+	
+	if (peca) {
+		editandoId = id;
+		document.getElementById('codigo').value = peca.id;
+		document.getElementById('nome').value = peca.nome;
+		document.getElementById('prateleira').value = peca.prateleira || '';	
+		document.getElementById('numero').value = peca.numero || '';
+		document.getElementById('tipo').value = peca.tipo || '';
+		document.getElementById('idFornecedor').value = peca.fornecedor ? peca.fornecedor.id : '';
+		document.getElementById('preco').value = peca.preco;
+		document.getElementById('quantidadeEstoque').value = peca.quantidadeEstoque;
+		document.getElementById('dataCadastro').value = peca.dataCadastro || '';
+	}
+}
+
+// BUSCA ADICIONAL POR FILTRO DE NOME
 async function buscarPorNome() {
-    const nome = document.getElementById("filtroNome").value;
-
-    if (!nome) {
-        listarPecas();
-        return;
-    }
-
-    const response = await fetch(`${API_BUSCAR_NOME}/${nome}`);
-    const pecas = await response.json();
-
-    const tbody = document.getElementById("tabelaPecas");
-    tbody.innerHTML = "";
-
-    pecas.forEach(p => {
-        const tr = document.createElement("tr");
-        const dataFormatada = p.dataCadastro ? new Date(p.dataCadastro).toLocaleDateString('pt-BR') : '-';
-        const precoFormatated = p.preco ? p.preco.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) : 'R$ 0,00';
-
-        tr.innerHTML = `
-            <td><span class="badge">${p.codigo || 'AUT'}</span></td>
-            <td>${p.nome}</td>
-            <td>${p.prateleira || '-'}</td>
-            <td>${p.tipo}</td>
-            <td>${p.idFornecedor || '-'}</td>
-            <td>${precoFormatated}</td>
-            <td>${p.quantidadeEstoque}</td>
-            <td>${dataFormatada}</td>        
-            <td>
-                <button class="btn btn-warning btn-sm" onclick="editar(${p.id})">Editar</button>
-                <button class="btn btn-danger btn-sm" onclick="deletar(${p.id})">Deletar</button>
-            </td>
-        `;
-        tbody.appendChild(tr);
-    });
-}
-
-function limparFiltro() {
-    document.getElementById('filtroNome').value = '';
-    listarPecas();
-}
-
-popularSelectTipos();
-listarPecas();
-
-//gera o código da peça
- 	async function gerarCodigo (){
+	const termo = document.getElementById("filtroNome").value.toLowerCase().trim();
+	const response = await fetch(API_BUSCAR_TODOS);
+	const pecas = await response.json();
+	const tbody = document.getElementById("tabelaPecas");
 	
-	const codigoInput= document.getElementById('codigo');
-	
-	if(codigoInput){
-	const response= await fetch(API_CODIGO);
-	const codigo= await response.text();
-	console.log(codigo);
-	codigoInput.value=codigo;
-	}
+	tbody.innerHTML = "";
+	const pecasFiltradas = pecas.filter(p => p.nome.toLowerCase().includes(termo));
+
+	pecasFiltradas.forEach(peca => {
+		const tr = document.createElement("tr");
+		const dataFormatada = peca.dataCadastro ? peca.dataCadastro.split('-').reverse().join('/') : "-";
+		const nomeFornecedor = peca.fornecedor ? (peca.fornecedor.razaoSocial || peca.fornecedor.nome) : "Sem Fornecedor";
+		const precoFormatado = peca.preco ? `R$ ${parseFloat(peca.preco).toFixed(2).replace('.', ',')}` : "R$ 0,00";
+
+		tr.innerHTML = `
+			<td><strong>#${peca.id}</strong></td>
+			<td>${peca.nome}</td>
+			<td><span class="badge" style="background:var(--surface2); color:var(--text); border:1px solid var(--border);">${peca.prateleira || '-'}</span></td>
+			<td>${peca.numero || '-'}</td>
+			<td><span class="badge">${peca.tipo}</span></td>
+			<td>${nomeFornecedor}</td>
+			<td style="font-weight:600; color:var(--text);">${precoFormatado}</td>
+			<td style="font-weight:600; color:${peca.quantidadeEstoque <= 3 ? 'var(--danger)' : 'var(--text2)'}">${peca.quantidadeEstoque} un</td>
+			<td>${dataFormatada}</td>
+			<td>
+				<button class="btn btn-ghost" style="height:30px; padding:0 10px; font-size:11px;" onclick="editar(${peca.id})">
+				✏️ Editar
+				</button>
+				<button class="btn btn-danger" style="height:30px; padding:0 10px; font-size:11px;" onclick="deletar(${peca.id})">
+				🗑️ Deletar
+				</button>
+			</td>
+		`;
+		tbody.appendChild(tr);
+	});
 }

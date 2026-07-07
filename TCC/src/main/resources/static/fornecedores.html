@@ -51,6 +51,74 @@
     .nav-label { font-size:10px; letter-spacing:1.8px; text-transform:uppercase; color:var(--text3); margin-bottom:8px; padding:0 8px; }
     .btn-danger { background:rgba(239,68,68,.1); color:var(--danger); padding:6px 12px; border-radius:8px; border:none; cursor:pointer; font-size:12px; font-weight: 500;}
     .btn-danger:hover { background:rgba(239,68,68,.2); }
+
+    /* ==========================================================================
+       ESTILOS CUSTOMIZADOS DO MODAL (Para funcionar com classList.add('active'))
+       ========================================================================== */
+    .custom-modal {
+      display: none; 
+      position: fixed; 
+      top: 0; left: 0; 
+      width: 100%; height: 100%; 
+      background-color: rgba(0, 0, 0, 0.5); 
+      z-index: 1050; 
+      align-items: center; 
+      justify-content: center;
+    }
+
+    /* Ativado via JavaScript */
+    .custom-modal.active {
+      display: flex;
+    }
+
+    .custom-modal-content {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      width: 100%;
+      max-width: 800px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.15);
+      display: flex;
+      flex-direction: column;
+      animation: fadeInModal 0.2s ease-out;
+    }
+
+    .custom-modal-header {
+      padding: 16px 24px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .custom-modal-body {
+      padding: 24px;
+    }
+
+    .custom-modal-footer {
+      padding: 16px 24px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+    }
+
+    .btn-close-custom {
+      background: none;
+      border: none;
+      font-size: 24px;
+      color: var(--text3);
+      cursor: pointer;
+      line-height: 1;
+    }
+    .btn-close-custom:hover {
+      color: var(--danger);
+    }
+
+    @keyframes fadeInModal {
+      from { transform: scale(0.95); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
   </style>
 </head>
 <body>
@@ -74,7 +142,6 @@
         <a href="fornecedores.html" class="nav-item active">🏭 Fornecedores</a>
         <div class="nav-label">Clientes</div>
         <a href="clientes.html" class="nav-item">👥 Clientes</a>
-       
       </nav>
     </aside>
 
@@ -109,56 +176,54 @@
                 </tr>
             </thead>
             <tbody id="fornecedorTableBody">
-              </tbody>
+            </tbody>
           </table>
         </div>
       </div>
     </main>
   </div>
 
-  <div class="modal fade" id="fornecedorModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" style="font-family:'Syne',sans-serif; font-weight:700;">Salvar Fornecedor</h5>
-          <button type="button" class="btn-close" onclick="fecharModal()"></button>
+  <div id="fornecedorModal" class="custom-modal">
+    <div class="custom-modal-content">
+      <div class="custom-modal-header">
+        <h5 style="font-family:'Syne',sans-serif; font-weight:700; margin:0;">Salvar Fornecedor</h5>
+        <button type="button" class="btn-close-custom" onclick="fecharModal()">&times;</button>
+      </div>
+      <div class="custom-modal-body">
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            <label for="razaoSocial" class="form-label">Razão Social</label>
+            <input type="text" class="form-control" id="razaoSocial" placeholder="Ex: Auto Peças Oliveira LTDA">
         </div>
-        <div class="modal-body">
-            <div class="row">
-                <div class="col-md-6 mb-3">
-                    <label for="razaoSocial" class="form-label">Razão Social</label>
-                    <input type="text" class="form-control" id="razaoSocial" placeholder="Ex: Auto Peças Oliveira LTDA">
-                </div>
-                <div class="col-md-6 mb-3">
-                    <label for="cnpj" class="form-label">CNPJ</label>
-                    <input type="text" class="form-control" id="cnpj" placeholder="00.000.000/0000-00">
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-6 mb-3">
-                    <label for="telefone" class="form-label">Telefone</label>
-                    <input type="text" class="form-control" id="telefone" placeholder="(00) 0000-0000">
-                </div>
-                <div class="col-md-6 mb-3">
-                    <label for="email" class="form-label">E-mail</label>
-                    <input type="email" class="form-control" id="email" placeholder="contato@empresa.com.br">
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-6 mb-3">
-                    <label for="cep" class="form-label">CEP</label>
-                    <input type="text" class="form-control" id="cep" placeholder="00000-000">
-                </div>
-                <div class="col-md-6 mb-3">
-                    <label for="complemento" class="form-label">Complemento</label>
-                    <input type="text" class="form-control" id="complemento" placeholder="Sala, Galpão, etc.">
-                </div>
-            </div>
+        <div class="col-md-6 mb-3">
+            <label for="cnpj" class="form-label">CNPJ</label>
+            <input type="text" class="form-control" id="cnpj" maxlength="14" oninput="this.value = this.value.replace(/\D/g, '')" placeholder="00.000.000/0000-00">
         </div>
-        <div class="modal-footer">
-          <button type="button" class="btn-ghost" onclick="fecharModal()">Cancelar</button>
-          <button type="button" class="btn-primary" onclick="salvarFornecedor()">Salvar</button>
+    </div>
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            <label for="telefone" class="form-label">Telefone</label>
+            <input type="text" class="form-control" id="telefone" maxlength="11" oninput="this.value = this.value.replace(/\D/g, '')" placeholder="(00) 0000-0000">
         </div>
+        <div class="col-md-6 mb-3">
+            <label for="email" class="form-label">E-mail</label>
+            <input type="email" class="form-control" id="email" placeholder="contato@empresa.com.br">
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            <label for="cep" class="form-label">CEP</label>
+            <input type="text" class="form-control" id="cep" maxlength="8" oninput="this.value = this.value.replace(/\D/g, '')" placeholder="00000-000">
+        </div>
+        <div class="col-md-6 mb-3">
+            <label for="complemento" class="form-label">Complemento</label>
+            <input type="text" class="form-control" id="complemento" placeholder="Sala, Galpão, etc.">
+        </div>
+    </div>
+</div>
+      <div class="custom-modal-footer">
+        <button type="button" class="btn-ghost" onclick="fecharModal()">Cancelar</button>
+        <button type="button" class="btn-primary" onclick="salvarFornecedor()">Salvar</button>
       </div>
     </div>
   </div>
