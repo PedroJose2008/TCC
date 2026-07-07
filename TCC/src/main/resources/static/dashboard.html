@@ -1,237 +1,307 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SISCAP V2 - Dashboard Geral</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        body { font-family: 'Inter', sans-serif; }
-        .font-tech { font-family: 'Chakra Petch', sans-serif; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard - SISCAP</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/cadastro.css">
+<style>
+  :root{
+    --bg:#eef2f8; --surface:#ffffff; --surface2:#f5f8fd; --border:#dbe3f2;
+    --accent:#3b6ff5; --accent2:#5b8af8; --accent-light:#e3ecff;
+    --success:#1fb168; --success-bg:#e6f8ee;
+    --warning:#f0a020; --warning-bg:#fdf1de;
+    --danger:#e5484d;  --danger-bg:#fce9ea;
+    --info:#8b5cf6;    --info-bg:#f0eafe;
+    --text:#131a30; --text2:#4c5c78; --text3:#93a2ba;
+    --sidebar-bg:#0d1326; --sidebar-bg2:#141b34; --sidebar-line:#232b48;
+    --sidebar-w:246px;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);height:100vh;overflow:hidden;}
+  #app{display:flex;height:100%;}
+
+  /* ---------- SIDEBAR ---------- */
+  #sidebar{
+    width:var(--sidebar-w); min-width:var(--sidebar-w);
+    background:linear-gradient(190deg,var(--sidebar-bg),var(--sidebar-bg2) 85%);
+    display:flex;flex-direction:column;position:relative;
+  }
+  #sidebar::after{content:"";position:absolute;top:0;right:0;width:1px;height:100%;
+    background:linear-gradient(180deg,rgba(91,138,248,.35),rgba(91,138,248,0) 60%);}
+  .logo-area{padding:22px 20px;display:flex;align-items:center;gap:11px;border-bottom:1px solid var(--sidebar-line);}
+  .logo-icon{width:38px;height:38px;border-radius:11px;background:linear-gradient(135deg,var(--accent),#7ea2ff);
+    display:flex;align-items:center;justify-content:center;color:#fff;box-shadow:0 4px 14px rgba(59,111,245,.45);flex-shrink:0;}
+  .logo-icon svg{width:20px;height:20px;}
+  .logo-text{font-family:'Syne',sans-serif;font-weight:800;font-size:16px;color:#fff;letter-spacing:.3px;line-height:1;}
+  .logo-tag{display:inline-block;margin-top:3px;font-size:9px;letter-spacing:1px;color:var(--accent2);font-weight:600;
+    background:rgba(91,138,248,.15);padding:1px 6px;border-radius:5px;}
+
+  nav{padding:18px 12px;flex:1;overflow-y:auto;}
+  nav::-webkit-scrollbar{width:5px;}
+  nav::-webkit-scrollbar-thumb{background:var(--sidebar-line);border-radius:6px;}
+  .nav-label{font-size:10px;letter-spacing:1.8px;text-transform:uppercase;color:#4d5a80;margin:14px 8px 8px;font-weight:600;}
+  .nav-label:first-child{margin-top:2px;}
+  .nav-item{
+    display:flex;align-items:center;gap:11px;padding:10px 12px;border-radius:10px;cursor:pointer;
+    font-size:13.5px;color:#aab4d4;text-decoration:none;margin-bottom:3px;transition:background .15s,color .15s,transform .15s;
+    position:relative;
+  }
+  .nav-item svg{width:17px;height:17px;flex-shrink:0;stroke:currentColor;fill:none;stroke-width:1.8;transition:transform .2s;}
+  .nav-item:hover{background:rgba(91,138,248,.12);color:#e7ecfb;}
+  .nav-item:hover svg{transform:scale(1.1);}
+  .nav-item.active{background:linear-gradient(90deg,rgba(59,111,245,.28),rgba(59,111,245,.06));color:#fff;}
+  .nav-item.active::before{content:"";position:absolute;left:-12px;top:8px;bottom:8px;width:3px;border-radius:3px;
+    background:linear-gradient(180deg,var(--accent),var(--accent2));box-shadow:0 0 10px rgba(91,138,248,.8);}
+  .nav-item.active svg{stroke:var(--accent2);}
+
+  /* ---------- MAIN ---------- */
+  #main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
+  header{
+    display:flex;justify-content:space-between;align-items:center;padding:16px 32px;
+    background:var(--surface);border-bottom:1px solid var(--border);
+  }
+  .header-left{display:flex;flex-direction:column;gap:2px;}
+  header h2{font-family:'Syne',sans-serif;font-size:21px;font-weight:800;color:var(--text);letter-spacing:.2px;}
+  .header-sub{font-size:12px;color:var(--text3);}
+
+  #user-menu-btn{
+    background:linear-gradient(135deg,var(--accent),#7ea2ff);color:#fff;width:42px;height:42px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;cursor:pointer;user-select:none;
+    box-shadow:0 3px 10px rgba(59,111,245,.4);border:2px solid #fff;transition:transform .15s;
+  }
+  #user-menu-btn:hover{transform:scale(1.06);}
+
+  .user-modal-container{display:none;position:absolute;top:64px;right:32px;z-index:50;}
+  .user-modal-container.open{display:block;}
+  .user-modal-content{
+    background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px;width:220px;
+    box-shadow:0 12px 30px rgba(20,30,60,.16);
+  }
+  .user-info{display:flex;flex-direction:column;gap:2px;padding-bottom:10px;}
+  .user-name-title{font-weight:700;font-size:14px;color:var(--text);}
+  .user-role-subtitle{font-size:11.5px;color:var(--text3);}
+  .modal-divider{border:none;border-top:1px solid var(--border);margin:6px 0 10px;}
+  .modal-item{width:100%;background:var(--danger-bg);color:var(--danger);border:none;padding:9px 12px;border-radius:9px;
+    font-size:13px;font-weight:600;cursor:pointer;text-align:left;transition:filter .15s;}
+  .modal-item:hover{filter:brightness(0.95);}
+
+  #content{flex:1;overflow-y:auto;padding:28px 32px 40px;}
+
+  /* ---------- STAT CARDS ---------- */
+  .stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:22px;}
+  .stat-card{
+    background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:18px 20px;
+    display:flex;align-items:center;justify-content:space-between;gap:14px;text-decoration:none;color:inherit;
+    box-shadow:0 2px 10px rgba(30,50,100,.05);transition:transform .18s ease, box-shadow .18s ease, border-color .18s;
+    cursor:pointer;
+  }
+  .stat-card:hover{transform:translateY(-4px);box-shadow:0 14px 28px rgba(30,60,140,.12);border-color:var(--accent-light);}
+  .stat-label{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-bottom:7px;font-weight:600;}
+  .stat-value{font-size:27px;font-weight:800;font-family:'Syne',sans-serif;color:var(--text);line-height:1;}
+  .stat-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .stat-icon svg{width:21px;height:21px;stroke-width:1.9;fill:none;}
+  .stat-icon.blue{background:var(--accent-light);color:var(--accent);}
+  .stat-icon.green{background:var(--success-bg);color:var(--success);}
+  .stat-icon.orange{background:var(--warning-bg);color:var(--warning);}
+  .stat-icon.red{background:var(--danger-bg);color:var(--danger);}
+
+  /* ---------- CARDS ---------- */
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:22px;
+    box-shadow:0 2px 10px rgba(30,50,100,.05);}
+  .card-title{font-family:'Syne',sans-serif;font-weight:700;font-size:15px;color:var(--text);display:flex;
+    align-items:center;justify-content:space-between;margin-bottom:6px;}
+  .card-title span.tag{font-family:'DM Sans',sans-serif;font-size:11px;font-weight:600;color:var(--text3);
+    background:var(--surface2);padding:3px 9px;border-radius:20px;}
+
+  .grid-2{display:grid;grid-template-columns:1.5fr 1fr;gap:20px;}
+
+  /* ---------- BAR CHART ---------- */
+  .bars-wrap{height:190px;display:flex;align-items:end;gap:22px;padding:28px 6px 0;}
+  .bar-col{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:end;height:100%;}
+  .bar{width:100%;border-radius:8px 8px 3px 3px;background:linear-gradient(180deg,var(--accent2),var(--accent));
+    position:relative;transition:filter .15s, transform .15s;cursor:default;}
+  .bar:hover{filter:brightness(1.08);transform:scaleY(1.015);}
+  .bar-value{position:absolute;top:-22px;left:50%;transform:translateX(-50%);font-size:12px;font-weight:700;color:var(--text);white-space:nowrap;}
+  .bar-name{margin-top:10px;font-size:11.5px;color:var(--text3);font-weight:600;}
+
+  /* ---------- GAUGE (elemento de assinatura) ---------- */
+  .gauge-wrap{display:flex;align-items:center;justify-content:center;padding:14px 0 6px;position:relative;}
+  .gauge-center{position:absolute;top:52%;left:50%;transform:translate(-50%,-50%);text-align:center;}
+  .gauge-value{font-size:30px;font-weight:800;color:var(--text);font-family:'Syne',sans-serif;line-height:1;}
+  .gauge-caption{font-size:10px;letter-spacing:1.4px;text-transform:uppercase;color:var(--text3);margin-top:4px;font-weight:700;}
+
+  .legend-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:18px;}
+  .legend-item{padding:12px 8px;border-radius:12px;text-align:center;cursor:pointer;transition:transform .15s;border:1px solid transparent;}
+  .legend-item:hover{transform:translateY(-2px);}
+  .legend-dot{width:16px;height:16px;border-radius:5px;margin:0 auto 8px;}
+  .legend-label{font-size:11.5px;color:var(--text2);margin-bottom:3px;font-weight:500;}
+  .legend-value{font-weight:800;color:var(--text);font-size:16px;font-family:'Syne',sans-serif;}
+
+  a{outline-color:var(--accent);}
+  .nav-item:focus-visible, .stat-card:focus-visible, #user-menu-btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+
+  @media (prefers-reduced-motion:reduce){
+    *{transition:none !important;animation:none !important;}
+  }
+</style>
 </head>
-<body class="bg-[#F4F6F9] text-slate-800 flex h-screen overflow-hidden">
+<body>
+<div id="app">
+  <aside id="sidebar">
+    <div class="logo-area">
+      <div class="logo-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+      </div>
+      <div>
+        <div class="logo-text">SISCAP</div>
+        <span class="logo-tag">V2</span>
+      </div>
+    </div>
+    <nav>
+      <div class="nav-label">Principal</div>
+      <a href="dashboard.html" class="nav-item active">
+        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>
+        Dashboard
+      </a>
+      <div class="nav-label">Estoque</div>
+      <a href="pecas.html" class="nav-item">
+        <svg viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+        Peças
+      </a>
+      <a href="kits.html" class="nav-item">
+        <svg viewBox="0 0 24 24"><path d="M21 8 12 3 3 8l9 5 9-5Z"/><path d="M3 8v8l9 5 9-5V8"/><path d="M12 13v8"/></svg>
+        Equipamentos
+      </a>
+      <div class="nav-label">Oficina</div>
+      <a href="os.html" class="nav-item">
+        <svg viewBox="0 0 24 24"><path d="M9 3h6a1 1 0 0 1 1 1v1h-8V4a1 1 0 0 1 1-1Z"/><rect x="5" y="5" width="14" height="16" rx="2"/><path d="M9 12h6M9 16h6M9 8h2"/></svg>
+        Abrir Ordem de Serviço
+      </a>
+      <a href="manutencao.html" class="nav-item">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.87l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.7 1.7 0 0 0-1.87-.34 1.7 1.7 0 0 0-1.04 1.56V21a2 2 0 1 1-4 0v-.09A1.7 1.7 0 0 0 9 19.35a1.7 1.7 0 0 0-1.87.34l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.7 1.7 0 0 0 4.64 15a1.7 1.7 0 0 0-1.56-1.04H3a2 2 0 1 1 0-4h.09A1.7 1.7 0 0 0 4.65 9a1.7 1.7 0 0 0-.34-1.87l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.7 1.7 0 0 0 1.87.34H9A1.7 1.7 0 0 0 10.04 3.6V3a2 2 0 1 1 4 0v.09A1.7 1.7 0 0 0 15 4.65c.6.25 1.3.13 1.87-.34l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.7 1.7 0 0 0 19.35 9c.25.6.83 1 1.56 1H21a2 2 0 1 1 0 4h-.09A1.7 1.7 0 0 0 19.4 15Z"/></svg>
+        Manutenções
+      </a>
+      <a href="retirada.html" class="nav-item">
+        <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 9l5-5 5 5"/><path d="M12 4v12"/></svg>
+        Ordem de Retirada
+      </a>
+      <div class="nav-label">Fornecedores</div>
+      <a href="fornecedores.html" class="nav-item">
+        <svg viewBox="0 0 24 24"><path d="M2 21h20"/><path d="M4 21V9l6-4v16"/><path d="M14 21V13l6-4v12"/><path d="M6 12h.01M6 15h.01M6 18h.01"/></svg>
+        Fornecedores
+      </a>
+      <div class="nav-label">Clientes</div>
+      <a href="clientes.html" class="nav-item">
+        <svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.2"/><path d="M2.5 20c.6-3.6 3.4-6 6.5-6s5.9 2.4 6.5 6"/><path d="M16.5 6.6a3.2 3.2 0 0 1 0 6.2"/><path d="M17.8 14.2c2.5.5 4.5 2.6 5 5.8"/></svg>
+        Clientes
+      </a>
+    </nav>
+  </aside>
 
-    <aside class="w-64 bg-[#0B132B] text-slate-300 flex flex-col justify-between hidden md:flex">
-        <div>
-            <div class="p-6 flex items-center gap-3 border-b border-slate-800/80">
-                <div class="bg-blue-600 p-2 rounded-xl text-white">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.9 6.9a2.12 2.12 0 0 1-3-3l6.9-6.9a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
-                </div>
-                <div class="flex items-center gap-1.5">
-                    <span class="font-tech text-xl font-bold tracking-wider text-white">SISCAP</span>
-                    <span class="text-[10px] bg-slate-800 text-slate-400 px-1.5 py-0.5 rounded font-mono">V2</span>
-                </div>
-            </div>
+  <main id="main">
+    <header>
+      <div class="header-left">
+        <h2>Dashboard Geral</h2>
+        <span class="header-sub">Visão consolidada do estoque e da oficina — 1º Semestre 2026</span>
+      </div>
+      <div id="user-menu-btn" onclick="toggleUserMenu()">PJ</div>
+    </header>
 
-            <nav class="p-4 space-y-6 text-sm">
-                <div>
-                    <p class="px-3 text-[11px] font-bold tracking-wider text-slate-500 uppercase mb-2">Principal</p>
-                    <a href="#" class="flex items-center gap-3 px-3 py-2.5 bg-blue-600 text-white font-medium rounded-xl shadow-lg shadow-blue-600/30">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg>
-                        Dashboard
-                    </a>
-                </div>
-
-                <div>
-                    <p class="px-3 text-[11px] font-bold tracking-wider text-slate-500 uppercase mb-2">Estoque</p>
-                    <div class="space-y-1">
-                        <a    href="#" class="flex items-center gap-3 px-3 py-2 text-slate-400 hover:text-white hover:bg-slate-800/60 rounded-xl transition">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.9 6.9a2.12 2.12 0 0 1-3-3l6.9-6.9a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
-                            
-                            Peças
-                        </a>
-                        <a href="#" class="flex items-center gap-3 px-3 py-2 text-slate-400 hover:text-white hover:bg-slate-800/60 rounded-xl transition">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
-                            Equipamentos
-                        </a>
-                    </div>
-                </div>
-
-                <div>
-                    <p class="px-3 text-[11px] font-bold tracking-wider text-slate-500 uppercase mb-2">Oficina</p>
-                    <div class="space-y-1">
-                        <a href="#" class="flex items-center gap-3 px-3 py-2 text-slate-400 hover:text-white hover:bg-slate-800/60 rounded-xl transition">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 13h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                            Abrir Ordem de Serviço
-                        </a>
-                        <a href="#" class="flex items-center gap-3 px-3 py-2 text-slate-400 hover:text-white hover:bg-slate-800/60 rounded-xl transition">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                            Manutenções
-                        </a>
-                        <a href="#" class="flex items-center gap-3 px-3 py-2 text-slate-400 hover:text-white hover:bg-slate-800/60 rounded-xl transition">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
-                            Ordem de Retirada
-                        </a>
-                    </div>
-                </div>
-
-                <div>
-                    <p class="px-3 text-[11px] font-bold tracking-wider text-slate-500 uppercase mb-2">Parceiros</p>
-                    <div class="space-y-1">
-                        <a href="#" class="flex items-center gap-3 px-3 py-2 text-slate-400 hover:text-white hover:bg-slate-800/60 rounded-xl transition">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
-                            Fornecedores
-                        </a>
-                        <a href="#" class="flex items-center gap-3 px-3 py-2 text-slate-400 hover:text-white hover:bg-slate-800/60 rounded-xl transition">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
-                            Clientes
-                        </a>
-                    </div>
-                </div>
-            </nav>
+    <div id="user-modal" class="user-modal-container">
+      <div class="user-modal-content">
+        <div class="user-info">
+          <span id="modal-username" class="user-name-title">Bem-vindo, Paulo</span>
+          <span class="user-role-subtitle">Administrador</span>
         </div>
-    </aside>
+        <hr class="modal-divider">
+        <button class="modal-item btn-logout" onclick="sair();">🚪 Sair da conta</button>
+      </div>
+    </div>
 
-    <main class="flex-1 flex flex-col overflow-y-auto">
-        
-        <header class="flex items-center justify-between px-8 py-6 bg-[#F4F6F9] relative">
-            <h1 class="font-tech text-2xl md:text-3xl font-extrabold text-slate-900 tracking-wide uppercase">
-                Dashboard Geral
-            </h1>
-            
-            <div class="relative flex items-center gap-4">
-                <button id="user-menu-btn" type="button" class="w-10 h-10 rounded-full bg-blue-600 text-white font-bold flex items-center justify-center shadow-md shadow-blue-600/20 cursor-pointer hover:bg-blue-700 transition-all select-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
-                    --
-                </button>
+    <div id="content">
+      <div class="screen active" id="screen-dashboard">
 
-                <div id="user-modal" style="display: none;" class="absolute right-0 top-14 w-64 bg-white rounded-2xl shadow-xl border border-slate-100 p-4 z-50 transition-all">
-                    <div class="border-b border-slate-100 pb-3 mb-3">
-                        <p id="modal-username" class="text-sm font-bold text-slate-800 truncate">Bem vindo, --</p>
-                        <p class="user-role-subtitle text-xs font-semibold text-blue-600 uppercase tracking-wider mt-0.5">--</p>
-                    </div>
-                    
-                    <div class="space-y-1">
-                        <button onclick="sair()" class="w-full flex items-center gap-2 px-3 py-2 text-sm font-medium text-rose-600 hover:bg-rose-50 rounded-xl transition text-left">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
-                            Sair do Sistema
-                        </button>
-                    </div>
-                </div>
+        <div class="stat-grid">
+          <a class="stat-card" href="pecas.html" title="Ver todas as peças">
+            <div><div class="stat-label">Total Peças</div><div class="stat-value">1.284</div></div>
+            <div class="stat-icon blue">
+              <svg viewBox="0 0 24 24" stroke="currentColor"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
             </div>
-        </header>
-
-        <div class="px-8 pb-8 space-y-6">
-
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-                
-                <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm flex items-center justify-between">
-                    <div>
-                        <p class="text-[11px] font-bold text-slate-400 tracking-wider uppercase mb-1">Total Peças</p>
-                        <h3 class="font-tech text-3xl font-extrabold text-slate-900">1.284</h3>
-                    </div>
-                    <div class="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.9 6.9a2.12 2.12 0 0 1-3-3l6.9-6.9a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
-                        </svg>
-                    </div>
-                </div>
-
-                <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm flex items-center justify-between">
-                    <div>
-                        <p class="text-[11px] font-bold text-slate-400 tracking-wider uppercase mb-1">Total de Kits</p>
-                        <h3 class="font-tech text-3xl font-extrabold text-emerald-500">987</h3>
-                    </div>
-                    <div class="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                    </div>
-                </div>
-
-                <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm flex items-center justify-between">
-                    <div>
-                        <p class="text-[11px] font-bold text-slate-400 tracking-wider uppercase mb-1">Manutenção</p>
-                        <h3 class="font-tech text-3xl font-extrabold text-amber-500">214</h3>
-                    </div>
-                    <div class="w-12 h-12 rounded-2xl bg-amber-50 text-amber-500 flex items-center justify-center">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 12-8.373 8.373a1 1 0 1 1-3-3L12 9" /><path d="m18 15 4-4" /><path d="m21.5 11.5-1.914-1.914A2 2 0 0 1 19 8.172V7l-2.26-2.26a6 6 0 0 0-4.202-1.756L9 2.96l.92 8.23z" /></svg>
-                    </div>
-                </div>
-
-                <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm flex items-center justify-between">
-                    <div>
-                        <p class="text-[11px] font-bold text-slate-400 tracking-wider uppercase mb-1">Ordem Retirada</p>
-                        <h3 class="font-tech text-3xl font-extrabold text-purple-600">83</h3>
-                    </div>
-                    <div class="w-12 h-12 rounded-2xl bg-purple-50 text-purple-600 flex items-center justify-center">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/>
-                        </svg>
-                    </div>
-                </div>
-
+          </a>
+          <a class="stat-card" href="pecas.html?filtro=estoque" title="Ver peças em estoque">
+            <div><div class="stat-label">Em Estoque</div><div class="stat-value" style="color:var(--success)">987</div></div>
+            <div class="stat-icon green">
+              <svg viewBox="0 0 24 24" stroke="currentColor"><path d="M21 8 12 3 3 8l9 5 9-5Z"/><path d="M3 8v8l9 5 9-5V8"/><path d="M12 13v8"/></svg>
             </div>
-
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                
-                <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm lg:col-span-2 flex flex-col justify-between">
-                    <div class="flex items-center justify-between mb-8">
-                        <h2 class="text-base font-bold text-slate-800">Movimentação Mensal</h2>
-                        <span class="text-xs font-semibold text-slate-400">1º Semestre 2026</span>
-                    </div>
-
-                    <div class="flex items-end justify-around h-64 border-b border-slate-100 pb-2 px-4 gap-4 sm:gap-8">
-                        <div class="flex-1 flex flex-col items-center gap-2 h-full justify-end">
-                            <div class="w-full bg-blue-600 rounded-t-xl h-[80%] hover:bg-blue-700 transition-all"></div>
-                            <span class="text-xs font-medium text-slate-400">Jan</span>
-                        </div>
-                        <div class="flex-1 flex flex-col items-center gap-2 h-full justify-end">
-                            <div class="w-full bg-blue-600 rounded-t-xl h-[55%] hover:bg-blue-700 transition-all"></div>
-                            <span class="text-xs font-medium text-slate-400">Fev</span>
-                        </div>
-                        <div class="flex-1 flex flex-col items-center gap-2 h-full justify-end">
-                            <div class="w-full bg-blue-600 rounded-t-xl h-[95%] hover:bg-blue-700 transition-all"></div>
-                            <span class="text-xs font-medium text-slate-400">Mar</span>
-                        </div>
-                        <div class="flex-1 flex flex-col items-center gap-2 h-full justify-end">
-                            <div class="w-full bg-blue-600 rounded-t-xl h-[70%] hover:bg-blue-700 transition-all"></div>
-                            <span class="text-xs font-medium text-slate-400">Abr</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm flex flex-col justify-between">
-                    <h2 class="text-base font-bold text-slate-800 mb-6">Status Operacional</h2>
-
-                    <div class="relative w-48 h-48 mx-auto flex items-center justify-center my-auto">
-                        <svg class="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
-                            <path class="text-slate-100" stroke-width="3.8" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-                            <path class="text-emerald-500" stroke-dasharray="76.9, 100" stroke-width="3.8" stroke-linecap="round" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-                            <path class="text-purple-500" stroke-dasharray="12, 100" stroke-dashoffset="-76.9" stroke-width="3.8" stroke-linecap="round" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-                            <path class="text-amber-500" stroke-dasharray="8, 100" stroke-dashoffset="-88.9" stroke-width="3.8" stroke-linecap="round" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-                        </svg>
-                        <div class="absolute inset-0 flex flex-col items-center justify-center text-center">
-                            <span class="font-tech text-2xl font-extrabold text-slate-900 tracking-tight">76,9%</span>
-                            <span class="text-[9px] font-bold text-slate-400 tracking-widest uppercase mt-0.5">Disponível</span>
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-3 gap-2 mt-6 pt-4 border-t border-slate-50">
-                        <div class="bg-slate-50/80 p-2.5 rounded-xl text-center">
-                            <div class="w-2 h-2 rounded-full bg-emerald-500 mx-auto mb-1"></div>
-                            <p class="text-[10px] font-bold text-slate-400 uppercase">Kits</p>
-                            <p class="font-tech text-sm font-extrabold text-slate-800">987</p>
-                        </div>
-                        <div class="bg-slate-50/80 p-2.5 rounded-xl text-center">
-                            <div class="w-2 h-2 rounded-full bg-amber-500 mx-auto mb-1"></div>
-                            <p class="text-[10px] font-bold text-slate-400 uppercase">Manuten.</p>
-                            <p class="font-tech text-sm font-extrabold text-slate-800">214</p>
-                        </div>
-                        <div class="bg-slate-50/80 p-2.5 rounded-xl text-center">
-                            <div class="w-2 h-2 rounded-full bg-purple-600 mx-auto mb-1"></div>
-                            <p class="text-[10px] font-bold text-slate-400 uppercase">Retirada</p>
-                            <p class="font-tech text-sm font-extrabold text-slate-800">83</p>
-                        </div>
-                    </div>
-                </div>
-
+          </a>
+          <a class="stat-card" href="manutencao.html" title="Ver ordens em manutenção">
+            <div><div class="stat-label">Manutenção</div><div class="stat-value" style="color:var(--warning)">214</div></div>
+            <div class="stat-icon orange">
+              <svg viewBox="0 0 24 24" stroke="currentColor"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.87l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.7 1.7 0 0 0-1.87-.34 1.7 1.7 0 0 0-1.04 1.56V21a2 2 0 1 1-4 0v-.09A1.7 1.7 0 0 0 9 19.35a1.7 1.7 0 0 0-1.87.34l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.7 1.7 0 0 0 4.64 15a1.7 1.7 0 0 0-1.56-1.04H3a2 2 0 1 1 0-4h.09A1.7 1.7 0 0 0 4.65 9a1.7 1.7 0 0 0-.34-1.87l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.7 1.7 0 0 0 1.87.34H9A1.7 1.7 0 0 0 10.04 3.6V3a2 2 0 1 1 4 0v.09A1.7 1.7 0 0 0 15 4.65c.6.25 1.3.13 1.87-.34l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.7 1.7 0 0 0 19.35 9c.25.6.83 1 1.56 1H21a2 2 0 1 1 0 4h-.09A1.7 1.7 0 0 0 19.4 15Z"/></svg>
             </div>
-
+          </a>
+          <a class="stat-card" href="pecas.html?filtro=critico" title="Ver itens em nível crítico">
+            <div><div class="stat-label">Crítico</div><div class="stat-value" style="color:var(--danger)">83</div></div>
+            <div class="stat-icon red">
+              <svg viewBox="0 0 24 24" stroke="currentColor"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
+            </div>
+          </a>
         </div>
-    </main>
 
-    <script src="JS/dashboard.js"> </script>
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-title">Movimentação Mensal <span class="tag">1º Semestre 2026</span></div>
+            <div class="bars-wrap">
+              <div class="bar-col"><div class="bar" style="height:80%"><span class="bar-value">312</span></div><span class="bar-name">Jan</span></div>
+              <div class="bar-col"><div class="bar" style="height:60%"><span class="bar-value">234</span></div><span class="bar-name">Fev</span></div>
+              <div class="bar-col"><div class="bar" style="height:95%"><span class="bar-value">371</span></div><span class="bar-name">Mar</span></div>
+              <div class="bar-col"><div class="bar" style="height:70%"><span class="bar-value">273</span></div><span class="bar-name">Abr</span></div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-title">Status Operacional</div>
+            <div class="gauge-wrap">
+              <svg width="220" height="220" viewBox="0 0 240 240" style="transform:rotate(-90deg);">
+                <circle cx="120" cy="120" r="100" fill="none" stroke="var(--surface2)" stroke-width="2" stroke-dasharray="2 8.6"/>
+                <circle cx="120" cy="120" r="90" fill="none" stroke="var(--border)" stroke-width="20"/>
+                <circle cx="120" cy="120" r="90" fill="none" stroke="var(--success)" stroke-width="20"
+                  stroke-dasharray="434.68 565.49" stroke-dashoffset="0" stroke-linecap="round"/>
+                <circle cx="120" cy="120" r="90" fill="none" stroke="var(--warning)" stroke-width="20"
+                  stroke-dasharray="94.25 565.49" stroke-dashoffset="-434.68" stroke-linecap="round"/>
+                <circle cx="120" cy="120" r="90" fill="none" stroke="var(--danger)" stroke-width="20"
+                  stroke-dasharray="36.55 565.49" stroke-dashoffset="-528.93" stroke-linecap="round"/>
+                <circle cx="120" cy="120" r="62" fill="var(--surface)"/>
+              </svg>
+              <div class="gauge-center">
+                <div class="gauge-value">76,9%</div>
+                <div class="gauge-caption">Disponível</div>
+              </div>
+            </div>
+            <div class="legend-grid">
+              <a class="legend-item" href="pecas.html?filtro=estoque" style="background:var(--success-bg)">
+                <div class="legend-dot" style="background:var(--success)"></div>
+                <div class="legend-label">Estoque</div><div class="legend-value">987</div>
+              </a>
+              <a class="legend-item" href="manutencao.html" style="background:var(--warning-bg)">
+                <div class="legend-dot" style="background:var(--warning)"></div>
+                <div class="legend-label">Manutenção</div><div class="legend-value">214</div>
+              </a>
+              <a class="legend-item" href="pecas.html?filtro=critico" style="background:var(--danger-bg)">
+                <div class="legend-dot" style="background:var(--danger)"></div>
+                <div class="legend-label">Crítico</div><div class="legend-value">83</div>
+              </a>
+            </div>
+          </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+
+	
+<script type="text/javascript" src="JS/dashboard.js"></script>
 </body>
 </html>

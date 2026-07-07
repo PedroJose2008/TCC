@@ -4,22 +4,54 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Ordens de Serviço - Acoa Peças</title>
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
       --bg: #eef2f8; --surface: #ffffff; --surface2: #f0f4fb; --border: #d6dff0;
       --accent: #3b6ff5; --accent2: #5b8af8; --accent-light: #dce8ff;
-      --success: #22c55e; --danger: #ef4444; --text: #1a2340; --text2: #4a6080; --text3: #8fa0b8; --sidebar-w: 240px;
+      --success: #22c55e; --danger: #ef4444; --text: #1a2340; --text2: #4a6080; --text3: #8fa0b8; --sidebar-w: 246px;
+      --sidebar-bg:#0d1326; --sidebar-bg2:#141b34; --sidebar-line:#232b48;
     }
     * { margin:0; padding:0; box-sizing:border-box; }
     body { font-family:'DM Sans', sans-serif; background:var(--bg); color:var(--text); height:100vh; overflow:hidden; }
     #app { display: flex; height: 100%; }
-    #sidebar { width:var(--sidebar-w); background:var(--surface); border-right:1px solid var(--border); display:flex; flex-direction:column; box-shadow: 2px 0 12px rgba(59,111,245,.06); }
-    .logo-area { padding:24px 20px; border-bottom:1px solid var(--border); display:flex; align-items:center; gap:10px; }
-    .logo-icon { width:38px; height:38px; background:linear-gradient(135deg,var(--accent),var(--accent2)); border-radius:10px; display:flex; align-items:center; justify-content:center; color:#fff; }
-    nav { padding:16px 12px; flex:1; overflow-y:auto; }
-    .nav-item { display:flex; align-items:center; gap:10px; padding:10px 12px; border-radius:10px; cursor:pointer; font-size:13.5px; color:var(--text2); text-decoration:none; margin-bottom:2px; transition:all .15s; }
-    .nav-item:hover, .nav-item.active { background:var(--accent-light); color:var(--accent); }
+
+    /* ---------- SIDEBAR (padrão do Dashboard/Kits) ---------- */
+    #sidebar {
+      width:var(--sidebar-w); min-width:var(--sidebar-w);
+      background:linear-gradient(190deg,var(--sidebar-bg),var(--sidebar-bg2) 85%);
+      display:flex; flex-direction:column; position:relative;
+    }
+    #sidebar::after{content:"";position:absolute;top:0;right:0;width:1px;height:100%;
+      background:linear-gradient(180deg,rgba(91,138,248,.35),rgba(91,138,248,0) 60%);}
+    .logo-area{padding:22px 20px;display:flex;align-items:center;gap:11px;border-bottom:1px solid var(--sidebar-line);}
+    .logo-icon{width:38px;height:38px;border-radius:11px;background:linear-gradient(135deg,var(--accent),#7ea2ff);
+      display:flex;align-items:center;justify-content:center;color:#fff;box-shadow:0 4px 14px rgba(59,111,245,.45);flex-shrink:0;}
+    .logo-icon svg{width:20px;height:20px;}
+    .logo-text{font-family:'Syne',sans-serif;font-weight:800;font-size:16px;color:#fff;letter-spacing:.3px;line-height:1;}
+    .logo-tag{display:inline-block;margin-top:3px;font-size:9px;letter-spacing:1px;color:var(--accent2);font-weight:600;
+      background:rgba(91,138,248,.15);padding:1px 6px;border-radius:5px;}
+
+    nav{padding:18px 12px;flex:1;overflow-y:auto;}
+    nav::-webkit-scrollbar{width:5px;}
+    nav::-webkit-scrollbar-thumb{background:var(--sidebar-line);border-radius:6px;}
+    .nav-label{font-size:10px;letter-spacing:1.8px;text-transform:uppercase;color:#4d5a80;margin:14px 8px 8px;font-weight:600;}
+    .nav-label:first-child{margin-top:2px;}
+    .nav-item{
+      display:flex;align-items:center;gap:11px;padding:10px 12px;border-radius:10px;cursor:pointer;
+      font-size:13.5px;color:#aab4d4;text-decoration:none;margin-bottom:3px;transition:background .15s,color .15s,transform .15s;
+      position:relative;
+    }
+    .nav-item svg{width:17px;height:17px;flex-shrink:0;stroke:currentColor;fill:none;stroke-width:1.8;transition:transform .2s;}
+    .nav-item:hover{background:rgba(91,138,248,.12);color:#e7ecfb;}
+    .nav-item:hover svg{transform:scale(1.1);}
+    .nav-item.active{background:linear-gradient(90deg,rgba(59,111,245,.28),rgba(59,111,245,.06));color:#fff;}
+    .nav-item.active::before{content:"";position:absolute;left:-12px;top:8px;bottom:8px;width:3px;border-radius:3px;
+      background:linear-gradient(180deg,var(--accent),var(--accent2));box-shadow:0 0 10px rgba(91,138,248,.8);}
+    .nav-item.active svg{stroke:var(--accent2);}
+
+    /* ---------- MAIN (mantido) ---------- */
     #main { flex:1; display:flex; flex-direction:column; overflow:hidden; }
     .topbar-base { height:64px; background:var(--surface); border-bottom:1px solid var(--border); display:flex; align-items:center; padding:0 28px; box-shadow: 0 2px 8px rgba(59,111,245,.05); }
     #content { flex:1; overflow-y:auto; padding:28px; }
@@ -40,7 +72,6 @@
     .btn-accent { background:var(--accent); color:#fff; }
     .btn-accent:hover { background:var(--accent2); }
     
-    .nav-label { font-size:10px; letter-spacing:1.8px; text-transform:uppercase; color:var(--text3); margin-bottom:8px; padding:0 8px; }
     .actions-cell { display: flex; gap: 6px; justify-content: center; }
 
     /* MODAL PADRÃO */
@@ -76,23 +107,53 @@
 <body>
   <div id="app">
     <aside id="sidebar">
-      <div class="logo-area"><div class="logo-icon">⚙️</div><div><div style="font-family:'Syne',sans-serif;font-weight:800;font-size:15px;">SISCAP</div></div></div>
+      <div class="logo-area">
+        <div class="logo-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+        </div>
+        <div>
+          <div class="logo-text">SISCAP</div>
+          <span class="logo-tag">V2</span>
+        </div>
+      </div>
       <nav>
         <div class="nav-label">Principal</div>
-        <a href="dashboard.html" class="nav-item">📊 Dashboard</a>
+        <a href="dashboard.html" class="nav-item">
+          <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>
+          Dashboard
+        </a>
         <div class="nav-label">Estoque</div>
-        <a href="pecas.html" class="nav-item">🔩 Peças</a>
-        <a href="kits.html" class="nav-item">📶 Equipamentos</a>
+        <a href="pecas.html" class="nav-item">
+          <svg viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+          Peças
+        </a>
+        <a href="kits.html" class="nav-item">
+          <svg viewBox="0 0 24 24"><path d="M21 8 12 3 3 8l9 5 9-5Z"/><path d="M3 8v8l9 5 9-5V8"/><path d="M12 13v8"/></svg>
+          Equipamentos
+        </a>
         <div class="nav-label">Oficina</div>
-        <a href="os.html" class="nav-item active">📝 Abrir Ordem de Serviço</a>
-        <a href="manutencao.html" class="nav-item">🛠️ Manutenções</a>
-        <a href="retirada.html" class="nav-item">📤 Ordem de retirada</a>
-        
+        <a href="os.html" class="nav-item active">
+          <svg viewBox="0 0 24 24"><path d="M9 3h6a1 1 0 0 1 1 1v1h-8V4a1 1 0 0 1 1-1Z"/><rect x="5" y="5" width="14" height="16" rx="2"/><path d="M9 12h6M9 16h6M9 8h2"/></svg>
+          Abrir Ordem de Serviço
+        </a>
+        <a href="manutencao.html" class="nav-item">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.87l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.7 1.7 0 0 0-1.87-.34 1.7 1.7 0 0 0-1.04 1.56V21a2 2 0 1 1-4 0v-.09A1.7 1.7 0 0 0 9 19.35a1.7 1.7 0 0 0-1.87.34l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.7 1.7 0 0 0 4.64 15a1.7 1.7 0 0 0-1.56-1.04H3a2 2 0 1 1 0-4h.09A1.7 1.7 0 0 0 4.65 9a1.7 1.7 0 0 0-.34-1.87l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.7 1.7 0 0 0 1.87.34H9A1.7 1.7 0 0 0 10.04 3.6V3a2 2 0 1 1 4 0v.09A1.7 1.7 0 0 0 15 4.65c.6.25 1.3.13 1.87-.34l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.7 1.7 0 0 0 19.35 9c.25.6.83 1 1.56 1H21a2 2 0 1 1 0 4h-.09A1.7 1.7 0 0 0 19.4 15Z"/></svg>
+          Manutenções
+        </a>
+        <a href="retirada.html" class="nav-item">
+          <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 9l5-5 5 5"/><path d="M12 4v12"/></svg>
+          Ordem de Retirada
+        </a>
         <div class="nav-label">Fornecedores</div>
-        <a href="fornecedores.html" class="nav-item">🏭 Fornecedores</a>
-                
+        <a href="fornecedores.html" class="nav-item">
+          <svg viewBox="0 0 24 24"><path d="M2 21h20"/><path d="M4 21V9l6-4v16"/><path d="M14 21V13l6-4v12"/><path d="M6 12h.01M6 15h.01M6 18h.01"/></svg>
+          Fornecedores
+        </a>
         <div class="nav-label">Clientes</div>
-        <a href="clientes.html" class="nav-item">👥 Clientes</a>
+        <a href="clientes.html" class="nav-item">
+          <svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.2"/><path d="M2.5 20c.6-3.6 3.4-6 6.5-6s5.9 2.4 6.5 6"/><path d="M16.5 6.6a3.2 3.2 0 0 1 0 6.2"/><path d="M17.8 14.2c2.5.5 4.5 2.6 5 5.8"/></svg>
+          Clientes
+        </a>
       </nav>
     </aside>
 
@@ -187,6 +248,7 @@
     </div>
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script type="text/javascript" src="JS/ordemServico.js"></script>
 </body>
 </html>
