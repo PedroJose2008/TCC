@@ -90,6 +90,21 @@ async function editar(id) {
 
 async function salvarCliente() {
 
+	
+	const NomeInput= document.getElementById('razaoSocial');
+	const NomeSemEspaco= NomeInput.value.trim();
+	
+	if(NomeSemEspaco.length<3){
+		alert("Nome muito pequeno, o mínimo de caracteres é 3")
+		return false;
+	}
+	
+	if(NomeSemEspaco.length>=100){
+			alert("Nome muito grande, o máximo de caracteres é 100")
+			return false;
+		}
+	
+	
     const cliente = {
         razaoSocial: document.getElementById("razaoSocial").value,
         telefone: document.getElementById("telefone").value,

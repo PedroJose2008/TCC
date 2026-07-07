@@ -251,7 +251,7 @@ function validaNome(){
 function mascaraTelefone(input) {
   let valor = input.value;
   
-  // 1. Remove tudo o que não for número
+  //Remove tudo o que não for número
   valor = valor.replace(/\D/g, "");
   
   if (valor.length > 0) {
@@ -264,11 +264,10 @@ function mascaraTelefone(input) {
   if (valor.length > 10) {
     valor = valor.slice(0, 10) + "-" + valor.slice(10, 14);
   } else if (valor.length > 7) {
-    // Enquanto o usuário digita (formato fixo temporário): (XX) XXXX-XXXX
     valor = valor.slice(0, 9) + "-" + valor.slice(9);
   }
   
-  // 3. Devolve o valor formatado para o input
+
   input.value = valor; 
 }
 
@@ -308,6 +307,7 @@ function validaEmail(){
 		
 	}
 	
+	
 	return true;
 }
 // email
@@ -316,10 +316,10 @@ function aplicarMascaraCPF(evento) {
     let input = evento.target;
     let valor = input.value;
 
-    // 1. Remove tudo o que não for número
+     //Remove tudo o que não for número
     valor = valor.replace(/\D/g, "");
 
-    // 2. Aplica a formatação correta de forma progressiva conforme digita
+    // conforme o usuário digita vai aplicando a mascara 
     if (valor.length > 3) {
         valor = valor.substring(0, 3) + '.' + valor.substring(3);
     }
@@ -330,7 +330,9 @@ function aplicarMascaraCPF(evento) {
         valor = valor.substring(0, 11) + '-' + valor.substring(11, 13);
     }
 
-    // 3. Devolve o valor formatado de volta para o campo
+	console.log("Mascara esta funcionando")
+	
+	
     input.value = valor;
 }
 
@@ -389,8 +391,11 @@ function validarCPF(cpf) {
 	    Resto = 0
 
 	  if (Resto != parseInt(strCPF.substring(10, 11) ) )
-	    return false
+	    return false;
 
+	  
+	  console.log("validou o CPF")
+	  
 	  return true
 	}
 

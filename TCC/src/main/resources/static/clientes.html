@@ -186,38 +186,38 @@
         <span id="modalTitulo" style="font-family:'Syne',sans-serif; font-weight:700;">Adicionar Novo Cliente</span>
         <span class="modal-close" onclick="fecharModal()">&times;</span>
       </div>
-      <form id="clienteForm">
+      <form id="clienteForm" >
         <div class="form-group">
           <label>Nome / Razão Social</label>
-          <input type="text" id="razaoSocial" required>
+          <input type="text" id="razaoSocial" required="required" maxlength="100">
         </div>
         <div class="form-row">
           <div class="form-group">
             <label>CPF / CNPJ</label>
-            <input type="text" id="cpf_cnpj" required>
+            <input type="text" id="cpf_cnpj" required="required">
           </div>
           <div class="form-group">
             <label>Telefone</label>
-            <input type="text" id="telefone">
+            <input type="text" id="telefone" required="required">
           </div>
         </div>
         <div class="form-group">
           <label>E-mail</label>
-          <input type="email" id="email">
+          <input type="email" id="email" required="required">
         </div>
         <div class="form-row">
           <div class="form-group">
             <label>CEP</label>
-            <input type="text" id="cep">
+            <input type="text" id="cep" required="required">
           </div>
           <div class="form-group">
             <label>Número</label>
-            <input type="text" id="numero">
+            <input type="text" id="numero" required="required">
           </div>
         </div>
         <div class="form-group">
           <label>Complemento</label>
-          <input type="text" id="complemento">
+          <input type="text" id="complemento" required="required">
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-ghost" style="height: 38px;" onclick="fecharModal()">Cancelar</button>
