@@ -36,7 +36,7 @@ public class FornecedorController {
 		return FornecedorRepository.findAll();
 		
 	}
-	
+	//hbxkwbakjw
 	@GetMapping("/buscarPorNome/{razaoSocial}")
 	public List<FornecedorEntity> buscarPorNome(@PathVariable String razaoSocial) {
 	    return FornecedorRepository.findByrazaoSocialContaining(razaoSocial);

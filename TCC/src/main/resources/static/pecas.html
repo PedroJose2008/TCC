@@ -71,7 +71,6 @@
         <a href="fornecedores.html" class="nav-item">🏭 Fornecedores</a>
         <div class="nav-label">Clientes</div>
         <a href="clientes.html" class="nav-item">👥 Clientes</a>
-   
       </nav>
     </aside>
     
@@ -85,7 +84,7 @@
           </div>
           
           <div class="table-toolbar">
-            <input type="text" id="filtroNome" class="search-input" placeholder="🔍 Digite para pesquisar...">
+            <input type="text" id="filtroNome" class="search-input" placeholder="🔍 Digite para pesquisar..." onkeyup="buscarPorNome()">
             <button class="btn btn-primary" onclick="buscarPorNome()">Buscar</button>
             <button class="btn btn-ghost" onclick="document.getElementById('filtroNome').value=''; buscarPorNome();">Limpar</button>
           </div>
@@ -96,7 +95,7 @@
                 <th>Código</th>
                 <th>Nome</th>
                 <th>Prateleira</th>
-			 <th>Número Prateleira</th>
+                <th>Número Prateleira</th>
                 <th>Tipo</th>
                 <th>Fornecedor</th>
                 <th>Preço</th>
@@ -120,79 +119,73 @@
           <h5 class="modal-title" id="modalTitle" style="font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 700;">Cadastrar Nova Peça</h5>
           <button type="button" class="btn-close" onclick="fecharModal()"></button>
         </div>
-        <form id="pecaForm" onsubmit="event.preventDefault(); salvarPeca();">
+        <form id="pecaForm" onsubmit="event.preventDefault(); salvar();">
           <div class="modal-body-grid">
             <div class="form-group full-width">
               <label for="codigo">Código da Peça</label>
-              <input type="text" id="codigo" class="form-control" readonly >
+              <input type="text" id="codigo" class="form-control" readonly>
             </div>
             <div class="form-group">
               <label for="nome">Nome da Peça</label>
-              <input type="text" id="nome" class="form-control"  placeholder="Ex: Pastilha de Freio" required="required">
+              <input type="text" id="nome" class="form-control" placeholder="Ex: Pastilha de Freio" required="required">
             </div>
             <div class="form-group">
               <label for="prateleira">Prateleira</label>
-				 <select id="prateleira" class="form-control" required="required">
-				
-				<option value="" disabled selected>Selecione uma letra (A-Z)...</option>
-  <option value="A">A</option>
-  <option value="B">B</option>
-  <option value="C">C</option>
-  <option value="D">D</option>
-  <option value="E">E</option>
-  <option value="F">F</option>
-  <option value="G">G</option>
-  <option value="H">H</option>
-  <option value="I">I</option>
-  <option value="J">J</option>
-  <option value="K">K</option>
-  <option value="L">L</option>
-  <option value="M">M</option>
-  <option value="N">N</option>
-  <option value="O">O</option>
-  <option value="P">P</option>
-  <option value="Q">Q</option>
-  <option value="R">R</option>
-  <option value="S">S</option>
-  <option value="T">T</option>
-  <option value="U">U</option>
-  <option value="V">V</option>
-  <option value="W">W</option>
-  <option value="X">X</option>
-  <option value="Y">Y</option>
-  <option value="Z">Z</option>
-				
-				
+              <select id="prateleira" class="form-control" required="required">
+                <option value="" disabled selected>Selecione uma letra (A-Z)...</option>
+                <option value="A">A</option>
+                <option value="B">B</option>
+                <option value="C">C</option>
+                <option value="D">D</option>
+                <option value="E">E</option>
+                <option value="F">F</option>
+                <option value="G">G</option>
+                <option value="H">H</option>
+                <option value="I">I</option>
+                <option value="J">J</option>
+                <option value="K">K</option>
+                <option value="L">L</option>
+                <option value="M">M</option>
+                <option value="N">N</option>
+                <option value="O">O</option>
+                <option value="P">P</option>
+                <option value="Q">Q</option>
+                <option value="R">R</option>
+                <option value="S">S</option>
+                <option value="T">T</option>
+                <option value="U">U</option>
+                <option value="V">V</option>
+                <option value="W">W</option>
+                <option value="X">X</option>
+                <option value="Y">Y</option>
+                <option value="Z">Z</option>
               </select>              
             </div>
             
-             <div class="form-group">
+            <div class="form-group">
               <label for="numero">Número da Prateleira</label>
-				 <select id="numero" class="form-control" required="required">
-				 
-				 <option value="" disabled selected>Selecione um número (1-20)...</option>
-  <option value="1">1</option>
-  <option value="2">2</option>
-  <option value="3">3</option>
-  <option value="4">4</option>
-  <option value="5">5</option>
-  <option value="6">6</option>
-  <option value="7">7</option>
-  <option value="8">8</option>
-  <option value="9">9</option>
-  <option value="10">10</option>
-  <option value="11">11</option>
-  <option value="12">12</option>
-  <option value="13">13</option>
-  <option value="14">14</option>
-  <option value="15">15</option>
-  <option value="16">16</option>
-  <option value="17">17</option>
-  <option value="18">18</option>
-  <option value="19">19</option>
-  <option value="20">20</option>
-				 
-				 
+              <select id="numero" class="form-control" required="required">
+                <option value="" disabled selected>Selecione um número (1-20)...</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
+                <option value="8">8</option>
+                <option value="9">9</option>
+                <option value="10">10</option>
+                <option value="11">11</option>
+                <option value="12">12</option>
+                <option value="13">13</option>
+                <option value="14">14</option>
+                <option value="15">15</option>
+                <option value="16">16</option>
+                <option value="17">17</option>
+                <option value="18">18</option>
+                <option value="19">19</option>
+                <option value="20">20</option>
               </select>              
             </div>
             
@@ -218,11 +211,11 @@
             </div>
             <div class="form-group">
               <label for="preco">Preço (R$)</label>
-              <input id="preco" class="form-control" step="0.01" min="0" placeholder="0,00" required="required">
+              <input type="number" id="preco" class="form-control" step="0.01" min="0" placeholder="0.00" required="required">
             </div>
             <div class="form-group">
               <label for="quantidadeEstoque">Quantidade em Estoque</label>
-              <input  id="quantidadeEstoque" class="form-control" min="0" placeholder="0" required="required">
+              <input type="number" id="quantidadeEstoque" class="form-control" step="1" min="0" placeholder="0" required="required">
             </div>
           </div>
           
