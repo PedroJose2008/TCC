@@ -153,10 +153,10 @@
           </div>
           
           <div class="table-toolbar">
-            <input type="text" id="filtroDescricao" class="search-input" placeholder="🔍 Pesquisar por descrição..." onkeyup="buscarPorDescricao()">
-            <button class="btn btn-primary" onclick="buscarPorDescricao()">Buscar</button>
-            <button class="btn btn-ghost" onclick="document.getElementById('filtroDescricao').value=''; buscarPorDescricao();">Limpar</button>
-          </div>
+  <input type="text" id="filtroCliente" class="search-input" placeholder="🔍 Pesquisar por cliente..." onkeyup="buscarPorCliente()">
+  <button class="btn btn-primary" onclick="buscarPorCliente()">Buscar</button>
+  <button class="btn btn-ghost" onclick="document.getElementById('filtroCliente').value=''; buscarPorCliente();">Limpar</button>
+</div>
 
           <table>
             <thead>
@@ -165,6 +165,7 @@
                 <th>Cliente</th>
                 <th>Kit</th>
                 <th>Mecânico Responsável</th>
+                <th>Forma Pagamento</th>
                 <th>Status</th>
                 <th>Data Abertura</th>
                 <th>Ações</th>
@@ -210,6 +211,17 @@
               <label for="idMecanico">Mecânico Responsável</label>
               <select id="idMecanico" class="form-control" required>
                 <option value="" disabled selected hidden>Selecione o mecânico...</option>
+              </select>
+            </div>
+
+            <div class="form-group full-width">
+              <label for="formaPagamento">Forma de Pagamento</label>
+              <select id="formaPagamento" class="form-control" required>
+                <option value="" disabled selected hidden>Selecione a forma de pagamento...</option>
+                <option value="Pix">Pix</option>
+                <option value="Cartão de Crédito">Cartão de Crédito</option>
+                <option value="Cartão de Débito">Cartão de Débito</option>
+                <option value="Dinheiro">Dinheiro</option>
               </select>
             </div>
           </div>

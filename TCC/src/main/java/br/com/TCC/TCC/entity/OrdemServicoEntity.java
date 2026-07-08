@@ -32,15 +32,11 @@ public class OrdemServicoEntity implements Serializable {
 	
 	private int id;
 	
-
 	
 	@ManyToOne
 	@JoinColumn(name = "idCliente")
 	private ClienteEntity cliente;
 	
-
-	
-
 	
 	@ManyToOne
 	@JoinColumn(name = "idUsuario")
@@ -54,7 +50,7 @@ public class OrdemServicoEntity implements Serializable {
 	
 	private KitEntity kit;
 	
-	
+
 	@ManyToMany
 	@JoinTable(
 	    name = "ordem_servico_pecas",

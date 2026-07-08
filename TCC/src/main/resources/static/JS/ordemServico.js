@@ -1,159 +1,146 @@
-const API_OS_LISTAR = 'http://localhost:8001/ordens/listartodos';
-const API_OS_SALVAR = 'http://localhost:8001/ordens/salvar';
-const API_CLIENTES_LISTAR = 'http://localhost:8001/clientes/listartodos';
+const API_LISTAR_OS       = "http://localhost:8001/ordens/listartodos";
+const API_SALVAR_OS       = "http://localhost:8001/ordens/salvar";
+const API_LISTAR_CLIENTES = "http://localhost:8001/clientes/listartodos";
+const API_LISTAR_KITS     = "http://localhost:8001/kits/listartodos";
+const API_LISTAR_USUARIOS = "http://localhost:8001/usuarios/listartodos";
 
-document.addEventListener("DOMContentLoaded", () => {
-    listarOrdensServico();
-});
+window.onload = function() {
+    atualizarDados();
+};
 
-function abrirModal() {
-    const modalElement = document.getElementById("modalOS");
-    const modal = new bootstrap.Modal(modalElement);
-    modal.show();
+async function atualizarDados() {
+    await carregarClientes();
+    await carregarKits();
+    await carregarUsuarios();
+    await listarOrdens();
 }
 
-function abrirModalCadastro() {
-    limparFormulario();
-    carregarClientesSelect();
-    abrirModal();
-}
-
-function fecharModal() {
-    const modalElement = document.getElementById("modalOS");
-    const modal = bootstrap.Modal.getInstance(modalElement);
-    if (modal) modal.hide();
-    limparFormulario();
-}
-
-function fecharModalRelatorio() {
-    const modalElement = document.getElementById("modalRelatorioOS");
-    const modal = bootstrap.Modal.getInstance(modalElement);
-    if (modal) modal.hide();
-}
-
-function limparFormulario() {
-    document.getElementById("formOS").reset();
-    document.getElementById("codigo").value = "";
-}
-
-async function carregarClientesSelect() {
-    let res = await fetch(API_CLIENTES_LISTAR);
-    let dados = await res.json();
-    let select = document.getElementById("idCliente");
+async function carregarClientes() {
+    const resposta = await fetch(API_LISTAR_CLIENTES);
+    const clientes = await resposta.json();
+    const select = document.getElementById("idCliente");
     
     select.innerHTML = '<option value="" disabled selected hidden>Selecione o cliente...</option>';
 
-    dados.forEach(dado => {
+    clientes.forEach(function(cliente) {
         const option = document.createElement("option");
-        option.value = dado.id;
-        option.text = dado.razaoSocial || dado.nome;
+        option.value = cliente.id;
+        option.text = cliente.nome || cliente.razaoSocial;
         select.appendChild(option);
     });
 }
 
-async function listarOrdensServico() {
-    const response = await fetch(API_OS_LISTAR);
-    const ordens = await response.json();
-    const tbody = document.getElementById("tabelaOS");
+async function carregarKits() {
+    const resposta = await fetch(API_LISTAR_KITS);
+    const kits = await resposta.json();
+    const select = document.getElementById("osKit");
     
-    tbody.innerHTML = "";
+    select.innerHTML = '<option value="" disabled selected hidden>Selecione o kit...</option>';
 
-    if (ordens.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:var(--text3); padding:20px;">Nenhuma Ordem de Serviço ativa.</td></tr>`;
-        return;
-    }
+    kits.forEach(function(kit) {
+        const option = document.createElement("option");
+        option.value = kit.id;
+        option.text = kit.nome;
+        select.appendChild(option);
+    });
+}
 
-    ordens.forEach(os => {
-        // Se a API não mandar data, gera a data de hoje automaticamente no formato DD/MM/AAAA
-        let dataFormatada = "-";
-        if (os.dataCadastro) {
-            dataFormatada = os.dataCadastro.split('-').reverse().join('/');
-        } else {
-            const hoje = new Date();
-            dataFormatada = hoje.toLocaleDateString('pt-BR');
-        }
+async function carregarUsuarios() {
+    const resposta = await fetch(API_LISTAR_USUARIOS);
+    const usuarios = await resposta.json();
+    const select = document.getElementById("idMecanico");
+    
+    select.innerHTML = '<option value="" disabled selected hidden>Selecione o mecânico...</option>';
 
-        const nomeCliente = os.cliente ? (os.cliente.razaoSocial || os.cliente.nome) : "Não Informado";
-        const nomeKit = os.kit ? os.kit.nome : "Nenhum Kit";
-        
-        // Mantém a estrutura de crachás coloridos conforme o status
-        let statusHTML = "";
-        if (os.status === "Aberto" || os.status === "ABERTA") {
-            statusHTML = `<span class="badge" style="background:#ffeeba; color:#856404; padding:4px 10px; border-radius:20px;">Aberto</span>`;
-        } else {
-            statusHTML = `<span class="badge" style="background:rgba(59,111,245,.1); color:#3b6ff5; padding:4px 10px; border-radius:20px;">${os.status || 'Aberto'}</span>`;
-        }
-
-        tbody.innerHTML += `
-            <tr>
-                <td><strong>#OS-${os.id}</strong></td>
-                <td>${nomeCliente}</td>
-                <td>${nomeKit}</td>
-                <td>${statusHTML}</td>
-                <td>${dataFormatada}</td>
-                <td>
-                    <button class="btn btn-ghost" style="padding: 4px 8px; font-size: 11px;" onclick="verRelatorioOS(${os.id})">📋 Ver Resumo</button>
-                </td>
-            </tr>
-        `;
+    usuarios.forEach(function(usuario) {
+        const option = document.createElement("option");
+        option.value = usuario.id;
+        option.text = usuario.nome;
+        select.appendChild(option);
     });
 }
 
 async function salvarNovaOS() {
-    const ordemServico = {
-        cliente: { id: document.getElementById("idCliente").value },
-        equipamento: document.getElementById("equipamento").value,
-        descricao: document.getElementById("descricao").value,
-        status: document.getElementById("status").value,
-        valor: parseFloat(document.getElementById("valor").value) || 0.00
+    const idCliente = document.getElementById("idCliente").value;
+    const idKit = document.getElementById("osKit").value;
+    const idMecanico = document.getElementById("idMecanico").value;
+    const formaPagamento = document.getElementById("formaPagamento").value;
+
+    const dataAtual = new Date().toISOString().split('T')[0];
+
+    const novaOS = {
+        cliente: { id: parseInt(idCliente) },
+        kit: { id: parseInt(idKit) },
+        usuario: { id: parseInt(idMecanico) },
+        pagamento: formaPagamento,
+        status: "Aberto",
+        dataCadastro: dataAtual,
+        valor: 0.00,
+        pecas: []
     };
 
-    await fetch(API_OS_SALVAR, {
+    await fetch(API_SALVAR_OS, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(ordemServico)
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(novaOS)
     });
 
     fecharModal();
-    await listarOrdensServico();
+    await listarOrdens();
+}
+
+async function listarOrdens() {
+    const resposta = await fetch(API_LISTAR_OS);
+    const ordens = await resposta.json();
+    const corpoTabela = document.getElementById("tabelaOS");
+    
+    corpoTabela.innerHTML = "";
+
+    ordens.forEach(function(os) {
+        const dataExibicao = os.dataCadastro.split('-').reverse().join('/');
+        const textoCliente = os.cliente.nome || os.cliente.razaoSocial;
+        
+        const linha = `
+            <tr>
+                <td><strong>#OS-${os.id}</strong></td>
+                <td>${textoCliente}</td>
+                <td>${os.kit.nome}</td>
+                <td>${os.usuario.nome}</td>
+                <td>${os.pagamento}</td>
+                <td><span class="badge">${os.status}</span></td>
+                <td>${dataExibicao}</td>
+                <td>
+                    <button class="btn btn-ghost" onclick="verRelatorioOS(${os.id})">📋 Ver Resumo</button>
+                </td>
+            </tr>
+        `;
+        corpoTabela.innerHTML += linha;
+    });
 }
 
 async function verRelatorioOS(idOS) {
-    const resOS = await fetch(API_OS_LISTAR);
-    const ordens = await resOS.json();
-    const os = ordens.find(o => o.id === idOS);
-
-    const nomeCliente = os.cliente ? (os.cliente.razaoSocial || os.cliente.nome) : "Não Informado";
-    const nomeKit = os.kit ? os.kit.nome : "Nenhum Kit";
-    const valorCalculado = os.valor ? parseFloat(os.valor) : 0;
+    const resposta = await fetch(API_LISTAR_OS);
+    const ordens = await resposta.json();
     
-    let dataFormatada = "-";
-    if (os.dataCadastro) {
-        dataFormatada = os.dataCadastro.split('-').reverse().join('/');
-    } else {
-        const hoje = new Date();
-        dataFormatada = hoje.toLocaleDateString('pt-BR');
-    }
+    const osEncontrada = ordens.find(os => os.id === idOS);
 
+    const dataExibicao = osEncontrada.dataCadastro.split('-').reverse().join('/');
     const containerRelatorio = document.getElementById("corpoRelatorio");
+    const textoCliente = osEncontrada.cliente.nome || osEncontrada.cliente.razaoSocial;
+    
     containerRelatorio.innerHTML = `
-        <div style="border-bottom: 2px dashed var(--border); padding-bottom: 12px; margin-bottom: 12px; text-align: center;">
-            <h4 style="font-family:'Syne',sans-serif; font-size: 16px; margin: 0;">ORDEM DE SERVIÇO #OS-${os.id}</h4>
+        <div>
+            <h4>ORDEM DE SERVIÇO #OS-${osEncontrada.id}</h4>
         </div>
-        <p style="margin-bottom: 6px;"><strong>Cliente:</strong> ${nomeCliente}</p>
-        <p style="margin-bottom: 6px;"><strong>Kit Vinculado:</strong> ${nomeKit}</p>
-        <p style="margin-bottom: 6px;"><strong>Equipamento / Veículo:</strong> ${os.equipamento || "-"}</p>
-        <p style="margin-bottom: 6px;"><strong>Descrição do Defeito:</strong> ${os.descricao || "-"}</p>
-        <p style="margin-bottom: 6px;"><strong>Status Atual:</strong> ${os.status || "Aberto"}</p>
-        
-        <div style="margin-top: 16px; text-align: right; font-size: 16px;">
-            <strong>Preço Mão de Obra:</strong> 
-            <span style="color: var(--success); font-weight: 800; margin-left: 6px;">
-                R$ ${valorCalculado.toFixed(2).replace('.', ',')}
-            </span>
-        </div>
-        <div style="text-align: right; font-size: 14px; margin-top: 4px; color: var(--text2);">
-            <strong>Data de Abertura:</strong> ${dataFormatada}
+        <p><strong>Cliente:</strong> ${textoCliente}</p>
+        <p><strong>Kit Vinculado:</strong> ${osEncontrada.kit.nome}</p>
+        <p><strong>Mecânico Responsável:</strong> ${osEncontrada.usuario.nome}</p>
+        <p><strong>Forma de Pagamento:</strong> ${osEncontrada.pagamento}</p>
+        <p><strong>Status Atual:</strong> ${osEncontrada.status}</p>
+        <div>
+            <strong>Data de Abertura:</strong> ${dataExibicao}
         </div>
     `;
 
@@ -162,49 +149,57 @@ async function verRelatorioOS(idOS) {
     modal.show();
 }
 
-async function buscarPorDescricao() {
-    const termo = document.getElementById("filtroDescricao").value.toLowerCase().trim();
+async function buscarPorCliente() {
+    // Pega o que foi digitado no campo de texto
+    const termo = document.getElementById("filtroCliente").value;
+    const resposta = await fetch(API_LISTAR_OS);
+    const ordens = await resposta.json();
+    const corpoTabela = document.getElementById("tabelaOS");
     
-    if (termo === "") {
-        listarOrdensServico();
-        return;
-    }
+    corpoTabela.innerHTML = "";
 
-    const response = await fetch(API_OS_LISTAR);
-    const ordens = await response.json();
-    const tbody = document.getElementById("tabelaOS");
-    
-    tbody.innerHTML = "";
-
-    ordens.forEach(os => {
-        const descricaoOS = os.descricao ? os.descricao.toLowerCase() : "";
+    ordens.forEach(function(os) {
+        const textoCliente = os.cliente.nome || os.cliente.razaoSocial ;
         
-        if (descricaoOS.includes(termo)) {
-            let dataFormatada = "-";
-            if (os.dataCadastro) {
-                dataFormatada = os.dataCadastro.split('-').reverse().join('/');
-            } else {
-                const hoje = new Date();
-                dataFormatada = hoje.toLocaleDateString('pt-BR');
-            }
-
-            const nomeCliente = os.cliente ? (os.cliente.razaoSocial || os.cliente.nome) : "Não Informado";
-            const nomeKit = os.kit ? os.kit.nome : "Nenhum Kit";
+        if (textoCliente.includes(termo)) {
+            const dataExibicao = os.dataCadastro.split('-').reverse().join('/');
             
-            let statusHTML = `<span class="badge">${os.status || 'Aberto'}</span>`;
-
-            tbody.innerHTML += `
+            const linha = `
                 <tr>
                     <td><strong>#OS-${os.id}</strong></td>
-                    <td>${nomeCliente}</td>
-                    <td>${nomeKit}</td>
-                    <td>${statusHTML}</td>
-                    <td>${dataFormatada}</td>
+                    <td>${textoCliente}</td>
+                    <td>${os.kit.nome}</td>
+                    <td>${os.usuario.nome}</td>
+                    <td>${os.pagamento}</td>
+                    <td><span class="badge">${os.status}</span></td>
+                    <td>${dataExibicao}</td>
                     <td>
-                        <button class="btn btn-ghost" style="padding: 4px 8px; font-size: 11px;" onclick="verRelatorioOS(${os.id})">📋 Ver Resumo</button>
+                        <button class="btn btn-ghost" onclick="verRelatorioOS(${os.id})">📋 Ver Resumo</button>
                     </td>
                 </tr>
             `;
+            corpoTabela.innerHTML += linha;
         }
     });
+}
+
+function abrirModalCadastro() {
+    document.getElementById("formOS").reset();
+    document.getElementById("codigo").value = "";
+    
+    const modalElement = document.getElementById("modalOS");
+    const modal = new bootstrap.Modal(modalElement);
+    modal.show();
+}
+
+function fecharModal() {
+    const modalElement = document.getElementById("modalOS");
+    const modal = bootstrap.Modal.getInstance(modalElement);
+    modal.hide();
+}
+
+function fecharModalRelatorio() {
+    const modalElement = document.getElementById("modalRelatorioOS");
+    const modal = bootstrap.Modal.getInstance(modalElement);
+    modal.hide();
 }
