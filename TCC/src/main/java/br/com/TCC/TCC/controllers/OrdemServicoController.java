@@ -71,19 +71,26 @@ public class OrdemServicoController {
 	@PutMapping("/atualizar/{id}")
 	@ResponseStatus(value = HttpStatus.OK)
 	public OrdemServicoEntity atualizar(@PathVariable Integer id, @RequestBody OrdemServicoEntity ordemAtualizada) {
-		// 1. Busca a ordem original do banco pelo ID (tipo int/Integer)
-		OrdemServicoEntity ordemOriginal = ordemRepository.findById(id).get();
-		
-		// 2. Atualiza o status com o texto que veio do JS ("AGUARDANDO_RETIRADA" ou "FINALIZADA")
-		ordemOriginal.setStatus(ordemAtualizada.getStatus());
-		
-		// 3. Se o JS também mandar valor em alguma tela, ele atualiza, se não, mantém o que estava
-		if (ordemAtualizada.getValor() != null) {
-			ordemOriginal.setValor(ordemAtualizada.getValor());
-		}
-		
-		// 4. Salva no banco de dados
-		return ordemRepository.save(ordemOriginal);
+	    // 1. Busca a ordem original do banco pelo ID
+	    OrdemServicoEntity ordemOriginal = ordemRepository.findById(id).get();
+	    
+	    // 2. Se o JS mandar status, atualiza. Se não, mantém o que estava.
+	    if (ordemAtualizada.getStatus() != null) {
+	        ordemOriginal.setStatus(ordemAtualizada.getStatus());
+	    }
+	    
+	 // ATUALIZAÇÃO SEGURA DE BIGDECIMAL
+	    if (ordemAtualizada.getValor() != null) {
+	        ordemOriginal.setValor(ordemAtualizada.getValor());
+	    }
+	    
+	    // 4. Se o JS mandar descrição, atualiza. Se não, mantém o que estava.
+	    if (ordemAtualizada.getDescricao() != null) {
+	        ordemOriginal.setDescricao(ordemAtualizada.getDescricao());
+	    }
+	    
+	    // 5. Salva apenas os dados atualizados com segurança
+	    return ordemRepository.save(ordemOriginal);
 	}
 	
 	//rotas pro modal

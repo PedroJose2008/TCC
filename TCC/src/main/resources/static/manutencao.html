@@ -57,32 +57,56 @@
     #content { flex:1; overflow-y:auto; padding:28px; }
     .card { background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:20px; box-shadow: 0 2px 10px rgba(59,111,245,.06); }
     .card-title { font-family:'Syne',sans-serif; font-weight:700; font-size:14px; margin-bottom:16px; display:flex; justify-content:space-between; align-items:center; }
-    
-    .table-toolbar { display: flex; gap: 8px; margin-bottom: 24px; width: 100%; align-items: center; }
-    .search-input { padding: 10px 14px; border: 1px solid var(--border); border-radius: 8px; font-family: inherit; font-size: 13px; color: var(--text); background: var(--surface2); outline: none; transition: all 0.2s; height: 38px; width: 100%; max-width: 250px; }
-    .search-input:focus { border-color: var(--accent); background: var(--surface); }
 
     table { width:100%; border-collapse:collapse; font-size:13.5px; }
     thead th { text-align: center; padding:10px 14px; font-size:11px; text-transform:uppercase; color:var(--text3); border-bottom:1px solid var(--border); background:var(--surface2); }
     tbody td { text-align: center; padding:12px 14px; color:var(--text2); border-bottom:1px solid var(--border); vertical-align: middle; }
     
-    .btn { padding:6px 12px; border-radius:8px; border:none; cursor:pointer; font-size:12px; font-weight:500; transition: all 0.2s; height: 38px; display: inline-flex; align-items: center; justify-content: center; gap: 4px; }
-    .btn-primary { background:var(--accent); color:#fff; padding: 0 20px; }
-    .btn-primary:hover { background:var(--accent2); }
-    .btn-success { background:var(--success); color:#fff; height: 36px; padding: 0 16px; font-size: 13px; font-weight: 600; border-radius: 10px; }
-    .btn-ghost { background:var(--surface2); color:var(--text2); border:1px solid var(--border); padding: 0 20px; }
-    .btn-ghost:hover { background:var(--border); }
-    .btn-danger { background:rgba(239,68,68,.1); color:var(--danger); height: auto; padding: 6px 12px; }
-    .btn-danger:hover { background:rgba(239,68,68,.2); }
+    /* REMOVIDO BORDAS PRETAS E SOMBRAS DOS BOTÕES */
+    .btn { padding:6px 12px; border-radius:8px; border:none !important; outline: none !important; box-shadow: none !important; cursor:pointer; font-size:12px; font-weight:500; transition: all 0.2s; height: 38px; display: inline-flex; align-items: center; justify-content: center; gap: 4px; }
+    .btn-primary { background:var(--accent) !important; color:#fff !important; padding: 0 20px; }
+    .btn-primary:hover { background:var(--accent2) !important; }
+    
+    .btn-success { background:var(--success) !important; color:#fff !important; height: 36px; padding: 0 16px; font-size: 13px; font-weight: 600; border-radius: 10px; border: none !important; outline: none !important; box-shadow: none !important; }
+    .btn-success:hover { background: #1bc053 !important; }
+    
+    .btn-ghost { background:var(--surface2) !important; color:var(--text2) !important; border:1px solid var(--border) !important; padding: 0 20px; }
+    .btn-ghost:hover { background:var(--border) !important; }
+    .btn-danger { background:rgba(239,68,68,.1) !important; color:var(--danger) !important; height: auto; padding: 6px 12px; }
+    
     .badge-blue { padding:3px 8px; border-radius:20px; font-size:11px; font-weight:600; background:rgba(59,111,245,.1); color:var(--accent); display: inline-block; }
+    .badge-gray { padding:3px 8px; border-radius:20px; font-size:11px; font-weight:600; background:rgba(143,160,184,.1); color:var(--text2); display: inline-block; }
     
     .form-group { display: flex; flex-direction: column; gap: 6px; text-align: left; width: 100%; margin-bottom: 14px; }
     .form-group label { font-size: 12px; font-weight: 600; color: var(--text2); text-transform: uppercase; }
-    .form-control { padding: 10px 12px; border: 1px solid var(--border); border-radius: 8px; font-family: inherit; font-size: 13.5px; color: var(--text); background: var(--surface2); outline: none; width: 100%; height: 40px; }
-    .form-control:focus { border-color: var(--accent); background: var(--surface); }
-    .section-title { font-family: 'Syne', sans-serif; font-size: 12px; font-weight: 700; text-transform: uppercase; color: var(--text2); margin-bottom: 12px; letter-spacing: 0.5px; }
+    .form-control { padding: 10px 12px; border: 1px solid var(--border); border-radius: 8px; font-family: inherit; font-size: 13.5px; color: var(--text) !important; background: var(--surface2) !important; outline: none; width: 100%; height: 40px; }
+    
+    .actions-cell { display: flex; gap: 8px; justify-content: center; align-items: center; }
+    
+    /* RESET DO BOTÃO PEÇAS DA OS PARA MATAR A BORDA PRETA */
+    .btn-pecas-os { 
+      background: var(--surface2) !important; 
+      color: var(--text) !important; 
+      border: 1px solid var(--border) !important; 
+      border-radius: 8px; 
+      padding: 6px 12px; 
+      font-size: 12px; 
+      font-weight: 500; 
+      cursor: pointer; 
+      transition: all 0.2s; 
+      outline: none !important; 
+      box-shadow: none !important;
+      height: 36px;
+      display: inline-flex;
+      align-items: center;
+    }
+    .btn-pecas-os:hover { background: var(--border) !important; }
+
+    /* RESET CORES DO MODAL PARA FORÇAR CONTEÚDO APARECER EXATAMENTE ONDE DEVE */
+    .modal-content { background-color: #ffffff !important; color: #1a2340 !important; }
+    .modal-backdrop { opacity: 0.5 !important; }
   </style>
-</head>
+  </head>
 <body>
   <div id="app">
     <aside id="sidebar">
@@ -154,7 +178,7 @@
               </tr>
             </thead>
             <tbody id="listaOrdensServico">
-              </tbody>
+            </tbody>
           </table>
         </div>
       </div>
@@ -162,32 +186,49 @@
   </div>
 
   <div class="modal fade" id="modalPecas" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" style="max-width: 750px;">
+    <div class="modal-dialog modal-dialog-centered" style="max-width: 850px;">
       <div class="modal-content" style="border-radius: 16px; border: 1px solid var(--border);">
+        
         <div class="modal-header" style="padding: 20px 24px;">
           <div>
             <h5 class="modal-title" id="modalTitle" style="font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 700;">Componentes da OS</h5>
             <small id="modalSubtitle" style="color: var(--text3); display: block; margin-top: 2px;"></small>
           </div>
-          <button type="button" class="btn-close" onclick="fecharModalPecas()"></button>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
-        <div class="modal-body" style="padding: 24px;">
-          
-          <div class="form-group">
-            <label for="selectPecas">Selecione uma peça para vincular</label>
-            <div style="display: flex; gap: 10px;">
-              <select id="selectPecas" class="form-control"></select>
-              <button class="btn btn-primary" style="height: 40px; white-space: nowrap;" onclick="adicionarPecaAoKit()">Adicionar</button>
-            </div>
-          </div>
 
-          <div style="margin-top: 24px;">
-            <div class="section-title">Peças Utilizadas nesta Manutenção</div>
-            <table>
+        <div class="modal-body" style="padding: 24px; max-height: 70vh; overflow-y: auto;">
+          
+          <div style="margin-bottom: 24px;">
+            <div class="section-title" style="color: var(--accent);">📋 Peças Originais do Equipamento/Kit</div>
+            <table class="table table-sm" style="background: var(--surface2); border-radius: 8px; overflow: hidden;">
               <thead>
                 <tr>
                   <th>Código</th>
-                  <th>Nome da Peça</th>
+                  <th>Nome do Componente</th>
+                </tr>
+              </thead>
+              <tbody id="listaPecasOriginaisKit">
+                </tbody>
+            </table>
+          </div>
+
+          <hr style="border-color: var(--border); margin: 20px 0;">
+
+          <div class="form-group">
+            <div class="section-title" style="color: var(--success);">🔄 Substituir / Adicionar Peça na Manutenção</div>
+            <div style="display: flex; gap: 10px;">
+              <select id="selectPecas" class="form-control"></select>
+              <button class="btn btn-primary" style="height: 40px; white-space: nowrap;" id="btnAdicionarPeca">Vincular Peça</button>
+            </div>
+          </div>
+
+          <div style="margin-top: 14px; margin-bottom: 24px;">
+            <table class="table table-sm">
+              <thead>
+                <tr>
+                  <th>Código</th>
+                  <th>Peça Trocada</th>
                   <th>Ação</th>
                 </tr>
               </thead>
@@ -196,10 +237,20 @@
             </table>
           </div>
 
+          <hr style="border-color: var(--border); margin: 20px 0;">
+
+          <div class="form-group">
+            <div class="section-title">📝 Descrição / Relatório do Mecânico</div>
+            <textarea id="txtDescricaoOS" class="form-control" style="height: 100px; resize: none;" placeholder="Descreva os defeitos encontrados e os serviços realizados nesta manutenção..."></textarea>
+          </div>
+
         </div>
+
         <div class="modal-footer" style="background: var(--surface2); padding: 16px 24px;">
-          <button type="button" class="btn btn-ghost" onclick="fecharModalPecas()">Fechar</button>
+          <button type="button" class="btn btn-success" id="btnSalvarDescricao" style="height: 38px;">Salvar Relatório</button>
+          <button type="button" class="btn btn-ghost" data-bs-dismiss="modal">Fechar</button>
         </div>
+
       </div>
     </div>
   </div>

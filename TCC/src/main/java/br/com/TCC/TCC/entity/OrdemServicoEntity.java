@@ -66,6 +66,7 @@ public class OrdemServicoEntity implements Serializable {
 	private LocalDate dataCadastro = LocalDate.now();
 	
 	private String status;
+	private String descricao;
 
 	public int getId() {
 		return id;
@@ -151,6 +152,14 @@ public class OrdemServicoEntity implements Serializable {
 
 	public void setStatus(String status) {
 		this.status = status;
+	}
+
+	public String getDescricao() {
+		return descricao;
+	}
+
+	public void setDescricao(String descricao) {
+		this.descricao = descricao;
 	}
 
 	
