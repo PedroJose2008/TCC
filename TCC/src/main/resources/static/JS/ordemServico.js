@@ -1,41 +1,47 @@
 const API_OS_LISTAR = 'http://localhost:8001/ordens/listartodos';
-const API_OS_LISTAR_PECAS = 'http://localhost:8001/ordens/listarpecas';
 const API_OS_SALVAR = 'http://localhost:8001/ordens/salvar';
-
-const API_OS_ATUALIZAR = 'http://localhost:8001/ordens/atualizar';
-
 const API_CLIENTES_LISTAR = 'http://localhost:8001/clientes/listartodos';
-const API_KITS_LISTAR = 'http://localhost:8001/kits/listartodos';
-const API_MECANICOS_LISTAR = 'http://localhost:8001/usuarios/listartodos';
 
 document.addEventListener("DOMContentLoaded", () => {
     listarOrdensServico();
 });
 
-function abrirModalNovaOS() {
-    document.getElementById("osForm")?.reset();
-    
-    carregarClientesSelect();
-    carregarKitsSelect();
-    carregarMecanicosSelect();
-
-    document.getElementById('modalNovaOS').classList.add('active');
+function abrirModal() {
+    const modalElement = document.getElementById("modalOS");
+    const modal = new bootstrap.Modal(modalElement);
+    modal.show();
 }
 
-function fecharModalNovaOS() {
-    document.getElementById('modalNovaOS').classList.remove('active');
+function abrirModalCadastro() {
+    limparFormulario();
+    carregarClientesSelect();
+    abrirModal();
+}
+
+function fecharModal() {
+    const modalElement = document.getElementById("modalOS");
+    const modal = bootstrap.Modal.getInstance(modalElement);
+    if (modal) modal.hide();
+    limparFormulario();
 }
 
 function fecharModalRelatorio() {
-    document.getElementById('modalRelatorioOS').classList.remove('active');
+    const modalElement = document.getElementById("modalRelatorioOS");
+    const modal = bootstrap.Modal.getInstance(modalElement);
+    if (modal) modal.hide();
+}
+
+function limparFormulario() {
+    document.getElementById("formOS").reset();
+    document.getElementById("codigo").value = "";
 }
 
 async function carregarClientesSelect() {
     let res = await fetch(API_CLIENTES_LISTAR);
     let dados = await res.json();
-    let select = document.getElementById("osCliente");
+    let select = document.getElementById("idCliente");
     
-    select.innerHTML = '<option value="" disabled selected hidden>-- Selecione o Cliente --</option>';
+    select.innerHTML = '<option value="" disabled selected hidden>Selecione o cliente...</option>';
 
     dados.forEach(dado => {
         const option = document.createElement("option");
@@ -45,111 +51,46 @@ async function carregarClientesSelect() {
     });
 }
 
-async function carregarKitsSelect() {
-    let res = await fetch(API_KITS_LISTAR);
-    let dados = await res.json();
-    let select = document.getElementById("osKit");
-
-    select.innerHTML = '<option value="" disabled selected hidden>-- Selecione o Kit Base --</option>';
-
-    dados.forEach(dado => {
-        const option = document.createElement("option");
-        option.value = dado.id;
-        option.text = dado.nome;
-        select.appendChild(option);
-    });
-}
-
-async function carregarMecanicosSelect() {
-    let res = await fetch(API_MECANICOS_LISTAR);
-    let dados = await res.json();
-    let select = document.getElementById("osUsuario");
-
-    select.innerHTML = '<option value="" disabled selected hidden>-- Selecione o Mecânico --</option>';
-
-    dados.forEach(dado => {
-        const option = document.createElement("option");
-        option.value = dado.id;
-        option.text = dado.nome;
-        select.appendChild(option);
-    });
-}
-
-
-function atualizarStatusParaManutencao(idOS) {
-    fetch(`${API_OS_ATUALIZAR}/${idOS}`, {
-        method: "PUT",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-            status: "EM_MANUTENCAO"
-        })
-    });
-}
-
 async function listarOrdensServico() {
     const response = await fetch(API_OS_LISTAR);
     const ordens = await response.json();
-    const tbody = document.getElementById("listaOrdensServico");
+    const tbody = document.getElementById("tabelaOS");
     
+    tbody.innerHTML = "";
+
     if (ordens.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; color:var(--text3); padding:20px;">Nenhuma Ordem de Serviço ativa.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:var(--text3); padding:20px;">Nenhuma Ordem de Serviço ativa.</td></tr>`;
         return;
     }
 
-    tbody.innerHTML = "";
-
     ordens.forEach(os => {
-       
-        if (os.status === "ABERTA") {
-            atualizarStatusParaManutencao(os.id);
-            os.status = "EM_MANUTENCAO";
+        // Se a API não mandar data, gera a data de hoje automaticamente no formato DD/MM/AAAA
+        let dataFormatada = "-";
+        if (os.dataCadastro) {
+            dataFormatada = os.dataCadastro.split('-').reverse().join('/');
+        } else {
+            const hoje = new Date();
+            dataFormatada = hoje.toLocaleDateString('pt-BR');
         }
 
-        const dataFormatada = os.dataCadastro ? os.dataCadastro.split('-').reverse().join('/') : "-";
         const nomeCliente = os.cliente ? (os.cliente.razaoSocial || os.cliente.nome) : "Não Informado";
-        const nomeMecanico = os.usuario ? os.usuario.nome : "Não Informado";
         const nomeKit = os.kit ? os.kit.nome : "Nenhum Kit";
-
-        let statusHTML = "";
-
         
-        if (os.status === "ABERTA") {
-            statusHTML = `
-                <span class="badge" style="padding:4px 10px;border-radius:20px;font-size:11px;font-weight:600;background:#ffeeba;color:#856404;">
-                    Em Aberto
-                </span>`;
-        } else if (os.status === "EM_MANUTENCAO") {
-            statusHTML = `
-                <span class="badge" style="padding:4px 10px;border-radius:20px;font-size:11px;font-weight:600;background:rgba(59,111,245,.1);color:#3b6ff5;">
-                    Em Manutenção
-                </span>`;
-        } else if (os.status === "AGUARDANDO_RETIRADA") {
-            statusHTML = `
-                <span class="badge" style="padding:4px 10px;border-radius:20px;font-size:11px;font-weight:600;background:rgba(245,158,11,.1);color:#d97706;">
-                    Aguardando Retirada
-                </span>`;
-        } else if (os.status === "FINALIZADA") {
-            statusHTML = `
-                <span class="badge" style="padding:4px 10px;border-radius:20px;font-size:11px;font-weight:600;background:rgba(34,197,94,.1);color:#16a34a;">
-                    Finalizada
-                </span>`;
+        // Mantém a estrutura de crachás coloridos conforme o status
+        let statusHTML = "";
+        if (os.status === "Aberto" || os.status === "ABERTA") {
+            statusHTML = `<span class="badge" style="background:#ffeeba; color:#856404; padding:4px 10px; border-radius:20px;">Aberto</span>`;
         } else {
-            statusHTML = `
-                <span class="badge bg-secondary">
-                    ${os.status || 'Sem Status'}
-                </span>`;
+            statusHTML = `<span class="badge" style="background:rgba(59,111,245,.1); color:#3b6ff5; padding:4px 10px; border-radius:20px;">${os.status || 'Aberto'}</span>`;
         }
 
         tbody.innerHTML += `
             <tr>
                 <td><strong>#OS-${os.id}</strong></td>
                 <td>${nomeCliente}</td>
-                <td>${nomeMecanico}</td>
                 <td>${nomeKit}</td>
-                <td>${dataFormatada}</td>
                 <td>${statusHTML}</td>
+                <td>${dataFormatada}</td>
                 <td>
                     <button class="btn btn-ghost" style="padding: 4px 8px; font-size: 11px;" onclick="verRelatorioOS(${os.id})">📋 Ver Resumo</button>
                 </td>
@@ -160,13 +101,11 @@ async function listarOrdensServico() {
 
 async function salvarNovaOS() {
     const ordemServico = {
-        cliente: { id: document.getElementById("osCliente").value },
-        usuario: { id: document.getElementById("osUsuario").value },
-        kit: { id: document.getElementById("osKit").value },
-        pagamento: document.getElementById("osPagamento").value,
-        valor: 0.00,
-        // Força a OS a nascer diretamente no status correto
-        status: "EM_MANUTENCAO"
+        cliente: { id: document.getElementById("idCliente").value },
+        equipamento: document.getElementById("equipamento").value,
+        descricao: document.getElementById("descricao").value,
+        status: document.getElementById("status").value,
+        valor: parseFloat(document.getElementById("valor").value) || 0.00
     };
 
     await fetch(API_OS_SALVAR, {
@@ -175,8 +114,8 @@ async function salvarNovaOS() {
         body: JSON.stringify(ordemServico)
     });
 
-    fecharModalNovaOS();
-    listarOrdensServico();
+    fecharModal();
+    await listarOrdensServico();
 }
 
 async function verRelatorioOS(idOS) {
@@ -184,58 +123,88 @@ async function verRelatorioOS(idOS) {
     const ordens = await resOS.json();
     const os = ordens.find(o => o.id === idOS);
 
-    const resPecas = await fetch(`${API_OS_LISTAR_PECAS}/${idOS}`);
-    const pecasUtilizadas = await resPecas.json();
-
     const nomeCliente = os.cliente ? (os.cliente.razaoSocial || os.cliente.nome) : "Não Informado";
-    const nomeMecanico = os.usuario ? os.usuario.nome : "Não Informado";
     const nomeKit = os.kit ? os.kit.nome : "Nenhum Kit";
     const valorCalculado = os.valor ? parseFloat(os.valor) : 0;
-    const dataFechamentoFormatada = os.dataCadastro ? os.dataCadastro.split('-').reverse().join('/') : "-";
-
-    let listaPecasHTML = `<span style="color:var(--text3);">Nenhuma peça aplicada.</span>`;
     
-    if (pecasUtilizadas && pecasUtilizadas.length > 0) {
-        listaPecasHTML = "";
-        
-        // Seu laço corrigido aplicando p.preco para puxar o valor real de cada item
-        pecasUtilizadas.forEach(p => {
-            const precoPeca = p.preco
-                ? `R$ ${parseFloat(p.preco).toFixed(2).replace('.', ',')}`
-                : "R$ 0,00";
-
-            listaPecasHTML += `<li>${p.nome} (${precoPeca})</li>`;
-        });
+    let dataFormatada = "-";
+    if (os.dataCadastro) {
+        dataFormatada = os.dataCadastro.split('-').reverse().join('/');
+    } else {
+        const hoje = new Date();
+        dataFormatada = hoje.toLocaleDateString('pt-BR');
     }
 
     const containerRelatorio = document.getElementById("corpoRelatorio");
     containerRelatorio.innerHTML = `
         <div style="border-bottom: 2px dashed var(--border); padding-bottom: 12px; margin-bottom: 12px; text-align: center;">
             <h4 style="font-family:'Syne',sans-serif; font-size: 16px; margin: 0;">ORDEM DE SERVIÇO #OS-${os.id}</h4>
-            <small style="color: var(--text3);">Acoa Peças Ltda</small>
         </div>
         <p style="margin-bottom: 6px;"><strong>Cliente:</strong> ${nomeCliente}</p>
-        <p style="margin-bottom: 6px;"><strong>Mecânico Responsável:</strong> ${nomeMecanico}</p>
-        <p style="margin-bottom: 6px;"><strong>Kit Base Vinculado:</strong> ${nomeKit}</p>
-        <p style="margin-bottom: 6px;"><strong>Forma de Pagamento:</strong> ${os.pagamento || "A combinar"}</p>
+        <p style="margin-bottom: 6px;"><strong>Kit Vinculado:</strong> ${nomeKit}</p>
+        <p style="margin-bottom: 6px;"><strong>Equipamento / Veículo:</strong> ${os.equipamento || "-"}</p>
+        <p style="margin-bottom: 6px;"><strong>Descrição do Defeito:</strong> ${os.descricao || "-"}</p>
+        <p style="margin-bottom: 6px;"><strong>Status Atual:</strong> ${os.status || "Aberto"}</p>
         
-        <div style="margin-top: 14px; padding: 10px; background: var(--surface2); border-radius: 8px;">
-            <strong style="font-size: 12px; text-transform: uppercase; color: var(--text2); display:block; margin-bottom: 4px;">Peças e Componentes Trocados:</strong>
-            <ul style="padding-left: 16px; margin: 0; font-size: 13px;">
-                ${listaPecasHTML}
-            </ul>
-        </div>
-
         <div style="margin-top: 16px; text-align: right; font-size: 16px;">
-            <strong>Valor Total do Serviço:</strong> 
+            <strong>Preço Mão de Obra:</strong> 
             <span style="color: var(--success); font-weight: 800; margin-left: 6px;">
                 R$ ${valorCalculado.toFixed(2).replace('.', ',')}
             </span>
         </div>
         <div style="text-align: right; font-size: 14px; margin-top: 4px; color: var(--text2);">
-            <strong>Data de Cadastro:</strong> ${dataFechamentoFormatada}
+            <strong>Data de Abertura:</strong> ${dataFormatada}
         </div>
     `;
 
-    document.getElementById('modalRelatorioOS').classList.add('active');
+    const modalElement = document.getElementById("modalRelatorioOS");
+    const modal = new bootstrap.Modal(modalElement);
+    modal.show();
+}
+
+async function buscarPorDescricao() {
+    const termo = document.getElementById("filtroDescricao").value.toLowerCase().trim();
+    
+    if (termo === "") {
+        listarOrdensServico();
+        return;
+    }
+
+    const response = await fetch(API_OS_LISTAR);
+    const ordens = await response.json();
+    const tbody = document.getElementById("tabelaOS");
+    
+    tbody.innerHTML = "";
+
+    ordens.forEach(os => {
+        const descricaoOS = os.descricao ? os.descricao.toLowerCase() : "";
+        
+        if (descricaoOS.includes(termo)) {
+            let dataFormatada = "-";
+            if (os.dataCadastro) {
+                dataFormatada = os.dataCadastro.split('-').reverse().join('/');
+            } else {
+                const hoje = new Date();
+                dataFormatada = hoje.toLocaleDateString('pt-BR');
+            }
+
+            const nomeCliente = os.cliente ? (os.cliente.razaoSocial || os.cliente.nome) : "Não Informado";
+            const nomeKit = os.kit ? os.kit.nome : "Nenhum Kit";
+            
+            let statusHTML = `<span class="badge">${os.status || 'Aberto'}</span>`;
+
+            tbody.innerHTML += `
+                <tr>
+                    <td><strong>#OS-${os.id}</strong></td>
+                    <td>${nomeCliente}</td>
+                    <td>${nomeKit}</td>
+                    <td>${statusHTML}</td>
+                    <td>${dataFormatada}</td>
+                    <td>
+                        <button class="btn btn-ghost" style="padding: 4px 8px; font-size: 11px;" onclick="verRelatorioOS(${os.id})">📋 Ver Resumo</button>
+                    </td>
+                </tr>
+            `;
+        }
+    });
 }

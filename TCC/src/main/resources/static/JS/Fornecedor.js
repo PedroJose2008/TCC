@@ -8,7 +8,6 @@ const API_BUSCAR_NOME = 'http://localhost:8001/fornecedores/buscarPorNome';
 let editandoId = null;
 
 async function listarFornecedores() {
-
     const response = await fetch(API_BUSCAR_TODOS);
     const fornecedores = await response.json();
 
@@ -16,7 +15,6 @@ async function listarFornecedores() {
     tbody.innerHTML = "";
 
     fornecedores.forEach(forn => {
-
         const tr = document.createElement("tr");
 
         tr.innerHTML = `
@@ -35,18 +33,24 @@ async function listarFornecedores() {
 }
 
 function abrirModal() {
+    const modalElement = document.getElementById("fornecedorModal");
+    const modal = new bootstrap.Modal(modalElement);
+    modal.show();
+}
 
-    document.getElementById("fornecedorModal").classList.add("active");
+function abrirModalCadastro() {
+    limparFormulario();
+    abrirModal();
 }
 
 function fecharModal() {
-
-    document.getElementById("fornecedorModal").classList.remove("active");
+    const modalElement = document.getElementById("fornecedorModal");
+    const modal = bootstrap.Modal.getInstance(modalElement);
+    modal.hide();
     limparFormulario();
 }
 
 function limparFormulario() {
-
     document.getElementById("razaoSocial").value = "";
     document.getElementById("telefone").value = "";
     document.getElementById("email").value = "";
@@ -57,7 +61,6 @@ function limparFormulario() {
 }
 
 async function deletar(id) {
-
     if (!confirm("Deseja realmente excluir?")) return;
 
     await fetch(`${API_DELETAR}/${id}`, {
@@ -68,24 +71,22 @@ async function deletar(id) {
 }
 
 async function editar(id) {
-
     const response = await fetch(`${API_BUSCAR_ID}/${id}`);
     const forn = await response.json();
 
     editandoId = id;
 
-    document.getElementById("razaoSocial").value = forn.razaoSocial || "";
-    document.getElementById("telefone").value = forn.telefone || "";
-    document.getElementById("email").value = forn.email || "";
-    document.getElementById("cnpj").value = forn.cnpj || "";
-    document.getElementById("cep").value = forn.cep || "";
-    document.getElementById("complemento").value = forn.complemento || "";
+    document.getElementById("razaoSocial").value = forn.razaoSocial;
+    document.getElementById("telefone").value = forn.telefone;
+    document.getElementById("email").value = forn.email;
+    document.getElementById("cnpj").value = forn.cnpj;
+    document.getElementById("cep").value = forn.cep;
+    document.getElementById("complemento").value = forn.complemento;
 
     abrirModal();
 }
 
 async function salvarFornecedor() {
-
     const fornecedor = {
         razaoSocial: document.getElementById("razaoSocial").value,
         telefone: document.getElementById("telefone").value,
@@ -96,7 +97,6 @@ async function salvarFornecedor() {
     };
 
     if (editandoId) {
-
         await fetch(`${API_GRAVAR}/${editandoId}`, {
             method: "PUT",
             headers: {
@@ -104,9 +104,7 @@ async function salvarFornecedor() {
             },
             body: JSON.stringify(fornecedor)
         });
-
     } else {
-
         await fetch(API_SALVAR, {
             method: "POST",
             headers: {
@@ -121,10 +119,10 @@ async function salvarFornecedor() {
 }
 
 async function buscarFornecedor() {
-
-    const razaoSocial = document.getElementById("filtroNome").value;
+    let razaoSocial = document.getElementById("filtroNome").value.trim();
     
-    if (!razaoSocial) {
+    
+    if (razaoSocial === "") {
         listarFornecedores();
         return;
     }
@@ -136,7 +134,6 @@ async function buscarFornecedor() {
     tbody.innerHTML = "";
 
     fornecedores.forEach(forn => {
-
         const tr = document.createElement("tr");
 
         tr.innerHTML = `
