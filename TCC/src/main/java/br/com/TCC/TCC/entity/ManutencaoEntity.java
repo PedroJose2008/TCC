@@ -37,7 +37,6 @@ public class ManutencaoEntity  implements Serializable{
 
 	@ManyToOne
 	@JoinColumn(name = "idPeca")
-	@NotNull
 	private PecaEntity peca;
 
 

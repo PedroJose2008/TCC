@@ -43,7 +43,7 @@ public class ItensManutencaoEntity implements Serializable {
 	private LocalDate dataCadastro;
 	private float precoManutencao;
 	
-	private boolean emManutencao;
+	private Boolean emManutencao;
 	
 
 	public PecaEntity getPeca() {

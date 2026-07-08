@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.TCC.TCC.entity.ClienteEntity;
-import br.com.TCC.TCC.entity.FornecedorEntity;
 import br.com.TCC.TCC.repository.ClienteRepository;
 
 @RestController
@@ -48,7 +47,7 @@ public class ClienteController {
 	
 	//listar por ID
 	@GetMapping("/listarporid/{id}")
-	@ResponseStatus(value = HttpStatus.OK)
+	@ResponseStatus(value = HttpStatus.CREATED)
 	
 	public Optional<ClienteEntity> lisarPorId(@PathVariable Integer id){
 		
@@ -58,12 +57,34 @@ public class ClienteController {
 	
 	//salndo por json
 	@PostMapping("/salvar")
-	@ResponseStatus(value = HttpStatus.CREATED)
-
+	@ResponseStatus(value = HttpStatus.OK)
 	public ClienteEntity salvar(@RequestBody ClienteEntity cliente) {
+		
+		Optional<ClienteEntity>emailExiste=clienteRepository.findByEmail(cliente.getEmail());
+		Optional<ClienteEntity>telefoneExiste=clienteRepository.findByTelefone(cliente.getTelefone());
+		Optional<ClienteEntity>cpfExiste=clienteRepository.findByCpfCnpj(cliente.getCpfCnpj());
+
+		
+		if (emailExiste.isPresent()) {
+			return null;
+		}
+		
+		else if(telefoneExiste.isPresent()) {
+			return null;
+		}
+		
+		else if(cpfExiste.isPresent()) {
+			return null;
+		}
+		
 		
 		return clienteRepository.save(cliente);
 	}//fim do salvar
+	
+	
+	
+	
+	
 	
 	// deletando por id
 	@DeleteMapping("/deletar/{id}")
@@ -107,4 +128,49 @@ public class ClienteController {
 	
 	
 	
-}// fim do program 
+	// começo do validar cpf
+	@GetMapping("/validaCpf/{cpf}")
+	@ResponseStatus(value = HttpStatus.OK)
+	public ResponseEntity<Boolean> cpfValido(@PathVariable String cpf){
+		
+		Optional<ClienteEntity> cpfExiste= clienteRepository.findByCpfCnpj(cpf);
+		
+		if(cpfExiste.isPresent()) {
+			return ResponseEntity.ok(true);
+		}
+		
+			return ResponseEntity.ok(false);
+ 
+	}// fim do verificar CPF
+	
+	@GetMapping("/validaEmail/{email}")
+	@ResponseStatus(value = HttpStatus.OK)
+
+	public ResponseEntity<Boolean> emailValido(@PathVariable String email){
+		
+		Optional<ClienteEntity> emailExiste=clienteRepository.findByEmail(email);
+		
+		if (emailExiste.isPresent()) {
+			return ResponseEntity.ok(true);
+		}
+		
+		return ResponseEntity.ok(false);
+		
+	}// fim do verificar email
+	
+	
+	@GetMapping("/validaTelefone/{telefone}")
+	@ResponseStatus(value = HttpStatus.OK)
+
+	public ResponseEntity<Boolean> telefoneValido(@PathVariable String telefone ){
+		
+		Optional<ClienteEntity> telefoneExiste=clienteRepository.findByTelefone(telefone);
+		
+		if (telefoneExiste.isPresent()) {
+			return ResponseEntity.ok(true);
+		}
+		return ResponseEntity.ok(false);
+	}//fim do verificar telefone
+	
+	
+}// fim do programa

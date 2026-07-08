@@ -24,11 +24,11 @@ public class ClienteEntity implements Serializable {
 	private String razaoSocial;
 	private String telefone;
 	private String email;
-	private String cpf_cnpj;
+	private String cpfCnpj;
 	private String cep;
 	private String numero;
 	private String complemento;
-	private LocalDate datacadastro;//
+	private LocalDate datacadastro=LocalDate.now();
 	
 	public int getId() {
 		return id;
@@ -54,11 +54,12 @@ public class ClienteEntity implements Serializable {
 	public void setEmail(String email) {
 		this.email = email;
 	}
-	public String getCpf_cnpj() {
-		return cpf_cnpj;
+
+	public String getCpfCnpj() {
+		return cpfCnpj;
 	}
-	public void setCpf_cnpj(String cpf_cnpj) {
-		this.cpf_cnpj = cpf_cnpj;
+	public void setCpfCnpj(String cpfCnpj) {
+		this.cpfCnpj = cpfCnpj;
 	}
 	public String getCep() {
 		return cep;

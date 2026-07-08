@@ -103,6 +103,7 @@ async function salvarUsu(){
 			
 			console.log(TelefoneExiste);
 			
+			// se for booleano ou um texto escrito verdadeiro eu barro 
 			if(TelefoneExiste ||String(TelefoneExiste).trim() === "true"){
 				alert("O telefone digitado já existe")
 				return telefoneInput.value="";
@@ -306,6 +307,7 @@ function validaEmail(){
 	return false;
 		
 	}
+	
 	
 	
 	return true;
@@ -539,7 +541,7 @@ function ValidaDDD(telefone) {
 				const TelefoneRepetido=/^(\d)\1{8}$/.test(TelefoneNumeros);
 				
 				if(TelefoneRepetido){
-					alert("Esté número de telefone é inválido!Não é permitido números números iguais")
+					alert("Esté número de telefone é inválido!Não é permitido  números iguais")
 					return false;
 				}
 				
