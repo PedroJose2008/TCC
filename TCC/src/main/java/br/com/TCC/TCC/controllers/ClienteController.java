@@ -37,6 +37,7 @@ public class ClienteController {
 		
 		return clienteRepository.findAll();
 		
+		
 	}
 	
 	@GetMapping("/buscarPorNome/{razaoSocial}")

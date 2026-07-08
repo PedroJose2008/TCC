@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 async function listarCadastro() {
-    const response = await fetch(API_OS_LISTAR);
+    const response = await fetch(API_OS_LISTAR  );
     const dados = await response.json();
 
     const tbody = document.getElementById("listaRetiradas");

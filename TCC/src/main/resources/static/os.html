@@ -119,7 +119,7 @@
           Abrir Ordem de Serviço
         </a>
         <a href="manutencao.html" class="nav-item">
-          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.87l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.7 1.7 0 0 0-1.87-.34 1.7 1.7 0 0 0-1.04 1.56V21a2 2 0 1 1-4 0v-.09A1.7 1.7 0 0 0 9 19.35a1.7 1.7 0 0 0-1.87.34l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.7 1.7 0 0 0 4.64 15a1.7 1.7 0 0 0-1.56-1.04H3a2 2 0 1 1 0-4h.09A1.7 1.7 0 0 0 4.65 9a1.7 1.7 0 0 0-.34-1.87l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.7 1.7 0 0 0 1.87.34H9A1.7 1.7 0 0 0 10.04 3.6V3a2 2 0 1 1 4 0v.09A1.7 1.7 0 0 0 15 4.65c.6.25 1.3.13 1.87-.34l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.7 1.7 0 0 0 19.35 9c.25.6.83 1 1.56 1H21a2 2 0 1 1 0 4h-.09A1.7 1.7 0 0 0 19.4 15Z"/></svg>
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.87l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.7 1.7 0 0 0-1.87-.34 1.7 1.7 0 0 0-1.04 1.56V21a2 2 0 1 1-4 0v-.09A1.7 1.7 0 0 0 9 19.35a1.7 1.7 0 0 0-1.87.34l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.7 1.7 0 0 0 4.64 15a1.7 1.7 0 0 0-1.56-1.04H3a2 2 0 1 1 0-4h.09A1.7 1.7 0 0 0 4.65 9a1.7 1.7 0 0 0-.34-1.87l-.06-.06a2 2 0 1 1-2.83-2.83l.06.06a1.7 1.7 0 0 0 1.87.34H9A1.7 1.7 0 0 0 10.04 3.6V3a2 2 0 1 1 4 0v.09A1.7 1.7 0 0 0 15 4.65c.6.25 1.3.13 1.87-.34l.06-.06a2 2 0 1 1-2.83 2.83l-.06.06A1.7 1.7 0 0 0 19.35 9c.25.6.83 1 1.56 1H21a2 2 0 1 1 0 4h-.09A1.7 1.7 0 0 0 19.4 15Z"/></svg>
           Manutenções
         </a>
         <a href="retirada.html" class="nav-item">
@@ -153,20 +153,25 @@
           </div>
           
           <div class="table-toolbar">
-            <input type="text" id="filtroDescricao" class="search-input" placeholder="🔍 Pesquisar por descrição..." onkeyup="buscarPorDescricao()">
-            <button class="btn btn-primary" onclick="buscarPorDescricao()">Buscar</button>
-            <button class="btn btn-ghost" onclick="document.getElementById('filtroDescricao').value=''; buscarPorDescricao();">Limpar</button>
-          </div>
+  <input type="text" id="filtroCliente" class="search-input" placeholder="🔍 Pesquisar por cliente..." onkeyup="buscarPorCliente()">
+  <button class="btn btn-primary" onclick="buscarPorCliente()">Buscar</button>
+  <button class="btn btn-ghost" onclick="document.getElementById('filtroCliente').value=''; buscarPorCliente();">Limpar</button>
+</div>
 
           <table>
             <thead>
               <tr>
                 <th>Nº OS</th>
                 <th>Cliente</th>
+<<<<<<< HEAD
                 <th>Equipamento </th>
                 <th>Descrição do Problema</th>
+=======
+                <th>Kit</th>
+                <th>Mecânico Responsável</th>
+                <th>Forma Pagamento</th>
+>>>>>>> branch 'master' of https://github.com/PedroJose2008/TCC.git
                 <th>Status</th>
-                <th>Valor Mão de Obra</th>
                 <th>Data Abertura</th>
                 <th>Ações</th>
               </tr>
@@ -181,7 +186,7 @@
   <div class="modal fade" id="modalOS" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" style="max-width: 550px;">
       <div class="modal-content" style="border-radius: 16px; border: 1px solid var(--border);">
-        <form id="formOS">
+        <form id="formOS" onsubmit="salvarNovaOS(); return false;">
           <div class="modal-header" style="padding: 20px 24px;">
             <h5 class="modal-title" id="modalTitle" style="font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 700;">Abrir Nova Ordem de Serviço</h5>
             <button type="button" class="btn-close" onclick="fecharModal()"></button>
@@ -190,7 +195,7 @@
           <div class="modal-body-grid">
             <div class="form-group full-width">
               <label for="codigo">Número da OS</label>
-              <input type="text" id="codigo" class="form-control" readonly>
+              <input type="text" id="codigo" class="form-control" placeholder="Gerado automaticamente..." readonly>
             </div>
             
             <div class="form-group">
@@ -201,28 +206,28 @@
             </div>
             
             <div class="form-group">
-              <label for="equipamento">Equipamento / Veículo</label>
-              <input type="text" id="equipamento" class="form-control" placeholder="Ex: Compactador HP60" required>
-            </div>
-            
-            <div class="form-group full-width">
-              <label for="descricao">Descrição do Problema / Defeito</label>
-              <textarea id="descricao" class="form-control" style="height: 80px; resize: none;" placeholder="Descreva os detalhes do problema apresentado..." required></textarea>
-            </div>
-
-            <div class="form-group">
-              <label for="status">Status Inicial</label>
-              <select id="status" class="form-control" required>
-                <option value="Aberto" selected>Aberto</option>
-                <option value="Em Andamento">Em Andamento</option>
-                <option value="Concluído">Concluído</option>
-                <option value="Cancelado">Cancelado</option>
+              <label for="osKit">Kit Vinculado</label>
+              <select id="osKit" class="form-control" required>
+                <option value="" disabled selected hidden>Selecione o kit...</option>
               </select>
             </div>
 
-            <div class="form-group">
-              <label for="valor">Preço Mão de Obra (R$)</label>
-              <input type="number" id="valor" class="form-control" step="0.01" min="0" placeholder="0.00" required>
+            <div class="form-group full-width">
+              <label for="idMecanico">Mecânico Responsável</label>
+              <select id="idMecanico" class="form-control" required>
+                <option value="" disabled selected hidden>Selecione o mecânico...</option>
+              </select>
+            </div>
+
+            <div class="form-group full-width">
+              <label for="formaPagamento">Forma de Pagamento</label>
+              <select id="formaPagamento" class="form-control" required>
+                <option value="" disabled selected hidden>Selecione a forma de pagamento...</option>
+                <option value="Pix">Pix</option>
+                <option value="Cartão de Crédito">Cartão de Crédito</option>
+                <option value="Cartão de Débito">Cartão de Débito</option>
+                <option value="Dinheiro">Dinheiro</option>
+              </select>
             </div>
           </div>
           
@@ -248,7 +253,7 @@
         <div class="modal-footer" style="background: var(--surface2); padding: 16px 24px;">
           <button type="button" class="btn btn-ghost" onclick="fecharModalRelatorio()">Fechar</button>
         </div>
-      </div>
+      </div>      
     </div>
   </div>
 

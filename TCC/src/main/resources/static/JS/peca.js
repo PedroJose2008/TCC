@@ -2,7 +2,7 @@ const API_BUSCAR_TODOS = 'http://localhost:8001/pecas/listartodos';
 const API_BUSCAR_ID = 'http://localhost:8001/pecas/buscarid';
 const API_SALVAR = 'http://localhost:8001/pecas/salvar';
 const API_ATUALIZAR = 'http://localhost:8001/pecas/atualizar';
-const API_DELETAR = 'http://localhost:8001/pecas/excluir';
+const API_DELETAR = 'http://localhost:8001/pecas/deletar';
 const API_FORNECEDORES = 'http://localhost:8001/fornecedores/listartodos';
 
 let editandoId = null;
@@ -17,13 +17,13 @@ async function listarPecas(){
 	pecas.forEach(peca => {
 		const tr = document.createElement("tr");
 		
-		const nomeFornecedor = (peca.fornecedor && (peca.fornecedor.razaoSocial || peca.fornecedor.nome)) ;
+		const nomeFornecedor = (peca.fornecedor && (peca.fornecedor.razaoSocial || peca.fornecedor.nome));
 		
 		tr.innerHTML = `
 			<td>${peca.id}</td>
 			<td>${peca.nome}</td>
 			<td>${peca.prateleira}</td>
-			<td>${peca.numero}</td>
+			<td>${peca.numeroPratelira}</td>
 			<td>${peca.tipo}</td>
 			<td>${nomeFornecedor}</td>
 			<td>${peca.preco}</td>
@@ -63,11 +63,10 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 async function salvar(){
-	
 	const precoInformado = parseFloat(document.getElementById('preco').value);
 	const estoqueInformado = parseInt(document.getElementById('quantidadeEstoque').value);
 
-	//validacoes
+	//VALIDACOES
 	if (isNaN(precoInformado) || precoInformado < 0) {
 		alert("Por favor, insira um preço válido.");
 		return;
@@ -87,7 +86,7 @@ async function salvar(){
 	const peca = {
 		nome: document.getElementById('nome').value,
 		prateleira: document.getElementById('prateleira').value,
-		numero: document.getElementById('numero').value,
+		numeroPratelira: document.getElementById('numero').value,
 		tipo: document.getElementById('tipo').value,
 		fornecedor: { id: document.getElementById('idFornecedor').value },
 		preco: precoInformado,
@@ -115,11 +114,8 @@ async function salvar(){
 }
 
 function limparFormulario(){
-	
-	
 	document.getElementById('codigo').value = 'Gerado Automaticamente';
 	document.getElementById('nome').value = '';
-	// como e o select vc usa index que faz com q volte para o 0
 	document.getElementById('prateleira').selectedIndex = 0;	
 	document.getElementById('numero').selectedIndex = 0;
 	document.getElementById('tipo').selectedIndex = 0;
@@ -143,15 +139,12 @@ async function deletar(id){
 }
 
 function fecharModal(){
-	
-	
 	const modalElement = document.getElementById('modalPeca');
 	const modal = bootstrap.Modal.getInstance(modalElement);
 	modal.hide();
 }
 
 function abrirModal(){
-	
 	const modal = new bootstrap.Modal(document.getElementById('modalPeca'));
 	modal.show();
 }
@@ -163,7 +156,6 @@ function abrirModalCadastro() {
 }
 
 async function editar(id){
-	
 	document.getElementById("modalTitle").innerText = "Editar Peça";
 	abrirModal();
 	
@@ -175,18 +167,15 @@ async function editar(id){
 	document.getElementById('codigo').value = peca.id;
 	document.getElementById('nome').value = peca.nome;
 	document.getElementById('prateleira').value = peca.prateleira;	
-	document.getElementById('numero').value = peca.numero;
+	document.getElementById('numero').value = peca.numeroPratelira;
 	document.getElementById('tipo').value = peca.tipo;
-	document.getElementById('idFornecedor').value = (peca.fornecedor && peca.fornecedor.id) || '';
+	document.getElementById('idFornecedor').value = (peca.fornecedor && peca.fornecedor.id) ;
 	document.getElementById('preco').value = peca.preco;
 	document.getElementById('quantidadeEstoque').value = peca.quantidadeEstoque;
 	document.getElementById('dataCadastro').value = peca.dataCadastro;
 }
 
 async function buscarPorNome() {
-	
-	
-	
 	const termo = document.getElementById("filtroNome").value.toLowerCase().trim();
 	const response = await fetch(API_BUSCAR_TODOS);
 	const pecas = await response.json();
@@ -204,7 +193,7 @@ async function buscarPorNome() {
 			<td>${peca.id}</td>
 			<td>${peca.nome}</td>
 			<td>${peca.prateleira}</td>
-			<td>${peca.numero}</td>
+			<td>${peca.numeroPratelira}</td>
 			<td>${peca.tipo}</td>
 			<td>${nomeFornecedor}</td>
 			<td>${peca.preco}</td>

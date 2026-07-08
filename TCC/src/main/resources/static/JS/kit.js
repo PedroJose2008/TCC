@@ -19,13 +19,12 @@ async function carregarClientesNoSelect() {
     const response = await fetch(API_CLIENTES_LISTAR);
     const clientes = await response.json();
     const select = document.getElementById("kitCliente");
-    if (!select) return;
     
     select.innerHTML = '<option value="" disabled selected>-- Escolha um Cliente --</option>';
     clientes.forEach(c => {
         const option = document.createElement("option");
         option.value = c.id;
-        option.text = c.razaoSocial || c.nome;
+        option.text = c.razaoSocial;
         select.appendChild(option);
     });
 }
@@ -34,14 +33,12 @@ async function carregarPecasNoSelect() {
     const response = await fetch(API_PECAS_LISTAR);
     const pecas = await response.json();
     const select = document.getElementById("selectPecas");
-    if (!select) return;
     
     select.innerHTML = '<option value="" disabled selected>-- Selecione Peças do Kit --</option>';
     pecas.forEach(p => {
         const option = document.createElement("option");
         option.value = p.id;
-        let localizacao = p.prateleira ? ` | Prat: ${p.prateleira}` : '';
-        option.text = `${p.nome} (Cod: ${p.codigo}${localizacao})`;
+        option.text = p.nome;
         select.appendChild(option);
     });
 }
@@ -49,20 +46,19 @@ async function carregarPecasNoSelect() {
 async function listarKits() {
     const response = await fetch(API_KITS_LISTAR);
     const kits = await response.json();
-    
     const tbody = document.getElementById("tabelaKits");
     tbody.innerHTML = "";
 
     kits.forEach(k => {
         const tr = document.createElement("tr");
+        const nomeCliente = (k.cliente && k.cliente.razaoSocial);
         
         tr.innerHTML = `
             <td><strong>#${k.codigo}</strong></td>
             <td id="kit-nome-${k.id}">${k.nome}</td>
-            <td><span style="color:#1a2340; font-weight:600;">${k.prateleira || '-'}</span></td>
-			<td>${k.numero}</td>
-
-            <td>${k.cliente ? k.cliente.razaoSocial : '-'}</td>
+            <td><span>${k.prateleira}</span></td>
+            <td>${k.numeroPrateleira}</td>
+            <td>${nomeCliente}</td>
             <td>
                 <button class="btn btn-accent btn-sm" onclick="abrirModalPecas(${k.id}, '${k.codigo}')">🧩 Peças do Kit</button> 
                 <button class="btn btn-warning btn-sm" onclick="editarKit(${k.id})">Editar</button> 
@@ -74,12 +70,9 @@ async function listarKits() {
 }
 
 async function abrirModalCadastroKit() {
-    editandoKitId = null;
-    document.getElementById("kitForm").reset();
+    limparFormulario();
     document.getElementById("formModalTitle").innerText = "Cadastrar Novo Kit";
-    
     await carregarClientesNoSelect();
-
     const modal = new bootstrap.Modal(document.getElementById("modalKitForm"));
     modal.show();
 }
@@ -87,26 +80,21 @@ async function abrirModalCadastroKit() {
 function fecharModalCadastroKit() {
     const modalElement = document.getElementById("modalKitForm");
     const modal = bootstrap.Modal.getInstance(modalElement);
-    if (modal) modal.hide();
+    modal.hide();
 }
 
 async function editarKit(id) {
     await carregarClientesNoSelect();
-
     const response = await fetch(`${API_KITS_BUSCAR_ID}/${id}`);
     const k = await response.json();
 
     editandoKitId = id;
     document.getElementById("formModalTitle").innerText = "Editar Estrutura do Kit";
-    document.getElementById("kitCodigo").value = k.codigo || "";
-    document.getElementById("kitNome").value = k.nome || "";
-    document.getElementById("kitPrateleira").value = k.prateleira || "";
-    
-    if (k.cliente && k.cliente.id) {
-        document.getElementById("kitCliente").value = k.cliente.id;
-    } else {
-        document.getElementById("kitCliente").value = k.idCliente || "";
-    }
+    document.getElementById("kitCodigo").value = k.codigo;
+    document.getElementById("kitNome").value = k.nome;
+    document.getElementById("prateleira").value = k.prateleira;
+    document.getElementById("numero").value = k.numeroPrateleira;
+    document.getElementById("kitCliente").value = (k.cliente && k.cliente.id);
 
     const modal = new bootstrap.Modal(document.getElementById("modalKitForm"));
     modal.show();
@@ -116,7 +104,8 @@ async function salvarKit() {
     const kit = {
         codigo: document.getElementById("kitCodigo").value,
         nome: document.getElementById("kitNome").value,
-        prateleira: document.getElementById("kitPrateleira").value,
+        prateleira: document.getElementById("prateleira").value,
+        numeroPrateleira: document.getElementById("numero").value,
         cliente: {
             id: document.getElementById("kitCliente").value
         }
@@ -140,9 +129,17 @@ async function salvarKit() {
     listarKits();
 }
 
+function limparFormulario() {
+    document.getElementById("kitCodigo").value = "";
+    document.getElementById("kitNome").value = "";
+    document.getElementById("prateleira").selectedIndex = 0;
+    document.getElementById("numero").selectedIndex = 0;
+    document.getElementById("kitCliente").selectedIndex = 0;
+    editandoKitId = null;
+}
+
 async function deletarKit(id) {
     if (!confirm("Deseja realmente excluir este Kit do sistema?")) return;
-    
     await fetch(`${API_KITS_DELETAR}/${id}`, { 
         method: "DELETE" 
     });
@@ -152,8 +149,8 @@ async function deletarKit(id) {
 async function abrirModalPecas(idKit, codigoKit) {
     kitSelecionadoParaPecasId = idKit;
     const nomeKit = document.getElementById(`kit-nome-${idKit}`).innerText;
-    document.getElementById('modalTitle').innerText = `Componentes do ${nomeKit}`;
-    document.getElementById('modalSubtitle').innerText = `Código Identificador: #${codigoKit}`;
+    document.getElementById('modalTitle').innerText = nomeKit;
+    document.getElementById('modalSubtitle').innerText = codigoKit;
     
     await carregarPecasNoSelect();
     await renderizarPecasDoKit();
@@ -165,7 +162,7 @@ async function abrirModalPecas(idKit, codigoKit) {
 function fecharModalPecas() {
     const modalElement = document.getElementById('modalPecas');
     const modal = bootstrap.Modal.getInstance(modalElement);
-    if (modal) modal.hide();
+    modal.hide();
     kitSelecionadoParaPecasId = null;
 }
 
@@ -179,9 +176,9 @@ async function renderizarPecasDoKit() {
     pecasDoKit.forEach(peca => {
         const tr = document.createElement("tr");
         tr.innerHTML = `
-            <td style="font-family: monospace; font-weight: 600;">${peca.codigo}</td>
-            <td style="text-align:left;">${peca.nome}</td>
-            <td style="text-align: right;">
+            <td>${peca.codigo}</td>
+            <td>${peca.nome}</td>
+            <td>
               <button class="btn btn-danger btn-sm" onclick="removerPecaDoKit(${peca.id})">Remover</button>
             </td>
         `;
@@ -192,11 +189,6 @@ async function renderizarPecasDoKit() {
 async function adicionarPecaAoKit() {
     const selectPecas = document.getElementById('selectPecas');
     const pecaId = selectPecas.value;
-
-    if (!pecaId) {
-        alert("Por favor, selecione uma peça válida do estoque.");
-        return;
-    }
 
     await fetch(`${API_KITS_VINCULAR}/${kitSelecionadoParaPecasId}/${pecaId}`, {
         method: "POST",
@@ -210,7 +202,6 @@ async function adicionarPecaAoKit() {
 
 async function removerPecaDoKit(pecaId) {
     if (!confirm("Deseja desvincular este componente do Kit?")) return;
-    
     await fetch(`${API_KITS_DESVINCULAR}/${kitSelecionadoParaPecasId}/${pecaId}`, {
         method: "DELETE"
     });
@@ -218,31 +209,24 @@ async function removerPecaDoKit(pecaId) {
 }
 
 async function buscarKitPorNome() {
-    const nomeBusca = document.getElementById("buscaKitNome").value;
-
-    if (!nomeBusca) {
-        listarKits();
-        return;
-    }
-
-    const response = await fetch(`${API_KITS_BUSCAR_NOME}/${nomeBusca}`);
+    const nomeBusca = document.getElementById("buscaKitNome").value.toLowerCase().trim();
+    const response = await fetch(API_KITS_LISTAR);
     const kits = await response.json();
-    
     const tbody = document.getElementById("tabelaKits");
     tbody.innerHTML = "";
 
-    kits.forEach(k => {
+    const kitsFiltrados = kits.filter(k => k.nome.toLowerCase().includes(nomeBusca));
+
+    kitsFiltrados.forEach(k => {
         const tr = document.createElement("tr");
-        let razaoSocialCliente = "-";
-        if (k.cliente && k.cliente.razaoSocial) {
-            razaoSocialCliente = k.cliente.razaoSocial;
-        }
+        const nomeCliente = (k.cliente && k.cliente.razaoSocial);
 
         tr.innerHTML = `
             <td><strong>#${k.codigo}</strong></td>
             <td id="kit-nome-${k.id}">${k.nome}</td>
-            <td><span class="badge">${k.prateleira || '-'}</span></td>
-            <td>${razaoSocialCliente}</td>
+            <td><span>${k.prateleira}</span></td>
+            <td>${k.numeroPrateleira}</td>
+            <td>${nomeCliente}</td>
             <td>
                 <button class="btn btn-accent btn-sm" onclick="abrirModalPecas(${k.id}, '${k.codigo}')">🧩 Peças do Kit</button> 
                 <button class="btn btn-warning btn-sm" onclick="editarKit(${k.id})">Editar</button> 
