@@ -74,14 +74,33 @@
     .btn-ghost:hover { background:var(--border); }
     .btn-danger { background:rgba(239,68,68,.1); color:var(--danger); height: auto; padding: 6px 12px; }
     .btn-danger:hover { background:rgba(239,68,68,.2); }
-    .badge { padding:3px 8px; border-radius:20px; font-size:11px; font-weight:600; background:rgba(59,111,245,.1); color:var(--accent); display: inline-block; }
     
     .modal-body-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; padding: 24px; }
     .form-group { display: flex; flex-direction: column; gap: 6px; text-align: left; }
     .form-group.full-width { grid-column: span 2; }
     .form-group label { font-size: 12px; font-weight: 600; color: var(--text2); }
     .form-control { padding: 10px 12px; border: 1px solid var(--border); border-radius: 8px; font-family: inherit; font-size: 13.5px; color: var(--text); background: var(--surface2); outline: none; width: 100%; height: 40px; }
-    textarea.form-control { height: auto; }
+    
+    .badge-green { 
+      padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; 
+      background-color: rgba(34, 197, 94, 0.15) !important; color: var(--success) !important; 
+      display: inline-block; letter-spacing: 0.5px;
+    }
+    .badge-blue { 
+      padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; 
+      background-color: rgba(59, 111, 245, 0.15) !important; color: var(--accent) !important; 
+      display: inline-block; letter-spacing: 0.5px;
+    }
+    .badge-yellow { 
+      padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; 
+      background-color: rgba(245, 158, 11, 0.15) !important; color: #d97706 !important; 
+      display: inline-block; letter-spacing: 0.5px;
+    }
+    .badge-gray { 
+      padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; 
+      background-color: rgba(143, 160, 184, 0.15) !important; color: var(--text2) !important; 
+      display: inline-block; letter-spacing: 0.5px;
+    }
   </style>
 </head>
 <body>
@@ -153,24 +172,19 @@
           </div>
           
           <div class="table-toolbar">
-  <input type="text" id="filtroCliente" class="search-input" placeholder="🔍 Pesquisar por cliente..." onkeyup="buscarPorCliente()">
-  <button class="btn btn-primary" onclick="buscarPorCliente()">Buscar</button>
-  <button class="btn btn-ghost" onclick="document.getElementById('filtroCliente').value=''; buscarPorCliente();">Limpar</button>
-</div>
+            <input type="text" id="filtroCliente" class="search-input" placeholder="🔍 Pesquisar por cliente..." onkeyup="buscarPorCliente()">
+            <button class="btn btn-primary" onclick="buscarPorCliente()">Buscar</button>
+            <button class="btn btn-ghost" onclick="document.getElementById('filtroCliente').value=''; buscarPorCliente();">Limpar</button>
+          </div>
 
           <table>
             <thead>
               <tr>
                 <th>Nº OS</th>
                 <th>Cliente</th>
-<<<<<<< HEAD
-                <th>Equipamento </th>
-                <th>Descrição do Problema</th>
-=======
                 <th>Kit</th>
                 <th>Mecânico Responsável</th>
                 <th>Forma Pagamento</th>
->>>>>>> branch 'master' of https://github.com/PedroJose2008/TCC.git
                 <th>Status</th>
                 <th>Data Abertura</th>
                 <th>Ações</th>
@@ -249,7 +263,34 @@
           <h5 class="modal-title" style="font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 700;">📋 Relatório Detalhado da OS</h5>
           <button type="button" class="btn-close" onclick="fecharModalRelatorio()"></button>
         </div>
-        <div class="modal-body" id="corpoRelatorio" style="padding: 24px; font-size: 14px; line-height: 1.6; text-align: left; color: var(--text2);"></div>
+        
+        <div class="modal-body" style="padding: 24px; font-size: 14px; line-height: 1.6; text-align: left; color: var(--text2);">
+          <h4 style="font-family: 'Syne', sans-serif; font-weight: 700; color: var(--text); margin-bottom: 16px;" id="resumoTitulo">ORDEM DE SERVIÇO</h4>
+          
+          <p style="margin-bottom: 8px;"><strong>Cliente:</strong> <span id="resumoCliente"></span></p>
+          <p style="margin-bottom: 8px;"><strong>Kit Vinculado:</strong> <span id="resumoKit"></span></p>
+          <p style="margin-bottom: 8px;"><strong>Mecânico Responsável:</strong> <span id="resumoMecanico"></span></p>
+          <p style="margin-bottom: 8px;"><strong>Forma de Pagamento:</strong> <span id="resumoPagamento"></span></p>
+          <p style="margin-bottom: 8px;"><strong>Status Atual:</strong> <span id="resumoStatus"></span></p>
+          <p style="margin-bottom: 8px;"><strong>Data de Abertura:</strong> <span id="resumoAbertura"></span></p>
+          <p style="margin-bottom: 8px;"><strong>Data de Finalização:</strong> <span id="resumoFinalizacao"></span></p>
+          <p style="margin-bottom: 16px;"><strong>Valor Total do Serviço:</strong> <strong style="color: var(--success);" id="resumoValorTotal"></strong></p>
+          
+          <hr style="border-color: var(--border); margin: 16px 0;">
+          
+          <div style="font-weight: 600; margin-bottom: 10px; color: var(--accent);">🧩 Peças Substituídas na Manutenção:</div>
+          <table class="table table-sm" style="font-size: 13px; width: 100%;">
+            <thead>
+              <tr>
+                <th style="text-align: left; background: var(--surface2); padding: 6px;">Código</th>
+                <th style="text-align: left; background: var(--surface2); padding: 6px;">Peça</th>
+                <th style="text-align: right; background: var(--surface2); padding: 6px;">Preço Unitário</th>
+              </tr>
+            </thead>
+            <tbody id="resumoListaPecas"></tbody>
+          </table>
+        </div>
+
         <div class="modal-footer" style="background: var(--surface2); padding: 16px 24px;">
           <button type="button" class="btn btn-ghost" onclick="fecharModalRelatorio()">Fechar</button>
         </div>

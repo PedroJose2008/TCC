@@ -62,7 +62,6 @@
     thead th { text-align: center; padding:10px 14px; font-size:11px; text-transform:uppercase; color:var(--text3); border-bottom:1px solid var(--border); background:var(--surface2); }
     tbody td { text-align: center; padding:12px 14px; color:var(--text2); border-bottom:1px solid var(--border); vertical-align: middle; }
     
-    /* REMOVIDO BORDAS PRETAS E SOMBRAS DOS BOTÕES */
     .btn { padding:6px 12px; border-radius:8px; border:none !important; outline: none !important; box-shadow: none !important; cursor:pointer; font-size:12px; font-weight:500; transition: all 0.2s; height: 38px; display: inline-flex; align-items: center; justify-content: center; gap: 4px; }
     .btn-primary { background:var(--accent) !important; color:#fff !important; padding: 0 20px; }
     .btn-primary:hover { background:var(--accent2) !important; }
@@ -74,16 +73,12 @@
     .btn-ghost:hover { background:var(--border) !important; }
     .btn-danger { background:rgba(239,68,68,.1) !important; color:var(--danger) !important; height: auto; padding: 6px 12px; }
     
-    .badge-blue { padding:3px 8px; border-radius:20px; font-size:11px; font-weight:600; background:rgba(59,111,245,.1); color:var(--accent); display: inline-block; }
-    .badge-gray { padding:3px 8px; border-radius:20px; font-size:11px; font-weight:600; background:rgba(143,160,184,.1); color:var(--text2); display: inline-block; }
-    
     .form-group { display: flex; flex-direction: column; gap: 6px; text-align: left; width: 100%; margin-bottom: 14px; }
     .form-group label { font-size: 12px; font-weight: 600; color: var(--text2); text-transform: uppercase; }
     .form-control { padding: 10px 12px; border: 1px solid var(--border); border-radius: 8px; font-family: inherit; font-size: 13.5px; color: var(--text) !important; background: var(--surface2) !important; outline: none; width: 100%; height: 40px; }
     
     .actions-cell { display: flex; gap: 8px; justify-content: center; align-items: center; }
     
-    /* RESET DO BOTÃO PEÇAS DA OS PARA MATAR A BORDA PRETA */
     .btn-pecas-os { 
       background: var(--surface2) !important; 
       color: var(--text) !important; 
@@ -102,11 +97,32 @@
     }
     .btn-pecas-os:hover { background: var(--border) !important; }
 
-    /* RESET CORES DO MODAL PARA FORÇAR CONTEÚDO APARECER EXATAMENTE ONDE DEVE */
     .modal-content { background-color: #ffffff !important; color: #1a2340 !important; }
     .modal-backdrop { opacity: 0.5 !important; }
+
+    /* CLASSES DE CORES DO STATUS */
+    .badge-blue { 
+      padding: 6px 12px; 
+      border-radius: 20px; 
+      font-size: 11px; 
+      font-weight: 700; 
+      background-color: rgba(59, 111, 245, 0.15) !important; 
+      color: var(--accent) !important; 
+      display: inline-block;
+      letter-spacing: 0.5px;
+    }
+    .badge-gray { 
+      padding: 6px 12px; 
+      border-radius: 20px; 
+      font-size: 11px; 
+      font-weight: 700; 
+      background-color: rgba(143, 160, 184, 0.15) !important; 
+      color: var(--text2) !important; 
+      display: inline-block;
+      letter-spacing: 0.5px;
+    }
   </style>
-  </head>
+</head>
 <body>
   <div id="app">
     <aside id="sidebar">
@@ -178,7 +194,7 @@
               </tr>
             </thead>
             <tbody id="listaOrdensServico">
-            </tbody>
+              </tbody>
           </table>
         </div>
       </div>
@@ -194,7 +210,7 @@
             <h5 class="modal-title" id="modalTitle" style="font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 700;">Componentes da OS</h5>
             <small id="modalSubtitle" style="color: var(--text3); display: block; margin-top: 2px;"></small>
           </div>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          <button type="button" class="btn-close" onclick="fecharModalPecas()" aria-label="Close"></button>
         </div>
 
         <div class="modal-body" style="padding: 24px; max-height: 70vh; overflow-y: auto;">
@@ -219,7 +235,7 @@
             <div class="section-title" style="color: var(--success);">🔄 Substituir / Adicionar Peça na Manutenção</div>
             <div style="display: flex; gap: 10px;">
               <select id="selectPecas" class="form-control"></select>
-              <button class="btn btn-primary" style="height: 40px; white-space: nowrap;" id="btnAdicionarPeca">Vincular Peça</button>
+              <button class="btn btn-primary" style="height: 40px; white-space: nowrap;" onclick="adicionarPecaAoKit()">Vincular Peça</button>
             </div>
           </div>
 
@@ -247,8 +263,8 @@
         </div>
 
         <div class="modal-footer" style="background: var(--surface2); padding: 16px 24px;">
-          <button type="button" class="btn btn-success" id="btnSalvarDescricao" style="height: 38px;">Salvar Relatório</button>
-          <button type="button" class="btn btn-ghost" data-bs-dismiss="modal">Fechar</button>
+          <button type="button" class="btn btn-success" onclick="salvarDescricaoOS()" style="height: 38px;">Salvar Relatório</button>
+          <button type="button" class="btn btn-ghost" onclick="fecharModalPecas()">Fechar</button>
         </div>
 
       </div>

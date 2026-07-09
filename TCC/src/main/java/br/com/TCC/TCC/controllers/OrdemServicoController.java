@@ -79,7 +79,7 @@ public class OrdemServicoController {
 	        ordemOriginal.setStatus(ordemAtualizada.getStatus());
 	    }
 	    
-	 // ATUALIZAÇÃO SEGURA DE BIGDECIMAL
+	    // 3. ATUALIZAÇÃO SEGURA DE BIGDECIMAL
 	    if (ordemAtualizada.getValor() != null) {
 	        ordemOriginal.setValor(ordemAtualizada.getValor());
 	    }
@@ -89,7 +89,12 @@ public class OrdemServicoController {
 	        ordemOriginal.setDescricao(ordemAtualizada.getDescricao());
 	    }
 	    
-	    // 5. Salva apenas os dados atualizados com segurança
+	    // 5. NOVA ATUALIZAÇÃO: Se o JS mandar a data de finalização, salva no banco!
+	    if (ordemAtualizada.getDataFinalizacao() != null) {
+	        ordemOriginal.setDataFinalizacao(ordemAtualizada.getDataFinalizacao());
+	    }
+	    
+	    // 6. Salva todos os dados atualizados com segurança
 	    return ordemRepository.save(ordemOriginal);
 	}
 	

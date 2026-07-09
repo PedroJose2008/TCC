@@ -60,13 +60,24 @@ public class OrdemServicoEntity implements Serializable {
 	private List<PecaEntity> pecas;
 	
 	
-	@Column(precision = 5, scale = 2)
+	
 	private BigDecimal valor;
 	
 	private LocalDate dataCadastro = LocalDate.now();
 	
 	private String status;
 	private String descricao;
+
+	private LocalDate dataFinalizacao;
+
+	
+	public LocalDate getDataFinalizacao() {
+	    return dataFinalizacao;
+	}
+
+	public void setDataFinalizacao(LocalDate dataFinalizacao) {
+	    this.dataFinalizacao = dataFinalizacao;
+	}
 
 	public int getId() {
 		return id;
@@ -95,7 +106,6 @@ public class OrdemServicoEntity implements Serializable {
 		this.usuario = usuario;
 	}
 
-	
 	
 
 	public KitEntity getKit() {

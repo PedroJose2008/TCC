@@ -66,6 +66,7 @@ async function salvarNovaOS() {
     const idMecanico = document.getElementById("idMecanico").value;
     const formaPagamento = document.getElementById("formaPagamento").value;
 
+	// data no padrao
     const dataAtual = new Date().toISOString().split('T')[0];
 
     const novaOS = {
@@ -99,54 +100,109 @@ async function listarOrdens() {
     corpoTabela.innerHTML = "";
 
     ordens.forEach(function(os) {
+        const tr = document.createElement("tr");
+
         const dataExibicao = os.dataCadastro.split('-').reverse().join('/');
-        const textoCliente = os.cliente.nome || os.cliente.razaoSocial;
+        const textoCliente = os.cliente.razaoSocial;
         
-        const linha = `
-            <tr>
-                <td><strong>#OS-${os.id}</strong></td>
-                <td>${textoCliente}</td>
-                <td>${os.kit.nome}</td>
-                <td>${os.usuario.nome}</td>
-                <td>${os.pagamento}</td>
-                <td><span class="badge">${os.status}</span></td>
-                <td>${dataExibicao}</td>
-                <td>
-                    <button class="btn btn-ghost" onclick="verRelatorioOS(${os.id})">📋 Ver Resumo</button>
-                </td>
-            </tr>
+        // css de Status 
+        const classesStatus = {
+            "ABERTA": "badge-gray",
+            "EM_MANUTENCAO": "badge-blue",
+            "AGUARDANDO_RETIRADA": "badge-yellow",
+            "FINALIZADA": "badge-green"
+        };
+        const classeAplicada = classesStatus[os.status];
+
+        tr.innerHTML = `
+            <td><strong>#OS-${os.id}</strong></td>
+            <td>${textoCliente}</td>
+            <td>${os.kit.nome}</td>
+            <td>${os.usuario.nome}</td>
+            <td>${os.pagamento}</td>
+            <td><span class="${classeAplicada}">${os.status}</span></td>
+            <td>${dataExibicao}</td>
+            <td>
+                <button class="btn btn-ghost" onclick="verRelatorioOS(${os.id})">📋 Ver Resumo</button>
+            </td>
         `;
-        corpoTabela.innerHTML += linha;
+        
+        corpoTabela.appendChild(tr);
     });
 }
 
+
+// peguei o chat para me ajudara fazer esse relatorio
 async function verRelatorioOS(idOS) {
     const resposta = await fetch(API_LISTAR_OS);
     const ordens = await resposta.json();
     
-    const osEncontrada = ordens.find(os => os.id === idOS);
+    const osObj = ordens.find(o => o.id === idOS);
 
-    const dataExibicao = osEncontrada.dataCadastro.split('-').reverse().join('/');
-    const containerRelatorio = document.getElementById("corpoRelatorio");
-    const textoCliente = osEncontrada.cliente.nome || osEncontrada.cliente.razaoSocial;
+    document.getElementById('resumoTitulo').innerText = "ORDEM DE SERVIÇO #OS-" + osObj.id;
+    document.getElementById('resumoCliente').innerText = osObj.cliente.razaoSocial;
+    document.getElementById('resumoKit').innerText = osObj.kit.nome;
+    document.getElementById('resumoMecanico').innerText = osObj.usuario.nome;
+    document.getElementById('resumoPagamento').innerText = osObj.pagamento;
+    document.getElementById('resumoStatus').innerText = osObj.status;
     
-    containerRelatorio.innerHTML = `
-        <div>
-            <h4>ORDEM DE SERVIÇO #OS-${osEncontrada.id}</h4>
-        </div>
-        <p><strong>Cliente:</strong> ${textoCliente}</p>
-        <p><strong>Kit Vinculado:</strong> ${osEncontrada.kit.nome}</p>
-        <p><strong>Mecânico Responsável:</strong> ${osEncontrada.usuario.nome}</p>
-        <p><strong>Forma de Pagamento:</strong> ${osEncontrada.pagamento}</p>
-        <p><strong>Status Atual:</strong> ${osEncontrada.status}</p>
-        <div>
-            <strong>Data de Abertura:</strong> ${dataExibicao}
-        </div>
-    `;
+    document.getElementById('resumoAbertura').innerText = osObj.dataCadastro.split('-').reverse().join('/');
+    
+    const stringData = String(osObj.dataFinalizacao);
+    const chaveData = String(stringData.includes("-"));
+    
+    const dicionarioData = {
+        "true": stringData.split('-').reverse().join('/'),
+        "false": "Em andamento..."
+    };
+    
+    document.getElementById('resumoFinalizacao').innerText = dicionarioData[chaveData];
 
-    const modalElement = document.getElementById("modalRelatorioOS");
-    const modal = new bootstrap.Modal(modalElement);
-    modal.show();
+    const respostaPecas = await fetch('http://localhost:8001/ordens/listarpecas/' + idOS);
+    const pecasTrocadas = await respostaPecas.json();
+    
+    const tabelaPecas = document.getElementById('resumoListaPecas');
+    tabelaPecas.innerHTML = "";
+
+    let somaTotalDoServico = 0;
+
+    pecasTrocadas.forEach(peca => {
+        const tr = document.createElement("tr");
+        
+        const precoLimpo = String(peca.preco).replace('R$', '').replace('.', '').replace(',', '.').trim();
+        
+        const chavePreco = String(isNaN(parseFloat(precoLimpo)));
+        const dicionarioPreco = {
+            "true": 0,
+            "false": parseFloat(precoLimpo)
+        };
+        
+        const precoNum = dicionarioPreco[chavePreco];
+        
+        somaTotalDoServico += precoNum;
+
+        const precoPecaFormatado = precoNum.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+
+        tr.innerHTML = `
+            <td style="text-align: left; padding: 6px;">${peca.codigo}</td>
+            <td style="text-align: left; padding: 6px;">${peca.nome}</td>
+            <td style="text-align: right; padding: 6px;">${precoPecaFormatado}</td>
+        `;
+        tabelaPecas.appendChild(tr);
+    });
+
+    document.getElementById('resumoValorTotal').innerText = somaTotalDoServico.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+
+    const modalResumo = new bootstrap.Modal(document.getElementById('modalRelatorioOS'));
+    modalResumo.show();
+}
+
+
+let modalRelatorioInstancia = null;
+function fecharModalRelatorio() {
+    const modalElement = document.getElementById('modalRelatorioOS');
+    const modal = bootstrap.Modal.getInstance(modalElement);
+    modal.hide();
 }
 
 async function buscarPorCliente() {
