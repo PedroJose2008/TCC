@@ -3,6 +3,7 @@ package br.com.TCC.TCC.entity;
 import java.io.Serializable;
 import java.time.LocalDate;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -24,7 +25,10 @@ public class ClienteEntity implements Serializable {
 	private String razaoSocial;
 	private String telefone;
 	private String email;
+	
+	@Column(name = "cpf_cnpj") 
 	private String cpfCnpj;
+	
 	private String cep;
 	private String numero;
 	private String complemento;

@@ -182,42 +182,54 @@
           <h5 class="modal-title" style="font-family:'Syne',sans-serif; font-weight:700; margin:0; font-size: 16px;">Salvar Fornecedor</h5>
           <button type="button" class="btn-close" onclick="fecharModal()"></button>
         </div>
-        <div class="modal-body" style="padding: 24px;">
-          <div class="row">
-              <div class="col-md-6 form-group">
-                  <label for="razaoSocial">Razão Social</label>
-                  <input type="text" class="form-control" id="razaoSocial" placeholder="Ex: Auto Peças Oliveira LTDA">
-              </div>
-              <div class="col-md-6 form-group">
-                  <label for="cnpj">CNPJ</label>
-                  <input type="text" class="form-control" id="cnpj" maxlength="14" oninput="this.value = this.value.replace(/\D/g, '')" placeholder="00.000.000/0000-00">
-              </div>
+        
+        <form id="formFornecedor" onsubmit="salvarFornecedor(event);">
+          <div class="modal-body" style="padding: 24px;">
+            <div class="row">
+                <div class="col-md-6 form-group">
+                    <label for="razaoSocial">Razão Social</label>
+                    <input type="text" class="form-control" id="razaoSocial" placeholder="Ex: Auto Peças Oliveira LTDA" required="required">
+                </div>
+                <div class="col-md-6 form-group">
+                    <label for="cnpj">CNPJ</label>
+                    <input type="text" class="form-control" id="cnpj" maxlength="18" oninput="mascaraCNPJ(this)" placeholder="00.000.000/0000-00" required="required">
+                </div>
+            </div>
+            <div class="row mt-2">
+                <div class="col-md-6 form-group">
+                    <label for="telefone">Telefone</label>
+                    <input type="text" class="form-control" id="telefone"  oninput="mascaraTelefone(this)"    maxlength="15" placeholder="(00) 0000-0000" required="required">
+                </div>
+                <div class="col-md-6 form-group">
+                    <label for="email">E-mail</label>
+                    <input type="email" class="form-control" id="email" placeholder="contato@empresa.com.br" required="required">
+                </div>
+            </div>
+            
+            <div class="row mt-2">
+                <div class="col-md-6 form-group">
+                    <label for="cep">CEP</label>
+                    <input type="text" class="form-control" id="cep" maxlength="8" oninput="mascaraCEP(this)" placeholder="00000-000" required="required">
+                </div>
+                
+                 <div class="row mt-2">
+                <div class="col-md-6 form-group">
+                    <label for="cep">Número</label>
+                    <input type="text" class="form-control" id="numero" maxlength="8"  placeholder="001" required="required">
+                </div>
+                
+                <div class="col-md-6 form-group">
+                    <label for="complemento">Complemento</label>
+                    <input type="text" class="form-control" id="complemento" placeholder="Sala, Galpão, etc.">
+                </div>
+            </div>
           </div>
-          <div class="row mt-2">
-              <div class="col-md-6 form-group">
-                  <label for="telefone">Telefone</label>
-                  <input type="text" class="form-control" id="telefone" maxlength="11" oninput="this.value = this.value.replace(/\D/g, '')" placeholder="(00) 0000-0000">
-              </div>
-              <div class="col-md-6 form-group">
-                  <label for="email">E-mail</label>
-                  <input type="email" class="form-control" id="email" placeholder="contato@empresa.com.br">
-              </div>
+          <div class="modal-footer" style="background: var(--surface2); padding: 16px 24px; border-top: 1px solid var(--border);">
+            <button type="button" class="btn btn-ghost" onclick="fecharModal()">Cancelar</button>
+            <button type="submit" class="btn btn-primary">Salvar</button>
           </div>
-          <div class="row mt-2">
-              <div class="col-md-6 form-group">
-                  <label for="cep">CEP</label>
-                  <input type="text" class="form-control" id="cep" maxlength="8" oninput="this.value = this.value.replace(/\D/g, '')" placeholder="00000-000">
-              </div>
-              <div class="col-md-6 form-group">
-                  <label for="complemento">Complemento</label>
-                  <input type="text" class="form-control" id="complemento" placeholder="Sala, Galpão, etc.">
-              </div>
-          </div>
-        </div>
-        <div class="modal-footer" style="background: var(--surface2); padding: 16px 24px; border-top: 1px solid var(--border);">
-          <button type="button" class="btn btn-ghost" onclick="fecharModal()">Cancelar</button>
-          <button type="button" class="btn btn-primary" onclick="salvarFornecedor()">Salvar</button>
-        </div>
+        </form>
+        
       </div>
     </div>
   </div>

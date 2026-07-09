@@ -17,12 +17,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.TCC.TCC.entity.ClienteEntity;
 import br.com.TCC.TCC.entity.FornecedorEntity;
 import br.com.TCC.TCC.repository.FornecedorRepository;
 
 @RestController
 @RequestMapping("/fornecedores")
-@CrossOrigin(origins = "*")
+@CrossOrigin( "*")
 public class FornecedorController {
 
 	@Autowired
@@ -57,12 +58,31 @@ public class FornecedorController {
 	@ResponseStatus(value = HttpStatus.CREATED)
 	public FornecedorEntity salvar(@RequestBody FornecedorEntity fornecedor) {
 
+		
+		Optional<FornecedorEntity>emailExiste=FornecedorRepository.findByEmail(fornecedor.getEmail());
+		Optional<FornecedorEntity>telefoneExiste=FornecedorRepository.findByTelefone(fornecedor.getTelefone());
+		Optional<FornecedorEntity>cpfExiste=FornecedorRepository.findByCnpj(fornecedor.getCnpj());
+
+		
+		if (emailExiste.isPresent()) {
+			return null;
+		}
+		
+		else if(telefoneExiste.isPresent()) {
+			return null;
+		}
+		
+		else if(cpfExiste.isPresent()) {
+			return null;
+		}
+		
+		
 		return FornecedorRepository.save(fornecedor);
+		
 
 	}//fim do salvar
 	
 	// deletando por id
-
 	@DeleteMapping("/deletar/{id}")
 	@ResponseStatus(value = HttpStatus.NO_CONTENT)
 	public void  deletar(@PathVariable Integer id) {
@@ -97,6 +117,49 @@ public class FornecedorController {
 	} //fim do atualizar
 	
 	
+	// começo do validar cpf
+	@GetMapping("/validaCpf/{cpf}")
+	@ResponseStatus(value = HttpStatus.OK)
+	public ResponseEntity<Boolean> cpfValido(@PathVariable String cpf){
+		
+		Optional<FornecedorEntity> cpfExiste= FornecedorRepository.findByCnpj(cpf);
+		
+		if(cpfExiste.isPresent()) {
+			return ResponseEntity.ok(true);
+		}
+		
+			return ResponseEntity.ok(false);
+ 
+	}// fim do verificar CPF
+	
+	
+	@GetMapping("/validaEmail/{email}")
+	@ResponseStatus(value = HttpStatus.OK)
+
+	public ResponseEntity<Boolean> emailValido(@PathVariable String email){
+		
+		Optional<FornecedorEntity> emailExiste=FornecedorRepository.findByEmail(email);
+		
+		if (emailExiste.isPresent()) {
+			return ResponseEntity.ok(true);
+		}
+		
+		return ResponseEntity.ok(false);
+		
+	}// fim do verificar email
+	
+	@GetMapping("/validaTelefone/{telefone}")
+	@ResponseStatus(value = HttpStatus.OK)
+
+	public ResponseEntity<Boolean> telefoneValido(@PathVariable String telefone ){
+		
+		Optional<FornecedorEntity> telefoneExiste=FornecedorRepository.findByTelefone(telefone);
+		
+		if (telefoneExiste.isPresent()) {
+			return ResponseEntity.ok(true);
+		}
+		return ResponseEntity.ok(false);
+	}//fim do verificar telefone
 	
 	
 }

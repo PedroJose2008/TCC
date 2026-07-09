@@ -30,7 +30,7 @@ public class FornecedorEntity implements Serializable{
 	private String cnpj;
 	private String cep;
 	private String complemento;
-	private LocalDate dataCadastro;
+	private LocalDate dataCadastro= LocalDate.now();
 	public int getId() {
 		return id;
 	}

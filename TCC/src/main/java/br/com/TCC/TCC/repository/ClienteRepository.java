@@ -15,7 +15,7 @@ public interface ClienteRepository extends JpaRepository<ClienteEntity, Integer>
 
 	List<ClienteEntity> findByrazaoSocialContaining(String razaoSocial);
 	
-	Optional<ClienteEntity> findByCpfCnpj(String cpf_cnpj);
+	Optional<ClienteEntity> findByCpfCnpj(String cpfCnpj);
 	
 	Optional<ClienteEntity> findByTelefone(String telefone);
 	

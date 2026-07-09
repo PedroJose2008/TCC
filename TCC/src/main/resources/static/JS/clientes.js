@@ -74,10 +74,12 @@ async function deletar(id) {
     listarClientes();
 }
 
+//editar
 async function editar(id) {
-
     const response = await fetch(`${API_BUSCAR_ID}/${id}`);
     const cli = await response.json();
+    
+    console.log("Pegando os dados do cliente ", cli);
 
     editandoId = id;
     document.getElementById("modalTitulo").innerText = "Editar Cliente";
@@ -85,15 +87,18 @@ async function editar(id) {
     document.getElementById("razaoSocial").value = cli.razaoSocial || "";
     document.getElementById("telefone").value = cli.telefone || "";
     document.getElementById("email").value = cli.email || "";
-    document.getElementById("cpf").value = cli.cpfCnpj || "";
+    
+    document.getElementById("cpf").value = cli.cpfCnpj || ""; 
     document.getElementById("cep").value = cli.cep || "";
     document.getElementById("numero").value = cli.numero || "";
     document.getElementById("complemento").value = cli.complemento || "";
 
+	// abro a tela de editar e puxo os dados do usuário
     document.getElementById("clienteModal").classList.add("active");
-	
 }
 
+
+// salvar cliente
 async function salvarCliente(event) {
 
 	//não deixo fechar o modal se um dos if for falso
@@ -163,56 +168,13 @@ async function salvarCliente(event) {
 		}
 		
 		
-		const emailInput=document.getElementById("email");
-					const emailSemEspaco= emailInput.value.trim();
-					
-					const reposnseEmail= await fetch (`${API_VERIFICA_EMAIL}/${emailSemEspaco}`)
-					const emailExiste= await reposnseEmail.json();
-					
-					console.log(emailExiste)
-					
-					if(emailExiste){
-						alert("O email digitado já existe")
-						return emailInput.value="";
-					}
-					console.log("verificou o email ")
-					
-
-							const telefoneInput=document.getElementById("telefone");
-							const telefoneSemEspaco=telefoneInput.value;
-							
-							const reposnseTelefone= await fetch (`${API_VERIFICA_TELEFONE}/${telefoneSemEspaco}`)
-							const TelefoneExiste= await reposnseTelefone.json();
-							
-							console.log(TelefoneExiste);
-							
-							// se for booleano ou um texto escrito verdadeiro eu barro 
-							if(TelefoneExiste ||String(TelefoneExiste).trim() === "true"){
-								alert("O telefone digitado já existe")
-								return telefoneInput.value="";
-							}
-							
-							console.log("Verificou o telefone");	
-					
-		const cpfInput=document.getElementById("cpf");
-		const cpfValor= cpfInput.value;//pego o valor do input
-												
-		const reposnse= await fetch (`${API_VERIFICA_CPF}/${cpfValor}`)
-		const cpfExiste= await reposnse.json();
-												
-			console.log(cpfExiste);
-												
-				if(cpfExiste){
-													
-				alert("O CPF digitado já existe ")
-			return cpfInput.value="";
-					}
+	
 		
     const cliente = {
         razaoSocial: document.getElementById("razaoSocial").value,
         telefone: document.getElementById("telefone").value,
         email: document.getElementById("email").value,
-        cpf_cnpj: document.getElementById("cpf").value,
+        cpfCnpj: document.getElementById("cpf").value,
         cep: document.getElementById("cep").value,
         numero: document.getElementById("numero").value,
         complemento: document.getElementById("complemento").value
@@ -230,6 +192,120 @@ async function salvarCliente(event) {
 
     } else {
 
+		//não deixo fechar o modal se um dos if for falso
+			if (event) event.preventDefault();
+			
+			const NomeInput= document.getElementById('razaoSocial');
+			const NomeSemEspaco= NomeInput.value.trim();
+			
+			if(NomeSemEspaco.length<3){
+				alert("Nome muito pequeno, o mínimo de caracteres é 3")
+				return false;
+			}
+			
+			if(NomeSemEspaco.length>=100){
+					alert("Nome muito grande, o máximo de caracteres é 100")
+					return false;
+				}
+			
+			if(!isNaN(NomeSemEspaco)){
+				alert("O nome  não pode conter somente números")
+							return false;
+			}
+				console.log("Passou pela verificação de nome")
+				
+			
+				const TelefoneValido= validaTelefone();
+				const DDDvalido=DDDTelefone();	
+				const NumerosTelefoneValidos=validaNumerosTelefone();
+				const CepValido=validaCep();
+				const numeroCepValido=validaNumero();
+				const complementoValido=validaComplemento();
+				
+				if(!TelefoneValido){
+					alert("O campo telefone está com menos de 11 números")
+							return false ;
+				}
+				console.log("Verificou o telefone")
+				
+				if(!DDDvalido){
+						alert("O DDD digitado não é válido! Por favor, corrija.")
+						return false;
+					}
+				console.log("verificou o DDD")
+				
+				if(!NumerosTelefoneValidos){	
+						return false;
+					}
+				console.log("Verificou os números do telefone")
+					
+				if(!validarCPF()){
+					alert("O CPF digitado é inválido")
+							return false;
+				}
+				console.log("Verificou o CPF")
+				
+				if(!CepValido){
+					alert("O CEP deve conter 9 digitos")
+					return false;
+				}
+				
+				if(!numeroCepValido){
+					return false;
+				}
+				
+				if(!complementoValido){
+					return false;
+				}
+				
+				
+				const emailInput=document.getElementById("email");
+							const emailSemEspaco= emailInput.value.trim();
+							
+							const reposnseEmail= await fetch (`${API_VERIFICA_EMAIL}/${emailSemEspaco}`)
+							const emailExiste= await reposnseEmail.json();
+							
+							console.log(emailExiste)
+							
+							if(emailExiste){
+								alert("O email digitado já existe")
+								return emailInput.value="";
+							}
+							console.log("verificou o email ")
+							
+
+									const telefoneInput=document.getElementById("telefone");
+									const telefoneSemEspaco=telefoneInput.value;
+									
+									const reposnseTelefone= await fetch (`${API_VERIFICA_TELEFONE}/${telefoneSemEspaco}`)
+									const TelefoneExiste= await reposnseTelefone.json();
+									
+									console.log(TelefoneExiste);
+									
+									// se for booleano ou um texto escrito verdadeiro eu barro 
+									if(TelefoneExiste ||String(TelefoneExiste).trim() === "true"){
+										alert("O telefone digitado já existe")
+										return telefoneInput.value="";
+									}
+									
+									console.log("Verificou o telefone");	
+							
+				const cpfInput=document.getElementById("cpf");
+				const cpfValor= cpfInput.value;//pego o valor do input
+														
+				const reposnse= await fetch (`${API_VERIFICA_CPF}/${cpfValor}`)
+				const cpfExiste= await reposnse.json();
+														
+					console.log(cpfExiste);
+														
+						if(cpfExiste){
+															
+						alert("O CPF digitado já existe ")
+					return cpfInput.value="";
+							}
+				
+		
+		
         await fetch(API_SALVAR, {
             method: "POST",
             headers: {
@@ -580,6 +656,9 @@ function validaCep(){
 		
 		return true;
 	}
+	
+	
+	
 	
 	
 //
