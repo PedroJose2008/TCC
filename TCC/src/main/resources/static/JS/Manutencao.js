@@ -180,8 +180,16 @@ async function renderizarPecasDaOS() {
     pecasDaOS.forEach(peca => {
         const tr = document.createElement("tr");
         
-        // Uso necessário das funções de conversão para exibir a moeda formatada na listagem de peças vinculadas
-        const precoNum = parseFloat(String(peca.preco).replace(',', '.'));
+        // para q o sistema n de nan
+        const precoLimpo = String(peca.preco).replace('R$', '').replace('.', '').replace(',', '.').trim();
+        const chavePreco = String(isNaN(parseFloat(precoLimpo)) || parseFloat(precoLimpo) === 0);
+        
+        const dicionarioPreco = {
+            "true": 0,
+            "false": parseFloat(precoLimpo)
+        };
+        
+        const precoNum = dicionarioPreco[chavePreco];
         const precoFormatado = precoNum.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
         
         tr.innerHTML = `
@@ -198,6 +206,11 @@ async function renderizarPecasDaOS() {
 async function adicionarPecaAoKit() {
     const selectPecas = document.getElementById('selectPecas');
     const pecaId = selectPecas.value;
+
+    // Envia o ID da peça e o 1 é a quantidade de peças que está sendo baixada do estoque a cada clique no botão "Adicionar"
+    await fetch('http://localhost:8001/ordens/adicionarpeca/' + pecaId + '/1', {
+        method: "POST"
+    });
 
     await fetch(API_OS_VINCULAR + "/" + osSelecionadaParaPecasId + "/" + pecaId, {
         method: "POST",

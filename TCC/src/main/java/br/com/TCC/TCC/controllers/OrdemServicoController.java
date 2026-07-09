@@ -71,30 +71,23 @@ public class OrdemServicoController {
 	@PutMapping("/atualizar/{id}")
 	@ResponseStatus(value = HttpStatus.OK)
 	public OrdemServicoEntity atualizar(@PathVariable Integer id, @RequestBody OrdemServicoEntity ordemAtualizada) {
-	    // 1. Busca a ordem original do banco pelo ID
 	    OrdemServicoEntity ordemOriginal = ordemRepository.findById(id).get();
-	    
-	    // 2. Se o JS mandar status, atualiza. Se não, mantém o que estava.
+	 
 	    if (ordemAtualizada.getStatus() != null) {
 	        ordemOriginal.setStatus(ordemAtualizada.getStatus());
 	    }
-	    
-	    // 3. ATUALIZAÇÃO SEGURA DE BIGDECIMAL
+	   
 	    if (ordemAtualizada.getValor() != null) {
 	        ordemOriginal.setValor(ordemAtualizada.getValor());
 	    }
-	    
-	    // 4. Se o JS mandar descrição, atualiza. Se não, mantém o que estava.
+
 	    if (ordemAtualizada.getDescricao() != null) {
 	        ordemOriginal.setDescricao(ordemAtualizada.getDescricao());
 	    }
-	    
-	    // 5. NOVA ATUALIZAÇÃO: Se o JS mandar a data de finalização, salva no banco!
+
 	    if (ordemAtualizada.getDataFinalizacao() != null) {
 	        ordemOriginal.setDataFinalizacao(ordemAtualizada.getDataFinalizacao());
 	    }
-	    
-	    // 6. Salva todos os dados atualizados com segurança
 	    return ordemRepository.save(ordemOriginal);
 	}
 	
@@ -105,6 +98,18 @@ public class OrdemServicoController {
 	public List<PecaEntity> listarPecasDaOS(@PathVariable Integer idOS) {
 		OrdemServicoEntity os = ordemRepository.findById(idOS).get();
 		return os.getPecas();
+	}
+	
+	
+	@PostMapping("/adicionarpeca/{id}/{quantidade}")
+	@ResponseStatus(value = HttpStatus.OK)
+	public void adicionarPecaNaOrdem(@PathVariable Integer id, @PathVariable Integer quantidade) {
+	    PecaEntity peca = pecaRepository.findById(id).get();
+	    
+	    int novaQuantidade = peca.getQuantidadeEstoque() - quantidade;
+	    peca.setQuantidadeEstoque(novaQuantidade);
+	    
+	    pecaRepository.save(peca);
 	}
 
 	@PostMapping("/vincularpeca/{idOS}/{idPeca}")
@@ -124,4 +129,8 @@ public class OrdemServicoController {
 		os.getPecas().remove(peca);
 		ordemRepository.save(os);
 	}
+	
+	
+	
+	
 }
