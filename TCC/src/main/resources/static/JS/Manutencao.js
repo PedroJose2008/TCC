@@ -207,7 +207,7 @@ async function adicionarPecaAoKit() {
     const selectPecas = document.getElementById('selectPecas');
     const pecaId = selectPecas.value;
 
-    // Envia o ID da peça e o número 1 (quantidade) direto na URL da rota
+    // Envia o ID da peça e o 1 é a quantidade de peças que está sendo baixada do estoque a cada clique no botão "Adicionar"
     await fetch('http://localhost:8001/ordens/adicionarpeca/' + pecaId + '/1', {
         method: "POST"
     });
