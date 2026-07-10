@@ -83,6 +83,7 @@ async function concluirManutencao(idOS) {
         body: JSON.stringify({ id: idOS, status: "AGUARDANDO_RETIRADA" })
     });
 
+	
     listarOrdensManutencao();
 }
 
@@ -115,6 +116,11 @@ function fecharModalPecas() {
     const modalElement = document.getElementById('modalPecas');
     const modal = bootstrap.Modal.getInstance(modalElement);
     modal.hide();
+	
+	if (document.activeElement && modalElement.contains(document.activeElement)) {
+	        document.activeElement.blur(); 
+	    }
+	
     osSelecionadaParaPecasId = null;
 }
 
@@ -145,7 +151,8 @@ async function salvarDescricaoOS() {
         body: JSON.stringify({ id: osSelecionadaParaPecasId, descricao: textoDescricao })
     });
 
-    alert("Relatório da OS updated com sucesso!");
+    alert("Relatório da OS concluído !");
+	fecharModalPecas();
 }
 
 async function atualizarValorTotalOS() {

@@ -34,7 +34,7 @@ async function carregarPecasNoSelect() {
     const pecas = await response.json();
     const select = document.getElementById("selectPecas");
     
-    select.innerHTML = '<option value="" disabled selected>-- Selecione Peças do Kit --</option>';
+    select.innerHTML = '<option value="" disabled selected>-- Selecione a Peça do equipamento --</option>';
     pecas.forEach(p => {
         const option = document.createElement("option");
         option.value = p.id;
@@ -60,7 +60,7 @@ async function listarKits() {
             <td>${k.numeroPrateleira}</td>
             <td>${nomeCliente}</td>
             <td>
-                <button class="btn btn-accent btn-sm" onclick="abrirModalPecas(${k.id}, '${k.codigo}')">🧩 Peças do Kit</button> 
+                <button class="btn btn-accent btn-sm" onclick="abrirModalPecas(${k.id}, '${k.codigo}')">  Peças</button> 
                 <button class="btn btn-warning btn-sm" onclick="editarKit(${k.id})">Editar</button> 
                 <button class="btn btn-danger btn-sm" onclick="deletarKit(${k.id})">Excluir</button>
             </td>
@@ -80,7 +80,12 @@ async function abrirModalCadastroKit() {
 function fecharModalCadastroKit() {
     const modalElement = document.getElementById("modalKitForm");
     const modal = bootstrap.Modal.getInstance(modalElement);
+	
     modal.hide();
+	
+		    if (document.activeElement && modalElement.contains(document.activeElement)) {
+		        document.activeElement.blur(); 
+		    }
 }
 
 async function editarKit(id) {
@@ -163,7 +168,16 @@ function fecharModalPecas() {
     const modalElement = document.getElementById('modalPecas');
     const modal = bootstrap.Modal.getInstance(modalElement);
     modal.hide();
+	
+	// Remove o foco de qualquer elemento de dentro do modal que ficou "preso"
+		    if (document.activeElement && modalElement.contains(document.activeElement)) {
+		        document.activeElement.blur(); 
+		    }
+		
+	
     kitSelecionadoParaPecasId = null;
+	
+	
 }
 
 async function renderizarPecasDoKit() {

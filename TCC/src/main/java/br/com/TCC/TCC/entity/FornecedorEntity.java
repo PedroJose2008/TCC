@@ -29,6 +29,21 @@ public class FornecedorEntity implements Serializable{
 	private String email;
 	private String cnpj;
 	private String cep;
+	private String numero;
+	
+	
+	
+	
+	
+	public String getNumero() {
+		return numero;
+	}
+	public void setNumero(String numero) {
+		this.numero = numero;
+	}
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
 	private String complemento;
 	private LocalDate dataCadastro= LocalDate.now();
 	public int getId() {

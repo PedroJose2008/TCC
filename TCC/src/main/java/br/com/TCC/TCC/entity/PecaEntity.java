@@ -28,15 +28,10 @@ public class PecaEntity implements Serializable{
 	@ManyToOne
 	@JoinColumn(name = "idFornecedor")
 	private FornecedorEntity fornecedor;
-	@ManyToOne
-	@JoinColumn(name = "manutencao_id")
-	private ManutencaoEntity manutencao; 
-	public ManutencaoEntity getManutencao() {
-		return manutencao;
-	}
-	public void setManutencao(ManutencaoEntity manutencao) {
-		this.manutencao = manutencao;
-	}
+	
+	
+	
+	
 	private String nome;
 	private String prateleira;
 	private String numeroPratelira;

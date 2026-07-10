@@ -154,17 +154,17 @@
     </aside>
 
     <main id="main">
-      <header class="topbar-base"><div style="font-family:'Syne',sans-serif;font-size:18px;font-weight:700;">Gerenciamento de Kits</div></header>
+      <header class="topbar-base"><div style="font-family:'Syne',sans-serif;font-size:18px;font-weight:700;">Gerenciamento de Equipamentos </div></header>
       <div id="content">
         <div class="card">
           
           <div class="card-title">
-            <span>Kits Disponíveis</span>
-            <button class="btn btn-success" onclick="abrirModalCadastroKit()">⚡ Criar Kit</button>
+            <span>Equipamentos Disponíveis</span>
+            <button class="btn btn-success" onclick="abrirModalCadastroKit()">⚡ Cadastrar Equipamento</button>
           </div>
 
           <div style="display: flex; gap: 10px; margin-bottom: 25px; align-items: center;">
-            <input type="text" id="buscaKitNome" class="form-control" placeholder="🔍 Buscar por nome do kit..." style="max-width: 350px; height: 38px; margin-bottom: 0;">
+            <input type="text" id="buscaKitNome" class="form-control" placeholder="🔍 Buscar por nome do equipamento..." style="max-width: 350px; height: 38px; margin-bottom: 0;">
             <button class="btn btn-accent" style="height: 38px; padding: 0 20px;" onclick="buscarKitPorNome()">Buscar</button>
             <button class="btn btn-ghost" style="height: 38px; padding: 0 15px;" onclick="limparBuscaKit()">Limpar</button>
           </div>
@@ -173,11 +173,11 @@
             <thead>
               <tr>
                 <th>Código</th>
-                <th>Nome do Kit</th>
+                <th>Nome do Equipamento</th>
                 <th>Prateleira</th>
                  <th>Número Prateleira</th>
                 
-                <th>Cliente Responsável (Razão Social)</th>
+                <th>Cliente Responsável </th>
                 <th>Ações</th>
               </tr>
             </thead>
@@ -199,11 +199,11 @@
         <form id="kitForm" onsubmit="event.preventDefault(); salvarKit();">
           <div class="modal-body">
             <div class="form-group">
-              <label for="kitCodigo">Código do Kit (Manual)</label>
+              <label for="kitCodigo">Código do Equipamento </label>
               <input type="text" id="kitCodigo" class="form-control" placeholder="Ex: KT-100" required>
             </div>
             <div class="form-group">
-              <label for="kitNome">Nome / Descrição do Kit</label>
+              <label for="kitNome">Nome do equipamento</label>
               <input type="text" id="kitNome" class="form-control" placeholder="Ex: Kit Revisão Suspensão" required>
             </div>
             
@@ -291,8 +291,8 @@
       <div class="modal-content">
         <div class="modal-header">
           <div>
-            <h3 id="modalTitle">Peças do Kit</h3>
-            <span style="font-size: 11px; color: var(--text3);" id="modalSubtitle">Gerencie os componentes pertencentes a este kit</span>
+            <h3 id="modalTitle">Peças do Equipamento</h3>
+            <span style="font-size: 11px; color: var(--text3);" id="modalSubtitle">Gerencie os componentes pertencentes a este Equipamentos</span>
           </div>
           <button class="modal-close" onclick="fecharModalPecas()">&times;</button>
         </div>

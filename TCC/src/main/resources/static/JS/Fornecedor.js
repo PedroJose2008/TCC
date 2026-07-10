@@ -97,6 +97,8 @@ async function editar(id) {
     document.getElementById("email").value = forn.email;
     document.getElementById("cnpj").value = forn.cnpj;
     document.getElementById("cep").value = forn.cep;
+	document.getElementById("numero").value = forn.numero;
+
     document.getElementById("complemento").value = forn.complemento;
 
     abrirModal();
@@ -181,6 +183,7 @@ async function salvarFornecedor(event) {
         email: document.getElementById("email").value,
         cnpj: document.getElementById("cnpj").value,
         cep: document.getElementById("cep").value,
+		numero:document.getElementById('numero').value,
         complemento: document.getElementById("complemento").value
     };
 

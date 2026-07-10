@@ -141,7 +141,14 @@ async function deletar(id){
 function fecharModal(){
 	const modalElement = document.getElementById('modalPeca');
 	const modal = bootstrap.Modal.getInstance(modalElement);
+	
 	modal.hide();
+	
+	// Remove o foco de qualquer elemento de dentro do modal que ficou "preso"
+		    if (document.activeElement && modalElement.contains(document.activeElement)) {
+		        document.activeElement.blur(); 
+		    }
+	
 }
 
 function abrirModal(){

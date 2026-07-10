@@ -203,6 +203,8 @@ function fecharModalRelatorio() {
     const modalElement = document.getElementById('modalRelatorioOS');
     const modal = bootstrap.Modal.getInstance(modalElement);
     modal.hide();
+	
+	
 }
 
 async function buscarPorCliente() {
@@ -252,10 +254,20 @@ function fecharModal() {
     const modalElement = document.getElementById("modalOS");
     const modal = bootstrap.Modal.getInstance(modalElement);
     modal.hide();
+	
+	if (document.activeElement && modalElement.contains(document.activeElement)) {
+	        document.activeElement.blur(); 
+	    }
+	
 }
 
 function fecharModalRelatorio() {
     const modalElement = document.getElementById("modalRelatorioOS");
     const modal = bootstrap.Modal.getInstance(modalElement);
     modal.hide();
+	
+	if (document.activeElement && modalElement.contains(document.activeElement)) {
+	        document.activeElement.blur(); 
+	    }
+	
 }
