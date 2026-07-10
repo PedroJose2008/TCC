@@ -146,6 +146,14 @@ async function verRelatorioOS(idOS) {
     document.getElementById('resumoPagamento').innerText = osObj.pagamento;
     document.getElementById('resumoStatus').innerText = osObj.status;
     
+    
+    let descricaoTexto = "Nenhuma descrição informada.";
+    if (osObj.descricao && osObj.descricao.trim() !== "") {
+        descricaoTexto = osObj.descricao;
+    }
+    document.getElementById('resumoDescricao').innerText = descricaoTexto;
+    
+    
     document.getElementById('resumoAbertura').innerText = osObj.dataCadastro.split('-').reverse().join('/');
     
     const stringData = String(osObj.dataFinalizacao);

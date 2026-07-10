@@ -200,7 +200,7 @@ async function renderizarPecasDaOS() {
         const precoFormatado = precoNum.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
         
         tr.innerHTML = `
-            <td>${peca.codigo}</td>
+		<td>${peca.codigo || peca.id}</td>
             <td>${peca.nome} (${precoFormatado})</td>
             <td>
               <button class="btn btn-danger btn-sm" onclick="removerPecaDaOS(${peca.id})">Remover</button>

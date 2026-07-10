@@ -67,13 +67,14 @@ async function salvar(){
 	const estoqueInformado = parseInt(document.getElementById('quantidadeEstoque').value);
 
 	//VALIDACOES
-	if (isNaN(precoInformado) || precoInformado < 0) {
-		alert("Por favor, insira um preço válido.");
+	if (isNaN(precoInformado) || precoInformado < 0 || precoInformado > 999999) {
+		alert("Por favor, insira um preço válido (máximo de R$ 999.999).");
 		return;
 	}
 
-	if (isNaN(estoqueInformado) || estoqueInformado < 0) {
-		alert("Por favor, insira uma quantidade de estoque válida.");
+	
+	if (isNaN(estoqueInformado) || estoqueInformado < 0 || estoqueInformado > 999999) {
+		alert("Por favor, insira uma quantidade de estoque válida (máxima de 999.999 unidades).");
 		return;
 	}
 
