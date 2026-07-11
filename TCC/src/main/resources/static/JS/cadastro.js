@@ -1,8 +1,8 @@
 
-const API_SALVAR_USUARIOS="http://localhost:8001/usuarios/salvar";
-const API_VERIFICA_CPF="http://localhost:8001/usuarios/validaCpf";
-const API_VERIFICA_EMAIL="http://localhost:8001/usuarios/validaEmail";
-const API_VERIFICA_TELEFONE="http://localhost:8001/usuarios/validaTelefone";
+const API_SALVAR_USUARIOS="http://192.168.10.22:8013/usuarios/salvar";
+const API_VERIFICA_CPF="http://192.168.10.22:8013/usuarios/validaCpf";
+const API_VERIFICA_EMAIL="http://192.168.10.22:8013/usuarios/validaEmail";
+const API_VERIFICA_TELEFONE="http://192.168.10.22:8013/usuarios/validaTelefone";
 
 
 

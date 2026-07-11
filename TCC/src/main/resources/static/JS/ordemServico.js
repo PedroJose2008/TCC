@@ -1,8 +1,8 @@
-const API_LISTAR_OS       = "http://localhost:8001/ordens/listartodos";
-const API_SALVAR_OS       = "http://localhost:8001/ordens/salvar";
-const API_LISTAR_CLIENTES = "http://localhost:8001/clientes/listartodos";
-const API_LISTAR_KITS     = "http://localhost:8001/kits/listartodos";
-const API_LISTAR_USUARIOS = "http://localhost:8001/usuarios/listartodos";
+const API_LISTAR_OS       = "http://192.168.10.22:8013/ordens/listartodos";
+const API_SALVAR_OS       = "http://192.168.10.22:8013/ordens/salvar";
+const API_LISTAR_CLIENTES = "http://192.168.10.22:8013/clientes/listartodos";
+const API_LISTAR_KITS     = "http://192.168.10.22:8013/kits/listartodos";
+const API_LISTAR_USUARIOS = "http://192.168.10.22:8013/usuarios/listartodos";
 
 window.onload = function() {
     atualizarDados();

@@ -1,13 +1,13 @@
-const API_BUSCAR_TODOS = 'http://localhost:8001/fornecedores/listartodos';
-const API_BUSCAR_ID = 'http://localhost:8001/fornecedores/listarporid';
-const API_GRAVAR = 'http://localhost:8001/fornecedores/atualizar';
-const API_SALVAR = 'http://localhost:8001/fornecedores/salvar';
-const API_DELETAR = 'http://localhost:8001/fornecedores/deletar';
-const API_BUSCAR_NOME = 'http://localhost:8001/fornecedores/buscarPorNome';
+const API_BUSCAR_TODOS = "http://192.168.10.22:8013/fornecedores/listartodos";
+const API_BUSCAR_ID = "http://192.168.10.22:8013/fornecedores/listarporid";
+const API_GRAVAR = "http://192.168.10.22:8013/fornecedores/atualizar";
+const API_SALVAR = "http://192.168.10.22:8013/fornecedores/salvar";
+const API_DELETAR = "http://192.168.10.22:8013/fornecedores/deletar";
+const API_BUSCAR_NOME = "http://192.168.10.22:8013/fornecedores/buscarPorNome";
 
-const API_VERIFICA_CPF="http://localhost:8001/fornecedores/validaCpf";
-const API_VERIFICA_EMAIL="http://localhost:8001/fornecedores/validaEmail";
-const API_VERIFICA_TELEFONE="http://localhost:8001/fornecedores/validaTelefone";
+const API_VERIFICA_CPF="http://192.168.10.22:8013/fornecedores/validaCpf";
+const API_VERIFICA_EMAIL="http://192.168.10.22:8013/fornecedores/validaEmail";
+const API_VERIFICA_TELEFONE="http://192.168.10.22:8013/fornecedores/validaTelefone";
 
 
 

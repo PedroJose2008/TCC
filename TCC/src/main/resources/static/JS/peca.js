@@ -1,9 +1,9 @@
-const API_BUSCAR_TODOS = 'http://localhost:8001/pecas/listartodos';
-const API_BUSCAR_ID = 'http://localhost:8001/pecas/buscarid';
-const API_SALVAR = 'http://localhost:8001/pecas/salvar';
-const API_ATUALIZAR = 'http://localhost:8001/pecas/atualizar';
-const API_DELETAR = 'http://localhost:8001/pecas/deletar';
-const API_FORNECEDORES = 'http://localhost:8001/fornecedores/listartodos';
+const API_BUSCAR_TODOS = "http://192.168.10.22:8013/pecas/listartodos";
+const API_BUSCAR_ID = "http://192.168.10.22:8013/pecas/buscarid";
+const API_SALVAR ="http://192.168.10.22:8013/pecas/salvar";
+const API_ATUALIZAR = "http://192.168.10.22:8013/pecas/atualizar";
+const API_DELETAR = "http://192.168.10.22:8013/pecas/deletar";
+const API_FORNECEDORES = "http://192.168.10.22:8013/fornecedores/listartodos";
 
 let editandoId = null;
 

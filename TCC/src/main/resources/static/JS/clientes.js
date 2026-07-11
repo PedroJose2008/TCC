@@ -1,13 +1,13 @@
-const API_BUSCAR_TODOS = 'http://localhost:8001/clientes/listartodos';
-const API_BUSCAR_ID = 'http://localhost:8001/clientes/listarporid';
-const API_GRAVAR = 'http://localhost:8001/clientes/atualizar';
-const API_SALVAR = 'http://localhost:8001/clientes/salvar';
-const API_DELETAR = 'http://localhost:8001/clientes/deletar';
-const API_BUSCAR_NOME = 'http://localhost:8001/clientes/buscarPorNome';
+const API_BUSCAR_TODOS = "http://192.168.10.22:8013/clientes/listartodos";
+const API_BUSCAR_ID = "http://192.168.10.22:8013/clientes/listarporid";
+const API_GRAVAR = "http://192.168.10.22:8013/clientes/atualizar";
+const API_SALVAR = "http://192.168.10.22:8013/clientes/salvar";
+const API_DELETAR = "http://192.168.10.22:8013/clientes/deletar";
+const API_BUSCAR_NOME = "http://192.168.10.22:80131/clientes/buscarPorNome";
 
-const API_VERIFICA_CPF="http://localhost:8001/clientes/validaCpf";
-const API_VERIFICA_EMAIL="http://localhost:8001/clientes/validaEmail";
-const API_VERIFICA_TELEFONE="http://localhost:8001/clientes/validaTelefone";
+const API_VERIFICA_CPF="http://192.168.10.22:8013/clientes/validaCpf";
+const API_VERIFICA_EMAIL="http://192.168.10.22:8013/clientes/validaEmail";
+const API_VERIFICA_TELEFONE="http://192.168.10.22:8013/clientes/validaTelefone";
 
 
 let editandoId = null;
