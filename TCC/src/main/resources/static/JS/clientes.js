@@ -3,7 +3,7 @@ const API_BUSCAR_ID = "http://192.168.10.22:8013/clientes/listarporid";
 const API_GRAVAR = "http://192.168.10.22:8013/clientes/atualizar";
 const API_SALVAR = "http://192.168.10.22:8013/clientes/salvar";
 const API_DELETAR = "http://192.168.10.22:8013/clientes/deletar";
-const API_BUSCAR_NOME = "http://192.168.10.22:80131/clientes/buscarPorNome";
+const API_BUSCAR_NOME = "http://192.168.10.22:8013/clientes/buscarPorNome";
 
 const API_VERIFICA_CPF="http://192.168.10.22:8013/clientes/validaCpf";
 const API_VERIFICA_EMAIL="http://192.168.10.22:8013/clientes/validaEmail";
